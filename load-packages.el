@@ -687,5 +687,10 @@
 (add-to-list 'load-path "~/.emacs.d/elisp/id-utils")
 (autoload 'gid "idutils" "run idutils' gid command" t)
 
+;; latex help
+(add-to-list 'load-path "~/.emacs.d/elisp/latex-help")
+(autoload 'latex-help "latex-help" "Latex help in info" t)
+(define-key help-map "\C-l" 'latex-help)
+
 (provide 'load-packages)
 ;;; load-packages.el ends here
