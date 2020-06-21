@@ -670,5 +670,11 @@
 (add-to-list 'load-path "~/.emacs.d/elisp/gforth")
 (autoload 'forth-mode "gforth" "Forth mode" t)
 
+;; .desktop file
+(add-to-list 'load-path "~/.emacs.d/elisp/freedesktop/")
+(autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
+(add-to-list 'auto-mode-alist
+             '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
+
 (provide 'load-packages)
 ;;; load-packages.el ends here
