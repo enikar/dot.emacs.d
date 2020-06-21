@@ -62,6 +62,7 @@
      ("rubinius" . "rbx -r irb/completion")
      ("yarv" . "irb1.9 -r irb/completion")
      ("pry" . "pry -f")))
+ '(load-prefer-newer t)
  '(make-backup-files t)
  '(openwith-associations
    '(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura"
