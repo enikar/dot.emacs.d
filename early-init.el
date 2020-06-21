@@ -2,10 +2,10 @@
 
 (setq package-archives
     '(("melpa" . "https://melpa.org/packages/")
-      ("gnu" . "https://elpa.gnu.org/packages/")
-      ("org" . "https://orgmode.org/elpa/")))
+      ("gnu"   . "https://elpa.gnu.org/packages/")
+      ("org"   . "https://orgmode.org/elpa/")))
 
-(setq gc-cons-threshold 10000000)
+(setq gc-cons-threshold 100000000)
 
 ;; (setq initial-frame-alist
 ;;       '((top . 1) (left . 1) (width . 80) (height . 35)))
