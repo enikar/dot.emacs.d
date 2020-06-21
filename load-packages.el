@@ -430,7 +430,7 @@
 ;;;; syntax checking
 (use-package flycheck
   :ensure t
-  :commands (flycheck))
+  :commands (flycheck flycheck-mode))
 
 (use-package avy-flycheck
   :ensure t
