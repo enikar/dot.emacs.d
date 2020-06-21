@@ -49,11 +49,11 @@
 ;; go to next and previous slot respectively.
 
 
+;;; Code:
+
 (require 'evil)
 (require 'eyebrowse)
 (require 'dash)
-
-;;; Code:
 
 ;; I just copy/paste code from eyebrowse and adapt
 ;; the method in eyebrowse--format-slot and eyebrowse--read-slot.
@@ -150,8 +150,8 @@ slot to switch to."
 
 (evil-eb-update-map evil-normal-state-map)
 (evil-eb-add-vim-compat evil-normal-state-map)
-
-(evil-eb-update-map flycheck-error-list-mode-map)
+(with-eval-after-load 'flycheck
+  (evil-eb-update-map flycheck-error-list-mode-map))
 
 ;; Add shortcuts for specific mode
 (add-hook 'Man-mode-hook
