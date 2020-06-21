@@ -223,9 +223,6 @@
   :init (ace-link-setup-default)
   )
 
-(use-package eyebrowse
-  :ensure t
-  :init (eyebrowse-mode t))
 
 (use-package session
   :ensure t
@@ -691,6 +688,13 @@
 (add-to-list 'load-path "~/.emacs.d/elisp/latex-help")
 (autoload 'latex-help "latex-help" "Latex help in info" t)
 (define-key help-map "\C-l" 'latex-help)
+
+;; keep eyebrowse at the end of this file.
+(use-package eyebrowse
+  :ensure t
+  :load-path ("~/.emacs.d/elisp/evil-eyebrowse")
+  :init (eyebrowse-mode t)
+  :config (require 'evil-eyebrowse))
 
 (provide 'load-packages)
 ;;; load-packages.el ends here
