@@ -1,0 +1,16 @@
+*~
+*.bak
+elpa/
+eshell/
+url/
+backup/
+themes
+persp-confs/
+auto-save-alist/
+transient/
+.cache/
+bookmarks
+projectile-bookmarks.eld
+.session
+recentf
+*.elc
