@@ -6,6 +6,10 @@
 (eval-when-compile
   (require 'use-package))
 
+(use-package diminish
+  :ensure t
+  :commands (diminish))
+
 (use-package bind-key
   :ensure t)
 
@@ -68,10 +72,12 @@
     ;;(evil-ex-define-cmd "ls" #'ibuffer)
     ;; settings to use evil-numbers C-a and C-x in vim normal mode
     ;; But C-x is use by emacs, and it is convenient to keep it.
-    (define-key evil-normal-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
-    (define-key evil-visual-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
-    (define-key evil-normal-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
-    (define-key evil-visual-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
+    ;; (define-key evil-normal-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
+    ;; (define-key evil-visual-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
+    ;; (define-key evil-normal-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
+    ;; (define-key evil-visual-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
+    (evil-define-key '(normal visual) 'global (kbd "C-c +") #'evil-numbers/inc-at-pt)
+    (evil-define-key '(normal visual) 'global (kbd "C-c -") #'evil-numbers/dec-at-pt)
     (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
     (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
     (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'ivy-switch-buffer-other-window)
@@ -246,8 +252,6 @@
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
-(use-package diminish
-  :ensure t)
 
 (use-package anzu
   :ensure t
@@ -328,6 +332,7 @@
 
 (use-package undo-tree
   :ensure t
+  :commands (undo-tree-visualize)
   :init (evil-leader/set-key "u" 'undo-tree-visualize)) 
 
 (use-package openwith
@@ -336,11 +341,13 @@
 
 ;; projects
 (use-package projectile
- :ensure t)
+  :ensure t
+  :init (projectile-mode 1)
+  :bind-keymap ("C-c P" . projectile-command-map))
 
 (use-package magit
   :ensure t
-  :defer t)
+  :commands (magit))
 
 (use-package treemacs
   :ensure t
@@ -351,18 +358,18 @@
 
 (use-package treemacs-evil
   :ensure t
-  :after (treemacs evil)
-  )
+  :defer t
+  :after (treemacs evil))
 
 (use-package treemacs-persp
   :ensure t
-  :after (treemacs persp-mode)
-  )
+  :defer t
+  :after (treemacs persp-mode))
 
 (use-package treemacs-projectile
   :ensure t
-  :after (treemacs projectile)
-  )
+  :defer t
+  :after (treemacs projectile))
 
 ;; (use-package treemacs-icons-dired
 ;;   :ensure t
@@ -375,15 +382,16 @@
 
 ;; programming
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :commands (yas-minor-mode))
 
 (use-package parent-mode
-  :ensure t)
+  :ensure t
+  :commands (parent-mode-list parent-mode-is-derived-p))
 
 (use-package fill-column-indicator
   :ensure t
-  ;;:hook ((prog-mode lisp-interaction-mode). fci-mode))
-  )
+  :commands (fci-mode))
 
 (use-package smartparens
   :ensure t
@@ -407,13 +415,13 @@
   (progn
     (setq hl-paren-delay 0.2
           hl-paren-colors '("SpringGreen3"
-                              "IndianRed1"
-                              "IndianRed3"
-                              "IndianRed4"))))
+                            "IndianRed1"
+                            "IndianRed3"
+                            "IndianRed4"))))
 
 (use-package highlight-indentation
-  :defer t
-  :ensure t)
+  :ensure t
+  :commands (highlight-indentation-mode))
 
 (use-package highlight-numbers
   :ensure t
@@ -426,6 +434,7 @@
 (use-package avy-flycheck
   :ensure t
   :after (flycheck)
+  :commands (avy-flycheck-goto-error)
   :config (evil-leader/set-key "f" 'avy-flycheck-goto-error))
 
 ;;;; language C
@@ -502,6 +511,7 @@
 
 (use-package retrie
   :ensure t
+  :commands (retrie)
   :after (haskell-mode))
 
 ;;;; yaml (for stack)
@@ -511,23 +521,26 @@
   
 
 (use-package flycheck-yamllint
-  :defer t
   :ensure t
+  :defer t
   :after (yaml-mode))
 
 (use-package hasky-extensions
   :ensure t
+  :commands (hasky-extensions)
   :after (haskell-mode)
   )
 
 (use-package hasky-stack
   :ensure t
+  :defer t
   :after (haskell-mode))
 
 ;;;; ruby
 (use-package inf-ruby
-  :defer t
-  :ensure t)
+  :ensure t
+  :commands (inf-ruby)
+  :hook (ruby-mode . inf-ruby-minor-mode))
 
 (use-package robe
   :defer t
@@ -553,6 +566,7 @@
 
 (use-package evil-ruby-text-objects
   :ensure t
+  :defer t
   :after (evil)
   :hook (ruby-mode . evil-ruby-text-objects-mode))
 
@@ -572,10 +586,22 @@
     (add-to-list 'company-backends 'merlin-company-backend)
     (setq merlin-command 'opam)))
 
+(use-package dune
+  :ensure t
+  :commands (dune-mode))
+
+(use-package ocp-indent
+  :ensure t
+  :commands (ocp-indent-line ocp-indent-region ocp-indent-buffer))
+
+(use-package utop
+  :ensure t
+  :commands (utop))
+
 ;;;; common lisp
 (use-package slime
   :ensure t
-  :commands slime
+  :commands (slime)
   ;; :hook (slime-mode . (lambda()(unless (slime-connected-p)
   ;;                          (save-excursion (slime)))))
   :config
@@ -651,6 +677,10 @@
 (use-package rustic
   :ensure t
   :defer t)
+
+;; cmake
+(use-package cmake-mode
+  :ensure t)
 
 ;; maxima
 (add-to-list 'load-path "~/.emacs.d/elisp/maxima")
