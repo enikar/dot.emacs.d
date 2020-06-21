@@ -671,16 +671,21 @@
 (autoload 'forth-mode "gforth" "Forth mode" t)
 
 ;; .desktop files
-(add-to-list 'load-path "~/.emacs.d/elisp/freedesktop/")
+(add-to-list 'load-path "~/.emacs.d/elisp/freedesktop")
 (autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
 (add-to-list 'auto-mode-alist
              '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
 
 ;; asymptote
+(add-to-list 'load-path "~/.emacs.d/elisp/asymptote")
 (autoload 'asy-mode "asy-mode.el" "Asymptote major mode." t)
 (autoload 'lasy-mode "asy-mode.el" "hybrid Asymptote/Latex major mode." t)
 (autoload 'asy-insinuate-latex "asy-mode.el" "Asymptote insinuate LaTeX." t)
 (add-to-list 'auto-mode-alist '("\\.asy$" . asy-mode))
+
+;; id-utils
+(add-to-list 'load-path "~/.emacs.d/elisp/id-utils")
+(autoload 'gid "idutils" "run idutils' gid command" t)
 
 (provide 'load-packages)
 ;;; load-packages.el ends here
