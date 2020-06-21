@@ -1,0 +1,107 @@
+;;; tsdh-modified-theme.el --- tsdh-dark-theme modified
+
+;; Author: Tassilo Horn
+;; Keywords: theme
+;; version 0.0.1
+
+;;; Commentary:
+;; A nice dark theme
+
+;;; Code:
+
+(deftheme tsdh-modified
+  "From the dark theme used and created by Tassilo Horn, tsdh")
+
+(custom-theme-set-faces
+ 'tsdh-modified
+ '(aw-leading-char-face ((t (:background "gray30" :foreground "red" :weight bold))))
+ '(cursor ((t (:background "orange"))))
+ '(default ((t (:background "gray15" :foreground "white smoke"))))
+ '(diff-added ((t (:inherit diff-changed :background "dark green"))) t)
+ '(diff-changed ((t (:background "midnight blue"))) t)
+ '(diff-indicator-added ((t (:inherit diff-indicator-changed))) t)
+ '(diff-indicator-changed ((t (:weight bold))) t)
+ '(diff-indicator-removed ((t (:inherit diff-indicator-changed))) t)
+ '(diff-removed ((t (:inherit diff-changed :background "dark red"))) t)
+ '(dired-directory ((t (:foreground "DodgerBlue" :weight bold))))
+ '(error ((t (:foreground "deep pink" :weight bold))))
+ '(eshell-prompt ((t (:inherit font-lock-function-name-face :weight bold))))
+ '(font-lock-builtin-face ((t (:foreground "chartreuse2"))))
+ '(font-lock-comment-face ((t (:foreground "peru"))))
+ '(font-lock-constant-face ((t (:foreground "dodger blue"))))
+ '(font-lock-doc-face ((t (:foreground "tan"))))
+ '(font-lock-function-name-face ((t (:foreground "spring green"))))
+ '(font-lock-keyword-face ((t (:foreground "light sea green" :weight bold))))
+ '(font-lock-preprocessor-face ((t (:foreground "cornflower blue"))))
+ '(font-lock-string-face ((t (:foreground "light salmon"))))
+ ;;'(font-lock-type-face ((t (:foreground "medium purple")))) ;; TODO: Change this one.
+ ;; see list-colors-display : (magenta), light coral, pink, light pink, the best "light steel blue"
+ '(font-lock-type-face ((t (:foreground "light steel blue"))))
+ '(font-lock-variable-name-face ((t (:foreground "yellow green"))))
+ '(font-lock-warning-face ((t (:foreground "hot pink" :weight bold))))
+ '(header-line ((t (:inverse-video t :box (:line-width -1 :color "red" :style released-button)))))
+ '(helm-header ((t (:background "DeepSkyBlue4" :weight bold))))
+ ;;'(highlight ((t (:background "sea green"))))
+ '(highlight ((t (:background "grey35"))))
+ ;;'(hl-line ((t (:background "grey25"))))
+ '(hl-line ((t (:background "grey27"))))
+ '(hl-paren-face ((t (:weight bold))) t)
+ '(icomplete-first-match ((t (:foreground "deep sky blue" :weight bold))))
+ '(ivy-current-match ((t (:background "MidnightBlue"))))
+ '(ivy-minibuffer-match-face-1 ((t (:background "gray50" :weight normal))))
+ '(ivy-minibuffer-match-face-2 ((t (:background "gold3" :weight bold))))
+ '(ivy-minibuffer-match-face-4 ((t (:background "forest green" :weight bold))))
+ '(ivy-remote ((t (:foreground "deep sky blue" :slant italic))))
+ '(lusty-file-face ((t (:foreground "SpringGreen1"))) t)
+ '(magit-header ((t (:box 1 :weight bold))))
+ '(magit-section-title ((t (:inherit magit-header :background "dark slate blue"))))
+ '(menu ((t (:background "gray30" :foreground "gray70"))))
+ ;;'(minibuffer-prompt ((t (:background "yellow" :foreground "medium blue" :box (:line-width -1 :color "red" :style released-button) :weight bold))))
+ '(minibuffer-prompt ((t (:background "gold1" :foreground "MidnightBlue" :box (:line-width -1 :color "red" :style released-button) :weight bold))))
+ '(mode-line ((t (:background "gray30" :box (:line-width 1 :color "red") :family "DejaVu Sans"))))
+ '(mode-line-inactive ((t (:inherit mode-line :foreground "dark gray"))))
+ '(org-agenda-date ((t (:inherit org-agenda-structure))) t)
+ '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))) t)
+ '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))) t)
+ '(org-agenda-done ((t (:foreground "#269926"))))
+ '(org-agenda-restriction-lock ((t (:background "#FFB273"))))
+ '(org-agenda-structure ((t (:foreground "#4671D5" :weight bold))))
+ '(org-date ((t (:foreground "medium sea green" :underline t))))
+ '(org-done ((t (:foreground "#008500" :weight bold))))
+ '(org-drawer ((t (:foreground "#2A4480"))))
+ '(org-ellipsis ((t (:foreground "#FF7400" :underline t))))
+ '(org-footnote ((t (:foreground "#1240AB" :underline t))))
+ '(org-hide ((t (:foreground "gray20"))))
+ '(org-level-1 ((t (:inherit outline-1 :box nil))))
+ '(org-level-2 ((t (:inherit outline-2 :box nil))))
+ '(org-level-3 ((t (:inherit outline-3 :box nil))))
+ '(org-level-4 ((t (:inherit outline-4 :box nil))))
+ '(org-level-5 ((t (:inherit outline-5 :box nil))))
+ '(org-level-6 ((t (:inherit outline-6 :box nil))))
+ '(org-level-7 ((t (:inherit outline-7 :box nil))))
+ '(org-level-8 ((t (:inherit outline-8 :box nil))))
+ '(org-scheduled-previously ((t (:foreground "#FF7400"))))
+ '(org-tag ((t (:weight bold))))
+ '(org-todo ((t (:foreground "#FF6961" :weight bold))))
+ '(org-table ((t (:foreground "indian red"))))
+ '(outline-1 ((t (:foreground "cyan1" :weight bold))))
+ '(outline-2 ((t (:foreground "SeaGreen1" :weight bold))))
+ '(outline-3 ((t (:foreground "cyan3" :weight bold))))
+ '(outline-4 ((t (:foreground "SeaGreen3" :weight bold))))
+ '(outline-5 ((t (:foreground "LightGoldenrod1" :weight bold))))
+ '(outline-6 ((t (:foreground "light salmon" :weight bold))))
+ '(outline-7 ((t (:foreground "pale goldenrod" :weight bold))))
+ '(outline-8 ((t (:foreground "OliveDrab1" :weight bold))))
+ '(region ((t (:background "SeaGreen4"))))
+ '(scroll-bar ((t (:background "gray20" :foreground "dark turquoise"))))
+ '(secondary-selection ((t (:background "#333366" :foreground "#f6f3e8"))))
+ '(show-paren-match ((t (:background "DeepSkyBlue4"))))
+ '(show-paren-mismatch ((t (:background "dark magenta"))))
+ '(swiper-match-face-1 ((t (:background "gray35"))))
+ '(th-sentence-hl-face ((t (:weight bold))))
+ '(widget-field ((t (:box (:line-width 2 :color "grey75" :style pressed-button)))))
+ '(window-number-face ((t (:foreground "red" :weight bold)))))
+
+(provide-theme 'tsdh-modified)
+
+;;; tsdh-modified-theme.el ends here
