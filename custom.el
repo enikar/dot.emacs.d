@@ -10,12 +10,13 @@
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-indicator-zero-based nil)
  '(column-number-mode t)
+ '(company-fuzzy-sorting-backend 'flx)
  '(counsel-find-file-at-point t)
  '(counsel-find-file-ignore-regexp "\\.bak$\\|\\.elc$\\|~$")
  '(cursor-type 'box)
  '(custom-enabled-themes '(tsdh-modified))
  '(custom-safe-themes
-   '("45a611670c476db422aad5061e831fde317204b7605b3736f0012c06d76ec6c3" "77d80889631ec8befa0dbbd756dd17a3dc293ed23960ad73db79ed209dd70def" default))
+   '("b8c8cf83f0d27368ac0c10071e8292ff68f4d9d9bfaafa02f19806ad5e3f10dc" default))
  '(dante-load-flags
    '("+c" "-Wall" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
  '(dired-dwim-target t)
@@ -53,6 +54,7 @@
  '(ibuffer-default-sorting-mode 'major-mode)
  '(ibuffer-expert t)
  '(ibuffer-mode-hook '(ibuffer-auto-mode))
+ '(icomplete-mode t)
  '(inf-ruby-default-implementation "pry")
  '(inf-ruby-implementations
    '(("ruby" . "irb --prompt default --noreadline -r irb/completion")
