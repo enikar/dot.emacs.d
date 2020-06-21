@@ -11,6 +11,7 @@ transient/
 .cache/
 bookmarks
 projectile-bookmarks.eld
+.mc-lists.el
 .session
 recentf
 *.elc
