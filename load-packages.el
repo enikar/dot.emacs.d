@@ -666,5 +666,9 @@
 (autoload 'rec-mode "rec-mode" "Recutils mode" t)
 (add-to-list 'auto-mode-alist '("\\.rec\\'" . rec-mode))
 
+;; gforth
+(add-to-list 'load-path "~/.emacs.d/elisp/gforth")
+(autoload 'forth-mode "gforth" "Forth mode" t)
+
 (provide 'load-packages)
 ;;; load-packages.el ends here
