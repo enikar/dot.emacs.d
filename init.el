@@ -27,7 +27,6 @@
 (setq abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs"))
 (setq save-abbrevs 'silently)
 (quietly-read-abbrev-file)
-(save-place-mode 1)
 
 (defalias 'man-mode 'Man-mode)
 (setq comint-scroll-show-maximum-output t)

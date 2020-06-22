@@ -89,6 +89,7 @@
  '(recentf-menu-filter 'recentf-sort-basenames-ascending)
  '(ruby-insert-encoding-magic-comment nil)
  '(save-interprogram-paste-before-kill t)
+ '(save-place-mode t)
  '(session-globals-include
    '((kill-ring 20 t)
      (session-file-alist 50 t)
