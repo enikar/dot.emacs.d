@@ -95,7 +95,7 @@
  '(region ((t (:background "SeaGreen4"))))
  '(scroll-bar ((t (:background "gray20" :foreground "dark turquoise"))))
  '(secondary-selection ((t (:background "#333366" :foreground "#f6f3e8"))))
- '(show-paren-match ((t (:background "DeepSkyBlue4"))))
+ '(show-paren-match ((t (:background "DeepSkyBlue3"))))
  '(show-paren-mismatch ((t (:background "dark magenta"))))
  '(swiper-match-face-1 ((t (:background "gray35"))))
  '(th-sentence-hl-face ((t (:weight bold))))
