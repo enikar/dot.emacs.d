@@ -5,7 +5,7 @@
       ("gnu"   . "https://elpa.gnu.org/packages/")
       ("org"   . "https://orgmode.org/elpa/")))
 
-(setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold 500000000)
 
 ;; (setq initial-frame-alist
 ;;       '((top . 1) (left . 1) (width . 80) (height . 35)))
@@ -25,5 +25,5 @@
         ))
 
 (menu-bar-mode 0)
-
+(setq load-prefer-newer t)
 (advice-add #'x-apply-session-resources :override #'ignore)
