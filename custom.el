@@ -16,7 +16,7 @@
  '(cursor-type 'box)
  '(custom-enabled-themes '(tsdh-modified))
  '(custom-safe-themes
-   '("b8c8cf83f0d27368ac0c10071e8292ff68f4d9d9bfaafa02f19806ad5e3f10dc" default))
+   '("c6a10652aaf77f04a1377cbaf9195b088a9f22e09b6ce0ebcb5e3bab8e8bbddd" default))
  '(dante-load-flags
    '("+c" "-Wall" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
  '(dired-dwim-target t)
@@ -76,7 +76,7 @@
      ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
  '(openwith-confirm-invocation t)
  '(package-selected-packages
-   '(cmake-mode dune ocp-indent utop flx hasky-extensions hasky-stack evil-lion flycheck-guile ace-link ace-mc ag all-the-icons all-the-icons-dired all-the-icons-ibuffer all-the-icons-ivy-rich anzu auctex auto-compile avy avy-flycheck cider cider-hydra clojure-mode clojure-mode-extra-font-locking clojure-snippets company-anaconda company-auctex company-cabal company-fuzzy company-ghci company-go company-inf-ruby company-jedi company-plsense company-rtags company-shell company-statistics counsel counsel-etags counsel-gtags counsel-org-capture-string counsel-org-clock counsel-projectile counsel-tramp dante diminish doom-modeline dumb-jump ein elpy evil evil-anzu evil-args evil-avy evil-better-visual-line evil-embrace evil-goggles evil-iedit-state evil-leader evil-magit evil-matchit evil-mc evil-mc-extras evil-multiedit evil-numbers evil-org evil-quickscope evil-ruby-text-objects evil-smartparens evil-surround evil-tutor eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint flyspell-correct-ivy geiser gitconfig-mode go-dlv go-eldoc go-gopath go-imenu go-imports go-mode go-projectile go-snippets goto-last-change haskell-mode haskell-snippets helpful highlight-indentation highlight-indent-guides highlight-numbers highlight-parentheses hydra ibuffer-projectile iedit importmagic inf-ruby ivy-explorer ivy-hydra ivy-rich ivy-yasnippet ix magit magit-popup markdown-mode merlin merlin-eldoc multiple-cursors openwith org-plus-contrib paradox persistent-scratch persp-mode persp-mode-projectile-bridge python-docstring python-mode rainbow-delimiters rainbow-identifiers rainbow-mode raku-mode realgud-byebug realgud-pry realgud-rdb2 retrie robe rspec-mode rtags rubocop ruby-end rustic semi session slime slime-company smartparens swiper transient treemacs treemacs-evil treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile tuareg undo-tree use-package w3m which-key with-editor xcscope yaml-mode yard-mode yasnippet yasnippet-snippets))
+   '(cmake-mode dune ocp-indent utop flx hasky-extensions hasky-stack evil-lion flycheck-guile ace-link ace-mc ag all-the-icons all-the-icons-dired all-the-icons-ibuffer all-the-icons-ivy-rich anzu auctex auto-compile avy avy-flycheck cider cider-hydra clojure-mode clojure-mode-extra-font-locking clojure-snippets company-anaconda company-auctex company-cabal company-fuzzy company-ghci company-go company-inf-ruby company-jedi company-plsense company-rtags company-shell company-statistics counsel counsel-etags counsel-gtags counsel-org-capture-string counsel-org-clock counsel-projectile counsel-tramp dante diminish doom-modeline dumb-jump ein elpy evil evil-anzu evil-args evil-avy evil-better-visual-line evil-embrace evil-goggles evil-iedit-state evil-leader evil-magit evil-matchit evil-mc evil-mc-extras evil-multiedit evil-numbers evil-org evil-quickscope evil-ruby-text-objects evil-smartparens evil-surround evil-tutor eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint flyspell-correct-ivy geiser gitconfig-mode go-dlv go-eldoc go-gopath go-imenu go-imports go-mode go-projectile go-snippets haskell-mode haskell-snippets helpful highlight-indent-guides highlight-numbers highlight-parentheses hydra ibuffer-projectile iedit importmagic inf-ruby ivy-explorer ivy-hydra ivy-rich ivy-yasnippet ix magit magit-popup markdown-mode merlin merlin-eldoc multiple-cursors openwith org-plus-contrib paradox persistent-scratch persp-mode persp-mode-projectile-bridge python-docstring python-mode rainbow-delimiters rainbow-identifiers rainbow-mode raku-mode realgud-byebug realgud-pry realgud-rdb2 retrie robe rspec-mode rtags rubocop ruby-end rustic semi session slime slime-company smartparens swiper transient treemacs treemacs-evil treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile tuareg undo-tree use-package w3m which-key with-editor xcscope yaml-mode yard-mode yasnippet yasnippet-snippets))
  '(paradox-automatically-star nil)
  '(paradox-execute-asynchronously t)
  '(paradox-github-token t)
@@ -88,6 +88,7 @@
  '(pylint-command "pylint3")
  '(recentf-menu-filter 'recentf-sort-basenames-ascending)
  '(ruby-insert-encoding-magic-comment nil)
+ '(save-interprogram-paste-before-kill t)
  '(session-globals-include
    '((kill-ring 20 t)
      (session-file-alist 50 t)
