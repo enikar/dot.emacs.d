@@ -15,6 +15,9 @@
 
 (use-package auto-compile
   :ensure t
+  :diminish (auto-compile-mode)
+  :diminish (auto-compile-on-load-mode)
+  :diminish (auto-compile-on-save-mode)
   :init
   (progn
     (auto-compile-on-load-mode)
@@ -33,12 +36,14 @@
 (use-package evil-leader
   :ensure t
   :init (global-evil-leader-mode)
+  :diminish (evil-leader-mode)
   :config (evil-leader/set-key "c" 'comment-dwim))
 
 (use-package evil
   :ensure t
   :after (evil-leader)
   :init (evil-mode 1)
+  :diminish (evil-mode)
   :hook (dired-mode . evil-emacs-state)
   :config
   (progn
@@ -87,16 +92,19 @@
 (use-package evil-quickscope
   :ensure t
   :after evil
+  :diminish (evil-quickscope-mode)
   :config (global-evil-quickscope-mode 1))
 
 (use-package evil-lion
   :ensure t
   :after (evil)
+  :diminish (evil-lion-mode)
   :config (evil-lion-mode))
 
 (use-package evil-surround
   :ensure t
   :after (evil)
+  :diminish (evil-surround-mode)
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
@@ -110,16 +118,23 @@
 
 (use-package evil-goggles
   :ensure t
-  :config
-  (setq evil-goggles-pulse 'display-graphic-p
-        evil-goggles-async-duration nil
-        evil-goggles-blocking-duration nil))
+  :hook (after-init . evil-goggles-mode)
+  :diminish (evil-goggles-mode)
+  :custom
+  (evil-goggles-pulse 'display-graphic-p)
+  (evil-goggles-async-duration nil)
+  (evil-goggles-blocking-duration nil))
 
 (use-package which-key
   :ensure t
-  :init (progn
-          (global-unset-key (kbd "C-h C-h"))
-          (which-key-mode)))
+  :hook (after-init . which-key-mode)
+  :diminish (which-key-mode)
+  :init (global-unset-key (kbd "C-h C-h")))
+
+(use-package goto-chg
+  :ensure t
+  :bind (("M-s M-e" . goto-last-change)
+         ("M-s M-r" . goto-last-change-reverse)))
 
 (use-package hydra
   :ensure t)
@@ -176,11 +191,8 @@
 (use-package counsel-etags
   :ensure t
   :after (ivy)
-  :commands (counsel-etags-find-tag-at-point)
-  :config
-  (progn
-    (evil-define-key 'normal 'global (kbd "C-]") #'counsel-etags-find-tag-at-point)
-  ))
+  :bind (:map evil-normal-state-map
+              ("C-]" . #'counsel-etags-find-tag-at-point)))
 
 (use-package avy
   :ensure t
@@ -411,17 +423,18 @@
 (use-package highlight-parentheses
   :ensure t
   :hook ((prog-mode lisp-interaction-mode) . highlight-parentheses-mode)
-  :config
-  (progn
-    (setq hl-paren-delay 0.2
-          hl-paren-colors '("SpringGreen3"
-                            "IndianRed1"
-                            "IndianRed3"
-                            "IndianRed4"))))
+  :custom
+    (hl-paren-delay 0.2)
+    (hl-paren-colors '("SpringGreen3"
+                       "orange"
+                       "IndianRed1"
+                       "IndianRed3"
+                       "IndianRed4")))
 
-(use-package highlight-indentation
+(use-package highlight-indent-guides
   :ensure t
-  :commands (highlight-indentation-mode))
+  :commands (highlight-indent-guides-mode)
+  :init (evil-leader/set-key "i" 'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :ensure t
@@ -488,10 +501,10 @@
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; more quick.
 (use-package dante
-  :defer t
   :ensure t
   :after (haskell-mode)
-  :commands 'dante-mode
+  :functions (flycheck-add-next-checker)
+  :commands (dante-mode)
   :hook ((haskell-mode . dante-mode)
          (dante-mode . (lambda () (flycheck-add-next-checker
                               'haskell-dante
@@ -554,16 +567,16 @@
   :hook (ruby-mode . ruby-end-mode))
 
 (use-package rubocop
-  :defer t
-  :ensure t)
+  :ensure t
+  :hook (ruby-mode . rubocop-mode))
 
 (use-package yard-mode
-  :defer t
-  :ensure t)
+  :ensure t
+  :hook (ruby-mode . yard-mode))
 
 (use-package realgud-byebug
-  :defer t
-  :ensure t)
+  :ensure t
+  :commands (realgud:byebug))
 
 (use-package evil-ruby-text-objects
   :ensure t
