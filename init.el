@@ -9,7 +9,6 @@
 (load custom-file)
 
 (load "~/.emacs.d/load-packages")
-(load "~/.emacs.d/programming-modes")
 (load "~/.emacs.d/bindings")
 
 (recentf-mode)

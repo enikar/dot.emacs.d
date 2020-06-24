@@ -1,6 +1,7 @@
 ;;; load-packages --- loads and configures packages.
 ;;; Commentary:
-;; loads and configures packages with use-package
+;;  use-packages is used when apropriatei, else set load-path
+;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
 ;;; Code:
 
 (eval-when-compile
@@ -315,7 +316,7 @@
 (use-package company-fuzzy
   :ensure t
   :after (company flx)
-  :custom (company-fuzzy-sorting-backend 'flx)
+  :custom (company-fuzzy-sorting-backend 'alphabetic)
   :config (global-company-fuzzy-mode 1))
 
 (use-package iedit
@@ -451,6 +452,9 @@
   :commands (avy-flycheck-goto-error)
   :config (evil-leader/set-key "f" 'avy-flycheck-goto-error))
 
+
+(add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
+
 ;;;; language C
 (use-package xcscope
   :defer t
@@ -551,6 +555,12 @@
   :after (haskell-mode))
 
 ;;;; ruby
+(add-hook 'ruby-mode-hook
+          #'(lambda()
+              (flycheck-mode)
+              (setq tab-width 2
+                    evil-shift-width 2)))
+
 (use-package inf-ruby
   :ensure t
   :commands (inf-ruby)
@@ -586,9 +596,8 @@
 
 ;;;; ocaml
 (use-package tuareg
-  :defer t
-  :mode "\\.ml\\'"
-  :ensure t)
+  :ensure t
+  :mode "\\.ml\\'")
 
 (use-package merlin
   :defer t
@@ -632,14 +641,17 @@
   :config
   (slime-setup '(slime-company)))
 
-;;;; scheme
+;; scheme
 (use-package geiser
   :ensure t
-  :mode "\\.scm\\'")
-
-(use-package flycheck-guile
-  :ensure t
-  :after (geiser))
+  :defer t
+  :defines (geiser-active-implementations)
+  :init (setq scheme-program-name "guile")
+  :config
+  (progn
+    (setq geiser-active-implementations '(guile))
+    (require 'flycheck-guile)
+    (flycheck-mode t)))  
 
 ;;;; python
 (use-package python-mode
