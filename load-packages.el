@@ -478,11 +478,11 @@
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)))
 
-(use-package company-ghci
-  :ensure t
-  :after (company haskell-mode)
-  :init (add-to-list 'company-backends 'company-ghci)
-  :hook (haskell-mode . company-mode))
+;; (use-package company-ghci
+;;   :ensure t
+;;   :after (company haskell-mode)
+;;   :init (add-to-list 'company-backends 'company-ghci)
+;;   :hook (haskell-mode . company-mode))
 
 ;; (use-package lsp-mode
 ;;   :ensure t
@@ -526,6 +526,16 @@
         'dante-mode-map
         (kbd "M-?")
         #'xref-find-references)))
+
+(use-package attrap
+  :ensure t
+  :commands (attrap-attrap)
+  :hook (dante-mode . (lambda() (evil-define-key
+                             '(normal insert)
+                             'dante-mode-map
+                             (kbd "M-!")
+                             #'attrap-attrap))))
+ 
 
 (use-package retrie
   :ensure t
