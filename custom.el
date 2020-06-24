@@ -10,7 +10,6 @@
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-indicator-zero-based nil)
  '(column-number-mode t)
- '(company-fuzzy-sorting-backend 'flx)
  '(counsel-find-file-at-point t)
  '(counsel-find-file-ignore-regexp "\\.bak$\\|\\.elc$\\|~$")
  '(cursor-type 'box)
@@ -32,7 +31,6 @@
  '(evil-ex-search-persistent-highlight nil)
  '(evil-ex-visual-char-range t)
  '(evil-leader/leader "_")
- '(evil-snipe-scope 'line)
  '(evil-want-C-u-scroll t)
  '(evil-want-Y-yank-to-eol nil)
  '(evil-want-fine-undo t)
@@ -54,7 +52,6 @@
  '(ibuffer-default-sorting-mode 'major-mode)
  '(ibuffer-expert t)
  '(ibuffer-mode-hook '(ibuffer-auto-mode))
- '(icomplete-mode t)
  '(inf-ruby-default-implementation "pry")
  '(inf-ruby-implementations
    '(("ruby" . "irb --prompt default --noreadline -r irb/completion")
