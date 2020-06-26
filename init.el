@@ -38,7 +38,10 @@
 ;; finally start emacs server
 (server-start)
 
+;; perhaps I should setq disabled-command-function to nil
+;; thus there were no longer disabled commands.
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
