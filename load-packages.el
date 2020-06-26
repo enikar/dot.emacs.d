@@ -37,8 +37,8 @@
 (use-package evil-leader
   :ensure t
   :init (global-evil-leader-mode)
-  :diminish (evil-leader-mode)
-  :config (evil-leader/set-key "c" 'comment-dwim))
+  :custom (evil-leader/leader "_")
+  :diminish (evil-leader-mode))
 
 (use-package evil
   :ensure t
@@ -82,8 +82,8 @@
     ;; (define-key evil-visual-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
     ;; (define-key evil-normal-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
     ;; (define-key evil-visual-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
-    (evil-define-key '(normal visual) 'global (kbd "C-c +") #'evil-numbers/inc-at-pt)
-    (evil-define-key '(normal visual) 'global (kbd "C-c -") #'evil-numbers/dec-at-pt)
+    (evil-leader/set-key "+" 'evil-numbers/inc-at-pt)
+    (evil-leader/set-key "-" 'evil-numbers/dec-at-pt)
     (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
     (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
     (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'ivy-switch-buffer-other-window)
@@ -125,6 +125,26 @@
   (evil-goggles-pulse 'display-graphic-p)
   (evil-goggles-async-duration nil)
   (evil-goggles-blocking-duration nil))
+
+(use-package evil-string-inflection
+  :ensure t)
+
+(use-package evil-matchit
+  :ensure t
+  :init (global-evil-matchit-mode 1))
+
+(use-package evil-nerd-commenter
+  :ensure t
+  :config
+  (global-set-key (kbd "M-;") #'evilnc-comment-or-uncomment-lines)
+  (evil-leader/set-key
+    "ci" 'evilnc-comment-or-uncomment-lines
+    "cl" 'evilnc-quick-comment-or-uncomment-to-the-line
+    "cc" 'evilnc-copy-and-comment-lines
+    "cp" 'evilnc-comment-or-uncomment-paragraphs
+    "cr" 'comment-or-uncomment-region
+    "cv" 'evilnc-toggle-invert-comment-line-by-line
+    "."  'evilnc-comment-operator))
 
 (use-package which-key
   :ensure t
@@ -202,43 +222,58 @@
 (use-package evil-avy
   :ensure t
   :after (avy evil-leader)
-  :config
+  :commands (avy-goto-char
+             avy-goto-char
+             avy-goto-char-2
+             avy-goto-subword-1
+             avy-resume
+             avy-goto-word-0
+             avy-goto-word-1
+             avy-goto-line)
+  :init
   (progn
     (global-set-key (kbd "M-s M-s")  'avy-goto-char)
-    (evil-leader/set-key "g" 'avy-goto-char)
-    (evil-leader/set-key "G" 'avy-goto-char-2)
-    (evil-leader/set-key "h" 'avy-goto-subword-1)
-    (evil-leader/set-key "H" 'avy-resume)
+    (evil-leader/set-key "ac" 'avy-goto-char)
+    (evil-leader/set-key "aC" 'avy-goto-char-2)
+    (evil-leader/set-key "as" 'avy-goto-subword-1)
+    (evil-leader/set-key "ar" 'avy-resume)
+    (evil-leader/set-key "aw" 'avy-goto-word-0)
+    (evil-leader/set-key "aW" 'avy-goto-word-1)
+    (evil-leader/set-key "al" 'avy-goto-line)
     ))
 
 (use-package ace-jump-mode
   :ensure t
   :after (evil-leader)
-  ;:commands (ace-jump-mode)
-  :config
+  :commands (ace-jump-mode
+             ace-jump-char-mode
+             ace-jump-line-mode)
+  :init
   (progn
-    (evil-leader/set-key "j" 'ace-jump-mode)
+    (evil-leader/set-key "jw" 'ace-jump-mode)
+    (evil-leader/set-key "jc" 'ace-jump-char-mode)
+    (evil-leader/set-key "jl" 'ace-jump-line-mode)
   ))
 
 (use-package ace-mc
   :ensure t
   :after (evil-leader)
-  ;:commands (ace-mc-add-multiple-cursors ace-mc-add-single-cursor)
-  :config
+  :commands (ace-mc-add-multiple-cursors ace-mc-add-single-cursor)
+  :init
   (progn
-    (evil-leader/set-key "m" 'ace-mc-add-single-cursor)
-    (evil-leader/set-key "M" 'ace-mc-add-multiple-cursors)
+    (evil-leader/set-key "mM" 'ace-mc-add-single-cursor)
+    (evil-leader/set-key "mm" 'ace-mc-add-multiple-cursors)
     ))
 
 (use-package ace-window
   :ensure t
   :commands (ace-window)
-  :config (evil-leader/set-key "o" 'ace-window)
+  :init (evil-leader/set-key "o" 'ace-window)
   )
 
 (use-package ace-link
   :ensure t
-  :commands (ace-link-info)
+  :commands (ace-link)
   :init (ace-link-setup-default)
   )
 
@@ -268,7 +303,7 @@
 
 (use-package anzu
   :ensure t
-  :config (global-anzu-mode +1))
+  :init (global-anzu-mode +1))
 
 (use-package evil-anzu
   :ensure t
@@ -332,16 +367,16 @@
   :config
   (progn
     (evil-leader/set-key
-      "w" 'mc/mark-next-like-this-word
-      "b" 'mc/mark-previous-like-this-word
-      "t" 'mc/mark-next-like-this
-      "T" 'mc/mark-previous-like-this
-      "a" 'mc/mark-all-like-this
-      "r" 'mc/mark-all-in-region
-      "e" 'mc/mark-more-like-this-extended
-      "W" 'mc/mark-all-words-like-this
-      "S" 'mc/mark-all-symbols-like-this
-      "D" 'mc/mark-all-like-this-dwim)))
+      "mw" 'mc/mark-next-like-this-word
+      "mb" 'mc/mark-previous-like-this-word
+      "mt" 'mc/mark-next-like-this
+      "mT" 'mc/mark-previous-like-this
+      "ma" 'mc/mark-all-like-this
+      "mr" 'mc/mark-all-in-region
+      "me" 'mc/mark-more-like-this-extended
+      "mW" 'mc/mark-all-words-like-this
+      "mS" 'mc/mark-all-symbols-like-this
+      "mD" 'mc/mark-all-like-this-dwim)))
 
 (use-package undo-tree
   :ensure t
@@ -450,7 +485,7 @@
   :ensure t
   :after (flycheck)
   :commands (avy-flycheck-goto-error)
-  :config (evil-leader/set-key "f" 'avy-flycheck-goto-error))
+  :init (evil-leader/set-key "af" 'avy-flycheck-goto-error))
 
 
 (add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
