@@ -117,11 +117,13 @@
         (trim-buffer)
         (widen)))))
 
-(global-set-key (kbd "C-x t t") #'treemacs)
+(global-set-key (kbd "C-x t t")   #'treemacs)
 (global-set-key (kbd "C-x t C-b") #'trim-buffer)
 (global-set-key (kbd "C-x t C-f") #'fci-mode)
-(global-set-key (kbd "C-x t F") #'flycheck-mode)
-(global-set-key (kbd "C-x t r") #'recentf-open-files)
+(global-set-key (kbd "C-x t F")   #'flycheck-mode)
+(global-set-key (kbd "C-x t C-r") #'recentf-open-files)
+(global-set-key (kbd "C-x t C-e") #'recentf-edit-list)
+
 
 (global-set-key [f11] (function next-error))
 (global-set-key [f12] (function previous-error))
