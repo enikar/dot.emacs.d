@@ -135,14 +135,21 @@
 
 (use-package evil-nerd-commenter
   :ensure t
-  :config
+  :commands (evilnc-comment-or-uncomment-lines
+             evilnc-quick-comment-or-uncomment-to-the-line
+             evilnc-copy-and-comment-lines
+             evilnc-comment-or-uncomment-paragraphs
+             comment-dwim
+             evilnc-toggle-invert-comment-line-by-line
+             evilnc-comment-operator)
+  :init
   (global-set-key (kbd "M-;") #'evilnc-comment-or-uncomment-lines)
   (evil-leader/set-key
     "ci" 'evilnc-comment-or-uncomment-lines
     "cl" 'evilnc-quick-comment-or-uncomment-to-the-line
     "cc" 'evilnc-copy-and-comment-lines
     "cp" 'evilnc-comment-or-uncomment-paragraphs
-    "cr" 'comment-or-uncomment-region
+    "cr" 'comment-dwim
     "cv" 'evilnc-toggle-invert-comment-line-by-line
     "."  'evilnc-comment-operator))
 
@@ -165,17 +172,19 @@
   :after (persp-mode)
   :init  (ivy-mode 1)
   :diminish (ivy-mode)
-  :hook (ivy-ignore-buffers .
-              (lambda (b)
-                  (when persp-mode
-                    (let ((persp (get-current-persp)))
-                      (if persp
-                          (not (persp-contain-buffer-p b persp))
-                        nil)))))
   :config
   (progn
+    (defun persp-ivy-ignore-buffers (b)
+      "Ignore buffers which are not in the current perspective
+when switching buffer with ivy-switch-buffer."
+      (when persp-mode
+        (let ((persp (get-current-persp)))
+          (if persp
+              (not (persp-contain-buffer-p b persp))))))
+
     (setq ivy-use-virtual-buffers t
           ivy-count-format "(%d/%d) ")
+    (add-to-list 'ivy-ignore-buffers #'persp-ivy-ignore-buffers)
     (global-set-key (kbd "C-s") 'swiper)
     (global-set-key (kbd "M-x") 'counsel-M-x)
     (global-set-key (kbd "C-x C-f") 'counsel-explorer)
@@ -206,6 +215,7 @@
 
 (use-package ivy-explorer
   :ensure t
+  :diminish (ivy-explorer-mode)
   :after (ivy evil)
   :init (ivy-explorer-mode 1))
 
@@ -277,7 +287,6 @@
   :init (ace-link-setup-default)
   )
 
-
 (use-package session
   :ensure t
   :hook (after-init . session-initialize))
@@ -285,9 +294,9 @@
 (use-package persp-mode
   :ensure t
   :hook (after-init . (lambda() (persp-mode 1)))
+  :custom (persp-autokill-buffer-on-remove 'kill-weak)
   :config
   (progn
-    (setq persp-autokill-buffer-on-remove 'kill-weak)
     (defun persp-ibuffer (arg)
       (interactive "P")
       (with-persp-buffer-list () (ibuffer arg)))
@@ -300,9 +309,9 @@
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
-
 (use-package anzu
   :ensure t
+  :diminish (anzu-mode)
   :init (global-anzu-mode +1))
 
 (use-package evil-anzu
@@ -317,15 +326,19 @@
   :ensure t
   :init (all-the-icons-ibuffer-mode 1))
 
-(use-package all-the-icons-ivy-rich
+(use-package emojify
   :ensure t
-  :init (all-the-icons-ivy-rich-mode 1))
+  :diminish (emojify)
+  :hook (after-init . global-emojify-mode))
 
 (use-package ivy-rich
   :ensure t
   :init (ivy-rich-mode 1)
-  :config (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  )
+  :config (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package persistent-scratch
   :ensure t
@@ -341,6 +354,7 @@
 
 (use-package company
   :ensure t
+  :diminish (company-mode)
   :hook (after-init . global-company-mode)
   :init
     (setq company-require-match nil)
@@ -351,6 +365,7 @@
 (use-package company-fuzzy
   :ensure t
   :after (company flx)
+  :diminish (company-fuzzy-mode)
   :custom (company-fuzzy-sorting-backend 'alphabetic)
   :config (global-company-fuzzy-mode 1))
 
@@ -364,7 +379,17 @@
 ;; to activate bindings when a region is selected
 (use-package multiple-cursors
   :ensure t
-  :config
+  :commands (mc/mark-next-like-this-word
+             mc/mark-previous-like-this-word
+             mc/mark-next-like-this
+             mc/mark-previous-like-this
+             mc/mark-all-like-this
+             mc/mark-all-in-region
+             mc/mark-more-like-this-extended
+             mc/mark-all-words-like-this
+             mc/mark-all-symbols-like-this
+             mc/mark-all-like-this-dwim)
+  :init
   (progn
     (evil-leader/set-key
       "mw" 'mc/mark-next-like-this-word
@@ -380,8 +405,9 @@
 
 (use-package undo-tree
   :ensure t
+  :diminish (undo-tree-mode)
   :commands (undo-tree-visualize)
-  :init (evil-leader/set-key "u" 'undo-tree-visualize)) 
+  :init (evil-leader/set-key "u" 'undo-tree-visualize))
 
 (use-package openwith
   :ensure t
@@ -390,6 +416,7 @@
 ;; projects
 (use-package projectile
   :ensure t
+  :diminish (projectile-mode)
   :init (projectile-mode 1)
   :bind-keymap ("C-c P" . projectile-command-map))
 
@@ -443,6 +470,7 @@
 
 (use-package smartparens
   :ensure t
+  :diminish (smartparens-mode)
   :hook ((prog-mode lisp-interaction-mode) . smartparens-mode)
   :commands (sp-split-sexp sp-newline sp-up-sexp)
   :config
@@ -458,6 +486,7 @@
 
 (use-package highlight-parentheses
   :ensure t
+  :diminish (highlight-parentheses-mode)
   :hook ((prog-mode lisp-interaction-mode) . highlight-parentheses-mode)
   :custom
     (hl-paren-delay 0.2)
@@ -486,7 +515,6 @@
   :after (flycheck)
   :commands (avy-flycheck-goto-error)
   :init (evil-leader/set-key "af" 'avy-flycheck-goto-error))
-
 
 (add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
 
@@ -541,6 +569,7 @@
 ;; more quick.
 (use-package dante
   :ensure t
+  :diminish (dante-mode)
   :after (haskell-mode)
   :functions (flycheck-add-next-checker)
   :commands (dante-mode)
@@ -570,7 +599,6 @@
                              'dante-mode-map
                              (kbd "M-!")
                              #'attrap-attrap))))
- 
 
 (use-package retrie
   :ensure t
@@ -581,7 +609,6 @@
 (use-package yaml-mode
   :ensure t
   :mode "\\.ya?ml\\'")
-  
 
 (use-package flycheck-yamllint
   :ensure t
@@ -642,10 +669,10 @@
 ;;;; ocaml
 (use-package tuareg
   :ensure t
-  :mode "\\.ml\\'")
+  :mode ("\.ml\'" . tuareg-mode)
+  :config (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
 
 (use-package merlin
-  :defer t
   :ensure t
   :after (tuareg)
   :hook ((tuareg-mode caml-mode) . merlin-mode)
@@ -654,14 +681,23 @@
     (add-to-list 'company-backends 'merlin-company-backend)
     (setq merlin-command 'opam)))
 
+(use-package flycheck-ocaml
+  :ensure t
+  :hook (tuareg-mode . flycheck-mode)
+  :init
+  (progn
+    (setq merlin-error-after-save nil)
+    (flycheck-ocaml-setup)))
+
 (use-package dune
   :ensure t
   :commands (dune-mode))
 
 (use-package ocp-indent
   :ensure t
-  :commands (ocp-indent-line ocp-indent-region ocp-indent-buffer))
-
+  :hook ((tuareg-mode . ocp-setup-indent)
+         (caml-mode . ocp-indent-caml-mode-setup)))
+ 
 (use-package utop
   :ensure t
   :commands (utop))
@@ -696,7 +732,7 @@
   (progn
     (setq geiser-active-implementations '(guile))
     (require 'flycheck-guile)
-    (flycheck-mode t)))  
+    (flycheck-mode t)))
 
 ;;;; python
 (use-package python-mode
@@ -756,7 +792,7 @@
 ;; maxima
 (add-to-list 'load-path "~/.emacs.d/elisp/maxima")
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
-(autoload 'maxima "maxima" "Maxima interaction" t) 
+(autoload 'maxima "maxima" "Maxima interaction" t)
 (add-to-list 'auto-mode-alist '("\\.mac\\'" . maxima-mode))
 
 ;; recutils
