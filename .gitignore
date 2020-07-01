@@ -16,3 +16,5 @@ projectile-bookmarks.eld
 recentf
 *.elc
 places
+emojis/
+opam-user-setup.el
