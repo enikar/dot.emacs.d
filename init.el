@@ -1,32 +1,40 @@
+;;; init.el --- emacs start up initialization file -*- lexical-binding: t; -*-
 (setq inhibit-startup-message t)
-(setq inhibit-startup-echo-area-message "karine")
+(setq inhibit-startup-echo-area-message "enikar")
 
 (add-to-list 'custom-theme-load-path (file-name-as-directory "~/.emacs.d/themes/") )
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/"))
 (load custom-file)
 
-;; (setq recentf-exclude
-;;       (mapcar #'expand-file-name
-;;               (cons "~/.emacs.d/bookmarks"
-;;                     (mapcar
-;;                      (lambda(f) (concat "~/.emacs.d/persp-conf/" f))
-;;                      '("persp-auto-save" "haskell" "cl" "C" "default")))))
-(defvar my/bookmarks-file-name
+(add-to-list 'load-path "~/.emacs.d/elisp/perso")
+(load "general-interface")
+(load "programming")
+(load "epilogue")
+(load "personal-bindings")
+;; (require 'general-interface)
+;; (require 'programming)
+;; (require 'epilogue)
+;; (require 'personal-bindings)
+
+;;;; better dired mode
+(autoload 'dired-omit-mode "dired-x")
+(add-hook 'dired-load-hook
+          (lambda() (load "dired-x")))
+(add-hook 'dired-mode-hook
+          (lambda () (dired-omit-mode 1)))
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+(defvar-local my/bookmarks-file-name
   (expand-file-name "~/.emacs.d/bookmarks"))
-(defvar my/persp-confs-dir
-  (expand-file-name "~/.emacs.d/persp-confs/"))
 
 (defun my/recentf-exclude (f)
-  "Predicate to exlude filename from recent file name list"
-  (progn
-    ;; (message "From my/recentf-exclude file name: %s" f) ;; to debug
-    (or (equal f my/bookmarks-file-name)
-        (equal (file-name-directory f) my/persp-confs-dir))))
+  "Predicate to exlude filename from the recent file name list"
+    (or (string-equal f my/bookmarks-file-name)
+        (string-equal (file-name-directory f) persp-save-dir)))
 
 (setq recentf-exclude  `(,#'my/recentf-exclude))
-
-(load "~/.emacs.d/load-packages")
-(load "~/.emacs.d/bindings")
+(recentf-mode)
 
 ;; Peut poser un problème lorsqu'on édite un fichier
 ;; qui est destiné à être une liste de fichier pour tar
@@ -53,6 +61,11 @@
 ;; finally start emacs server
 (server-start)
 
+(defun my/set-personnal-font ()
+  "Restore my favorite font setting."
+  (interactive)
+  (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
+
 ;; perhaps I should setq disabled-command-function to nil
 ;; thus there were no longer disabled commands.
 (put 'downcase-region 'disabled nil)
@@ -60,3 +73,5 @@
 (put 'scroll-left 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
+
+;;; init.el ends here
