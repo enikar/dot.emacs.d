@@ -4,9 +4,14 @@
       ("gnu"   . "https://elpa.gnu.org/packages/")
       ("org"   . "https://orgmode.org/elpa/")))
 
-(setq load-prefer-newer t
-      gc-cons-threshold 800000000
-      gc-cons-percentage 0.6)
+(setq load-prefer-newer t)
+
+;; Increases Garbage Collection During Startup
+(defvar startup/gc-cons-threshold gc-cons-threshold)
+(setq gc-cons-threshold most-positive-fixnum)
+(add-hook 'emacs-startup-hook
+          #'(lambda()
+              (setq gc-cons-threshold startup/gc-cons-threshold)))
 
 ;; (setq initial-frame-alist
 ;;       '((top . 1) (left . 1) (width . 80) (height . 35)))
@@ -25,5 +30,6 @@
         (vertical-scroll-bars)
         (font . "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")))
 
-(menu-bar-mode 0)
-
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
