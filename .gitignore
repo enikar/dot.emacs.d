@@ -18,3 +18,9 @@ recentf
 places
 emojis/
 opam-user-setup.el
+company-statistics-cache.el
+elisp/.gitignore
+request/
+var/
+.historian
+.gitignore
