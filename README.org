@@ -1,0 +1,68 @@
+* Introduction
+  These are my settings for emacs 27.
+** Important
+  Not all files are mine. The files in directories:
+  elisp/asymptote/
+          flycheck-raku/
+          freedesktop/
+          gforth/
+          hasky-cabal/
+          id-utils/
+          latex-help/
+          maxima/
+          pariemacs/
+          recutils/
+  aren't mine. Instead, They belong to others projects. The directories
+  flycheck-raku/ and hasky-cabal/ are github clone. The others come from
+  debian packages. There are distributed with their respective license, see
+  these project for more details.
+
+  All other files are mine. I use GPL v3 license.
+** Use emacs 27
+  Some settings are in early-init.el. Emacs before version 27 doesn't
+  read this file.
+* Some Packages used
+** use-package
+** evil
+   - evil-leader (use undercore as leader-key)
+   - evil-quickscope
+   - evil-lion
+   - evil-surround
+   - evil-embrace
+   - evil-goggles
+   - evil-string-inflection
+   - evil-matchit
+   - evil-nerd-commenter
+   - evil-visualstar
+   - evil-anzu
+** all-the-icons
+   - all-the-icons-dired
+   - all-the-icons-ibuffer
+   - all-the-icons-ivy-rich
+** doom-modeline
+** ivy
+   - ivy-historian
+   - ivy-hydra
+   - ivy-explorer
+   - ivy-rich
+
+** company
+   - company-fuzzy
+** persp-mode
+** projectile
+** treemacs
+** others
+   - diminish
+   - which-key
+   - avy
+   - iedit
+   - helpful
+   - undo-tree
+   - ace-window
+   - magit
+   - ripgrep
+   - ag
+   - pt
+   - fill-column-indicator
+   - auto-compile
+   - paradox
