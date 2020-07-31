@@ -159,11 +159,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package attrap
   :ensure t
   :commands (attrap-attrap)
-  :hook (dante-mode . (lambda() (evil-define-key
-                             '(normal insert)
-                             'dante-mode-map
-                             (kbd "M-!")
-                             #'attrap-attrap))))
+  :hook (dante-mode . (lambda()
+                        (evil-define-key
+                          '(normal insert)
+                          'dante-mode-map
+                          (kbd "M-!")
+                          #'attrap-attrap))))
 
 (use-package retrie
   :ensure t
