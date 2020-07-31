@@ -457,8 +457,8 @@ when switching buffer with ivy-switch-buffer."
 
 (use-package iedit
   :ensure t
-  :init (global-set-key (kbd "C-;") 'iedit-mode)
-  :config (evil-leader/set-key ";" 'iedit-mode))
+  :bind ("C-;" . iedit-mode)
+  :init (evil-leader/set-key ";" 'iedit-mode))
 
 ;; multiple-cursors
 ;; see also https://github.com/fgallina/region-bindings-mode
