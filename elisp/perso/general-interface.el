@@ -329,6 +329,11 @@ when switching buffer with ivy-switch-buffer."
   :ensure t
   :hook (after-init . session-initialize))
 
+;; Note: The loading occurs after the init file is loaded.
+;; So it's safe to set file-name-handler-alist to nil during
+;; the loading of this file. (I set this in the init file).
+;; Then, when persp-mode restore the default perspective
+;; the file-name-handler-alist has its default value.
 (use-package persp-mode
   :ensure t
   :hook (after-init . (lambda() (persp-mode 1)))
