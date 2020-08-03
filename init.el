@@ -1,20 +1,20 @@
-;;; init.el --- emacs start up initialization file -*- lexical-binding: t; -*-
+;;; init.el --- emacs start up initialization file
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message "enikar")
 
 (add-to-list 'custom-theme-load-path (file-name-as-directory "~/.emacs.d/themes/") )
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/"))
-(load custom-file)
-
+(setq abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs"))
+(setq save-abbrevs 'silently)
 (add-to-list 'load-path "~/.emacs.d/elisp/perso")
-(load "general-interface")
-(load "programming")
-(load "epilogue")
-(load "personal-bindings")
-;; (require 'general-interface)
-;; (require 'programming)
-;; (require 'epilogue)
-;; (require 'personal-bindings)
+
+(let ((file-name-handler-alist nil))
+  (load custom-file)
+  (load "general-interface")
+  (load "programming")
+  (load "epilogue")
+  (load "personal-bindings")
+  (quietly-read-abbrev-file))
 
 ;;;; better dired mode
 (autoload 'dired-omit-mode "dired-x")
@@ -41,9 +41,6 @@
 ;; option -T de tar.
 (setq require-final-newline t)
 (setq-default indicate-empty-lines t)
-(setq abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs"))
-(setq save-abbrevs 'silently)
-(quietly-read-abbrev-file)
 
 (defalias 'man-mode 'Man-mode)
 (setq comint-scroll-show-maximum-output t)
