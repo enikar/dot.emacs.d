@@ -8,12 +8,23 @@
 (setq save-abbrevs 'silently)
 (add-to-list 'load-path "~/.emacs.d/elisp/perso")
 
+(defvar-local my/bookmarks-file-name
+  (expand-file-name "~/.emacs.d/bookmarks"))
+
+(defun my/recentf-exclude (f)
+  "Predicate to exlude filename from the recent file name list"
+    (or (string-equal f my/bookmarks-file-name)
+        (string-equal (file-name-directory f) persp-save-dir)))
+
+(setq recentf-exclude  `(,#'my/recentf-exclude))
+
 (let ((file-name-handler-alist nil))
   (load custom-file)
   (load "general-interface")
   (load "programming")
   (load "epilogue")
   (load "personal-bindings")
+  (recentf-mode)
   (quietly-read-abbrev-file))
 
 ;;;; better dired mode
@@ -25,16 +36,6 @@
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-(defvar-local my/bookmarks-file-name
-  (expand-file-name "~/.emacs.d/bookmarks"))
-
-(defun my/recentf-exclude (f)
-  "Predicate to exlude filename from the recent file name list"
-    (or (string-equal f my/bookmarks-file-name)
-        (string-equal (file-name-directory f) persp-save-dir)))
-
-(setq recentf-exclude  `(,#'my/recentf-exclude))
-(recentf-mode)
 
 ;; Peut poser un problème lorsqu'on édite un fichier
 ;; qui est destiné à être une liste de fichier pour tar
