@@ -171,5 +171,17 @@
         (no-break-to-space)
         (widen)))))
 
+;; A trick to toggle between to background color
+(defvar-local my/current-background
+  '(default ((t (:background "gray15" :foreground "white smoke")))))
+;; (defvar-local my/alternative-background
+;;   '(default ((t (:background "gray17" :foreground "white smoke")))))
+
+(defun my/toggle-background ()
+  (interactive)
+  (if (equal my/current-background '(default ((t (:background "gray15" :foreground "white smoke")))))
+      (custom-set-faces (setq my/current-background '(default ((t (:background "gray17" :foreground "white smoke"))))))
+    (custom-set-faces (setq my/current-background '(default ((t (:background "gray15" :foreground "white smoke"))))))))
+
 (provide 'personal-bindings)
 ;;; personal-bindings.el ends here

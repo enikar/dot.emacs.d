@@ -7,15 +7,16 @@
 (eval-when-compile
   (require 'use-package))
 
+;; To add a :ensure for each use-package
+;; (require 'use-package-ensure)
+;; (setq use-package-always-ensure t)
+
 (use-package diminish
-  :ensure t
   :commands (diminish))
 
-(use-package bind-key
-  :ensure t)
+(use-package bind-key)
 
 (use-package auto-compile
-  :ensure t
   :diminish (auto-compile-mode)
   :diminish (auto-compile-on-load-mode)
   :diminish (auto-compile-on-save-mode)
@@ -25,7 +26,6 @@
     (auto-compile-on-save-mode)))
 
 (use-package paradox
-  :ensure t
   :custom (paradox-automatically-star nil)
           (paradox-execute-asynchronously t)
           (paradox-github-token t)
@@ -34,14 +34,12 @@
 ;; general interface
 ;; leader key ala vim.
 (use-package evil-leader
-  :ensure t
   :custom (evil-leader/leader "_")
   :diminish (evil-leader-mode)
   :init (global-evil-leader-mode)
         (evil-leader/set-key "w" 'whitespace-mode))
 
 (use-package evil
-  :ensure t
   :after (evil-leader)
   :init (evil-mode 1)
   :custom (evil-ex-search-highlight-all t)
@@ -97,34 +95,28 @@
 ))
 
 (use-package evil-quickscope
-  :ensure t
   :after evil
   :diminish (evil-quickscope-mode)
   :config (global-evil-quickscope-mode 1))
 
 (use-package evil-lion
-  :ensure t
   :after (evil)
   :diminish (evil-lion-mode)
   :config (evil-lion-mode))
 
 (use-package evil-surround
-  :ensure t
   :after (evil)
   :diminish (evil-surround-mode)
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
-  :ensure t
   :bind ("C-," . embrace-commander))
 
 (use-package evil-embrace
-  :ensure t
   :after  (evil-surround embrace)
   :config (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-goggles
-  :ensure t
   :hook (after-init . evil-goggles-mode)
   :diminish (evil-goggles-mode)
   :custom
@@ -132,15 +124,12 @@
   (evil-goggles-async-duration nil)
   (evil-goggles-blocking-duration nil))
 
-(use-package evil-string-inflection
-  :ensure t)
+(use-package evil-string-inflection)
 
 (use-package evil-matchit
-  :ensure t
   :init (global-evil-matchit-mode 1))
 
 (use-package evil-nerd-commenter
-  :ensure t
   :commands (evilnc-comment-or-uncomment-lines
              evilnc-quick-comment-or-uncomment-to-the-line
              evilnc-copy-and-comment-lines
@@ -160,39 +149,32 @@
     "."  'evilnc-comment-operator))
 
 (use-package nocomments-mode
-  :ensure t
   :commands (nocomments-mode)
   :init (evil-leader/set-key
           "C" 'nocomments-mode))
 
 (use-package evil-visualstar
-  :ensure t
   :custom (evil-visualstar/persistent t)
   :init (global-evil-visualstar-mode t))
 
 (use-package which-key
-  :ensure t
   :custom (which-key-sort-order 'which-key-key-order-alpha)
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
   :init (global-unset-key (kbd "C-h C-h")))
 
 (use-package goto-chg
-  :ensure t
   :bind (("M-s M-e" . goto-last-change)
          ("M-s M-r" . goto-last-change-reverse)))
 
 (use-package hydra
-  :ensure t
   :commands (defhydra))
 
 (use-package counsel
-  :ensure t
   :custom (counsel-find-file-at-point t)
           (counsel-find-file-ignore-regexp "\\.bak$\\|\\.elc$\\|~$"))
 
 (use-package ivy
-  :ensure t
   :after (persp-mode)
   :diminish (ivy-mode)
   :custom (ivy-mode t)
@@ -237,29 +219,23 @@ when switching buffer with ivy-switch-buffer."
 ))
 
 (use-package ivy-historian
-  :ensure t
   :diminish (ivy-historian-mode historian-mode)
   :init (ivy-historian-mode))
 
 (use-package ivy-hydra
-  :ensure t
   :after (ivy hydra))
 
 (use-package avy
-  :ensure t
   :config (avy-setup-default))
 
-(use-package ivy-avy
-  :ensure t)
+(use-package ivy-avy)
 
 (use-package ivy-explorer
-  :ensure t
   :diminish (ivy-explorer-mode)
   :after (ivy evil)
   :init (ivy-explorer-mode 1))
 
 (use-package counsel-etags
-  :ensure t
   :after (ivy)
   :bind (:map evil-normal-state-map
               ("C-]" . #'counsel-etags-find-tag-at-point)))
@@ -267,7 +243,6 @@ when switching buffer with ivy-switch-buffer."
 ;; useless beacause the minor is not activated
 ;; But I setup some bindings with evil-leader
 (use-package evil-avy
-  :ensure t
   :after (avy evil-leader)
   :commands (avy-goto-char
              avy-goto-char
@@ -291,7 +266,6 @@ when switching buffer with ivy-switch-buffer."
     (evil-leader/set-key "aa" 'evil-avy-mode)))
 
 (use-package ace-jump-mode
-  :ensure t
   :after (evil-leader)
   :commands (ace-jump-mode
              ace-jump-char-mode
@@ -303,30 +277,26 @@ when switching buffer with ivy-switch-buffer."
     (evil-leader/set-key "jl" 'ace-jump-line-mode)
   ))
 
-(use-package ace-mc
-  :ensure t
-  :after (evil-leader)
-  :commands (ace-mc-add-multiple-cursors ace-mc-add-single-cursor)
-  :init
-  (progn
-    (evil-leader/set-key "mM" 'ace-mc-add-single-cursor)
-    (evil-leader/set-key "mm" 'ace-mc-add-multiple-cursors)
-    ))
+;; (use-package ace-mc
+;;   :after (evil-leader)
+;;   :commands (ace-mc-add-multiple-cursors ace-mc-add-single-cursor)
+;;   :init
+;;   (progn
+;;     (evil-leader/set-key "mM" 'ace-mc-add-single-cursor)
+;;     (evil-leader/set-key "mm" 'ace-mc-add-multiple-cursors)
+;;     ))
 
 (use-package ace-window
-  :ensure t
   :commands (ace-window)
   :init (evil-leader/set-key "o" 'ace-window)
   )
 
 (use-package ace-link
-  :ensure t
   :commands (ace-link)
   :init (ace-link-setup-default)
   )
 
 (use-package session
-  :ensure t
   :hook (after-init . session-initialize))
 
 ;; Note: The loading occurs after the init file is loaded.
@@ -335,7 +305,6 @@ when switching buffer with ivy-switch-buffer."
 ;; Then, when persp-mode restore the default perspective
 ;; the file-name-handler-alist has its default value.
 (use-package persp-mode
-  :ensure t
   :hook (after-init . (lambda() (persp-mode 1)))
   :custom (persp-autokill-buffer-on-remove 'kill-weak)
           (persp-nil-name "none")
@@ -355,7 +324,6 @@ when switching buffer with ivy-switch-buffer."
 ;; Hence, I can redefine the modeline used with
 ;; paradox.
 (use-package doom-modeline
-  :ensure t
   :custom (doom-modeline-minor-modes t)
           (doom-modeline-persp-name t)
   :config
@@ -407,7 +375,6 @@ when switching buffer with ivy-switch-buffer."
   (doom-modeline-mode))
 
 (use-package evil-anzu
-  :ensure t
   :after (evil)
   :diminish (anzu-mode)
   :config
@@ -415,34 +382,27 @@ when switching buffer with ivy-switch-buffer."
   (global-anzu-mode +1))
 
 (use-package all-the-icons-dired
-  :ensure t
   :diminish (all-the-icons-dired-mode)
   :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package all-the-icons-ibuffer
-  :ensure t
   :init (all-the-icons-ibuffer-mode 1))
 
 (use-package emojify
-  :ensure t
   :diminish (emojify))
   ;:hook (after-init . global-emojify-mode))
 
 (use-package ivy-rich
-  :ensure t
   :init (ivy-rich-mode 1)
   :config (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 (use-package all-the-icons-ivy-rich
-  :ensure t
   :init (all-the-icons-ivy-rich-mode 1))
 
 (use-package flyspell-correct-ivy
-  :defer t
-  :ensure t)
+  :defer t)
 
 (use-package company
-  :ensure t
   :diminish (company-mode)
   :hook (after-init . global-company-mode)
   :init
@@ -454,54 +414,56 @@ when switching buffer with ivy-switch-buffer."
     (company-statistics-mode))
 
 (use-package company-fuzzy
-  :ensure t
   :after (company flx)
   :diminish (company-fuzzy-mode)
   :custom (company-fuzzy-sorting-backend 'alphabetic)
   :config (global-company-fuzzy-mode 1))
 
 (use-package iedit
-  :ensure t
   :bind ("C-;" . iedit-mode)
   :init (evil-leader/set-key ";" 'iedit-mode))
 
 ;; multiple-cursors
 ;; see also https://github.com/fgallina/region-bindings-mode
 ;; to activate bindings when a region is selected
-(use-package multiple-cursors
-  :ensure t
-  :commands (mc/mark-next-like-this-word
-             mc/mark-previous-like-this-word
-             mc/mark-next-like-this
-             mc/mark-previous-like-this
-             mc/mark-all-like-this
-             mc/mark-all-in-region
-             mc/mark-more-like-this-extended
-             mc/mark-all-words-like-this
-             mc/mark-all-symbols-like-this
-             mc/mark-all-like-this-dwim)
-  :init
-  (progn
-    (evil-leader/set-key
-      "mw" 'mc/mark-next-like-this-word
-      "mb" 'mc/mark-previous-like-this-word
-      "mt" 'mc/mark-next-like-this
-      "mT" 'mc/mark-previous-like-this
-      "ma" 'mc/mark-all-like-this
-      "mr" 'mc/mark-all-in-region
-      "me" 'mc/mark-more-like-this-extended
-      "mW" 'mc/mark-all-words-like-this
-      "mS" 'mc/mark-all-symbols-like-this
-      "mD" 'mc/mark-all-like-this-dwim)))
+
+;; (use-package multiple-cursors
+;;   :commands (mc/mark-next-like-this-word
+;;              mc/mark-previous-like-this-word
+;;              mc/mark-next-like-this
+;;              mc/mark-previous-like-this
+;;              mc/mark-all-like-this
+;;              mc/mark-all-in-region
+;;              mc/mark-more-like-this-extended
+;;              mc/mark-all-words-like-this
+;;              mc/mark-all-symbols-like-this
+;;              mc/mark-all-like-this-dwim)
+;;   :init
+;;   (progn
+;;     (evil-leader/set-key
+;;       "mw" 'mc/mark-next-like-this-word
+;;       "mb" 'mc/mark-previous-like-this-word
+;;       "mt" 'mc/mark-next-like-this
+;;       "mT" 'mc/mark-previous-like-this
+;;       "ma" 'mc/mark-all-like-this
+;;       "mr" 'mc/mark-all-in-region
+;;       "me" 'mc/mark-more-like-this-extended
+;;       "mW" 'mc/mark-all-words-like-this
+;;       "mS" 'mc/mark-all-symbols-like-this
+;;       "mD" 'mc/mark-all-like-this-dwim)))
+
+;; use `gr` prefix in normal mode to access mc functionalities
+(use-package evil-mc
+  :diminish (evil-mc-mode)
+  :init (global-evil-mc-mode 1))
+
 
 (use-package undo-tree
-  :ensure t
   :diminish (undo-tree-mode)
   :commands (undo-tree-visualize)
   :init (evil-leader/set-key "u" 'undo-tree-visualize))
 
 (use-package openwith
-  :ensure t
   :custom (openwith-confirm-invocation t)
           (openwith-associations
             '(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
@@ -512,7 +474,6 @@ when switching buffer with ivy-switch-buffer."
 
 ;; projects
 (use-package projectile
-  :ensure t
   :diminish (projectile-mode)
   :custom (projectile-completion-system 'ivy)
           (projectile-verbose nil)
@@ -522,11 +483,9 @@ when switching buffer with ivy-switch-buffer."
 ;; TODO: configure persp-mode-projectile-bridge
 
 (use-package magit
-  :ensure t
   :commands (magit))
 
 (use-package treemacs
-  :ensure t
   :bind ("C-x t t" . treemacs)
   :custom (treemacs-width 40)
           (treemacs-indentation 1)
@@ -537,12 +496,10 @@ when switching buffer with ivy-switch-buffer."
   (require 'treemacs-magit))
 
 (use-package ripgrep
-  :ensure t
   :commands (ripgrep-regexp)
   :init (evil-leader/set-key "gr" 'ripgrep-regexp))
 
 (use-package ag
-  :ensure t
   :commands (ag
              ag-files
              ag-regexp
@@ -558,7 +515,6 @@ when switching buffer with ivy-switch-buffer."
         (evil-leader/set-key "gaR" 'ag-project-regexp))
 
 (use-package pt
-  :ensure t
   :commands (pt-regexp
              pt-regex-file-pattern
              projectile-pt)
@@ -567,7 +523,6 @@ when switching buffer with ivy-switch-buffer."
         (evil-leader/set-key "gpP" 'projectile-pt))
 
 (use-package helpful
-  :ensure t
   :hook (helpful-mode . evil-emacs-state)
   :bind ("C-h k" . helpful-key)
   :commands (helpful-at-point
@@ -584,11 +539,9 @@ when switching buffer with ivy-switch-buffer."
   (evil-leader/set-key "hc" 'helpful-command))
 
 (use-package parent-mode
-  :ensure t
   :commands (parent-mode-list parent-mode-is-derived-p))
 
 (use-package fill-column-indicator
-  :ensure t
   :bind ("C-x t C-f" . fci-mode)
   :commands (fci-mode))
 

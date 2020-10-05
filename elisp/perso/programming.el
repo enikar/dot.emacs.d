@@ -8,11 +8,9 @@
   (require 'use-package))
 
 (use-package yasnippet
-  :ensure t
   :commands (yas-minor-mode))
 
 (use-package smartparens
-  :ensure t
   :diminish (smartparens-mode)
   :hook ((prog-mode) . smartparens-mode)
   :commands (sp-split-sexp sp-newline sp-up-sexp)
@@ -22,11 +20,9 @@
     (sp-local-pair '(lisp-mode emacs-lisp-mode)  "`" nil :actions nil)))
 
 (use-package rainbow-delimiters
-  :ensure t
   :hook ((prog-mode) . rainbow-delimiters-mode))
 
 (use-package highlight-parentheses
-  :ensure t
   :diminish (highlight-parentheses-mode)
   :hook ((prog-mode) . highlight-parentheses-mode)
   :custom
@@ -38,13 +34,11 @@
                        "IndianRed4")))
 
 (use-package highlight-indent-guides
-  :ensure t
   :diminish (highlight-indent-guides-mode)
   :commands (highlight-indent-guides-mode)
   :init (evil-leader/set-key "i" 'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
-  :ensure t
   :hook ((prog-mode) . highlight-numbers-mode))
 
 ;;;; syntax checking
@@ -59,7 +53,6 @@ If the error list is visible, hide it.  Otherwise, show it."
     (flycheck-list-errors)))
 
 (use-package flycheck
-  :ensure t
   :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
@@ -76,7 +69,6 @@ If the error list is visible, hide it.  Otherwise, show it."
   :commands (flycheck flycheck-mode))
 
 (use-package avy-flycheck
-  :ensure t
   :after (flycheck)
   :commands (avy-flycheck-goto-error)
   :init (evil-leader/set-key "af" 'avy-flycheck-goto-error))
@@ -85,12 +77,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; language C
 (use-package xcscope
-  :defer t
-  :ensure t)
+  :defer t)
 
 ;;;; haskell
 (use-package haskell-mode
-  :ensure t
   :mode "\\.l?hs\\'"
   :hook ((haskell-mode . flycheck-mode)
          (haskell-mode . haskell-indentation-mode)
@@ -133,7 +123,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
 (use-package dante
-  :ensure t
   :diminish (dante-mode)
   :after (haskell-mode)
   :functions (flycheck-add-next-checker)
@@ -157,7 +146,6 @@ If the error list is visible, hide it.  Otherwise, show it."
         #'xref-find-references)))
 
 (use-package attrap
-  :ensure t
   :commands (attrap-attrap)
   :hook (dante-mode . (lambda()
                         (evil-define-key
@@ -167,28 +155,23 @@ If the error list is visible, hide it.  Otherwise, show it."
                           #'attrap-attrap))))
 
 (use-package retrie
-  :ensure t
   :commands (retrie)
   :after (haskell-mode))
 
 ;;;; yaml (for stack)
 (use-package yaml-mode
-  :ensure t
   :mode "\\.ya?ml\\'")
 
 (use-package flycheck-yamllint
-  :ensure t
   :defer t
   :after (yaml-mode))
 
 (use-package hasky-extensions
-  :ensure t
   :commands (hasky-extensions)
   :after (haskell-mode)
   )
 
 (use-package hasky-stack
-  :ensure t
   :defer t
   :after (haskell-mode))
 
@@ -202,7 +185,6 @@ If the error list is visible, hide it.  Otherwise, show it."
                     evil-shift-width 2)))
 
 (use-package inf-ruby
-  :ensure t
   :custom (inf-ruby-default-implementation "pry")
           (inf-ruby-implementations
            '(("ruby" . "irb --prompt default --noreadline -r irb/completion")
@@ -216,39 +198,32 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package robe
   :defer t
-  :ensure t
   :diminish (robe-mode)
   :hook (ruby-mode . robe-mode))
 
 (use-package ruby-end
   :defer t
-  :ensure t
   :diminish (ruby-end-mode)
   :hook (ruby-mode . ruby-end-mode))
 
 (use-package rubocop
-  :ensure t
   :diminish (rubocop-mode)
   :hook (ruby-mode . rubocop-mode))
 
 (use-package yard-mode
-  :ensure t
   :diminish (yard-mode)
   :hook (ruby-mode . yard-mode))
 
 (use-package evil-ruby-text-objects
-  :ensure t
   :after (evil)
   :hook (ruby-mode . evil-ruby-text-objects-mode))
 
 ;;;; ocaml
 (use-package tuareg
-  :ensure t
   :mode ("\\.ml\\'" . tuareg-mode)
   :config (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
 
 (use-package merlin
-  :ensure t
   :after (tuareg)
   :hook ((tuareg-mode caml-mode) . merlin-mode)
   :config
@@ -257,7 +232,6 @@ If the error list is visible, hide it.  Otherwise, show it."
     (setq merlin-command 'opam)))
 
 (use-package flycheck-ocaml
-  :ensure t
   :hook (tuareg-mode . flycheck-mode)
   :init
   (progn
@@ -265,21 +239,17 @@ If the error list is visible, hide it.  Otherwise, show it."
     (flycheck-ocaml-setup)))
 
 (use-package dune
-  :ensure t
   :commands (dune-mode))
 
 (use-package ocp-indent
-  :ensure t
   :hook ((tuareg-mode . ocp-setup-indent)
          (caml-mode . ocp-indent-caml-mode-setup)))
 
 (use-package utop
-  :ensure t
   :commands (utop))
 
 ;;;; common lisp
 (use-package slime
-  :ensure t
   :hook (lisp-mode . slime-mode)
   :diminish (slime-autodoc-mode)
   :config
@@ -302,7 +272,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;; scheme
 (use-package geiser
-  :ensure t
   :defer t
   :custom (geiser-default-implementation 'guile)
           (geiser-guile-manual-lookup-nodes '("Guile Reference" "guile-2.0" "Guile"))
@@ -341,18 +310,15 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;                     evil-shift-width 2)))
 
 (use-package elpy
-  :ensure t
   :defer t
   :custom
   (elpy-modules '(elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-yasnippet elpy-module-sane-defaults))
   :init (advice-add 'python-mode :before 'elpy-enable))
 
 (use-package company-jedi
-  :ensure t
   :hook (python-mode . (lambda() (add-to-list 'company-backends 'company-jedi))))
 
 (use-package importmagic
-  :ensure t
   :after (python-mode))
 
 ;; (use-package python-docstring
@@ -365,7 +331,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;   :after (python-mode))
 
 (use-package python-environment
-  :ensure t
   :after (python-mode))
 
 ;; perl6
@@ -373,7 +338,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; so I git clone the repo, configure the loading
 ;; when raku-mode is activated
 (use-package raku-mode
-  :ensure t
   :load-path "~/.emacs.d/elisp/flycheck-raku"
   :hook (raku-mode . (lambda ()
                        (require 'flycheck-raku)
@@ -383,29 +347,24 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; rust
 ;; rustic provide all functionnalities
 (use-package rustic
-  :ensure t
   :mode ("\\.rs\\'" . rustic-mode))
 
 ;; cmake
 (use-package cmake-mode
-  :ensure t
   :mode "CMakeLists\\.txt\\'"
         "\\.cmake\\'")
 
 (use-package markdown-mode
-  :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode)))
 
 (use-package json-mode
-  :ensure t
   :mode "\\.json\\'")
 
 ;; LaTeX
 (use-package latex-extra
-  :ensure t
   :hook (LaTeX-mode .  latex-extra-mode))
 
 (use-package latex-math-preview
@@ -471,6 +430,13 @@ If the error list is visible, hide it.  Otherwise, show it."
 (add-to-list 'load-path "~/.emacs.d/elisp/latex-help")
 (autoload 'latex-help "latex-help" "Latex help in info" t)
 (define-key help-map "\C-l" 'latex-help)
+
+(add-to-list 'load-path "~/.emacs.d/elisp/pariemacs")
+(autoload 'gp-mode "pari" nil t)                                              
+(autoload 'gp-script-mode "pari" nil t)                                       
+(autoload 'gp "pari" nil t)                                                   
+(autoload 'gpman "pari" nil t)                                                
+(add-to-list 'auto-mode-alist '("\\.gp\\'" . gp-script-mode))
 
 (provide 'programming)
 ;;; programming.el ends here
