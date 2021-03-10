@@ -4,8 +4,8 @@
 ;; auto-mode-alist, autoloads and hooks are used.
 ;;; Code:
 
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
 (use-package yasnippet
   :commands (yas-minor-mode))
@@ -86,10 +86,11 @@ If the error list is visible, hide it.  Otherwise, show it."
          (haskell-mode . haskell-indentation-mode)
          (haskell-mode . imenu-add-menubar-index)
          (haskell-mode . yas-minor-mode))
-  :load-path "~/.emacs.d/elisp/hasky-cabal"
+  ;; :load-path "~/.emacs.d/elisp/hasky-cabal"
   :config
   (progn
-    (require 'hasky-cabal)
+    ;;(require 'hasky-cabal)
+    (add-hook 'ghci-script-mode-hook (function (lambda() (auto-fill-mode 0))))
     (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t
@@ -154,9 +155,9 @@ If the error list is visible, hide it.  Otherwise, show it."
                           (kbd "M-!")
                           #'attrap-attrap))))
 
-(use-package retrie
-  :commands (retrie)
-  :after (haskell-mode))
+;; (use-package retrie
+;;   :commands (retrie)
+;;   :after (haskell-mode))
 
 ;;;; yaml (for stack)
 (use-package yaml-mode
@@ -209,6 +210,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package rubocop
   :diminish (rubocop-mode)
   :hook (ruby-mode . rubocop-mode))
+
+(use-package realgud-pry
+  :commands (realgud:pry))
+
+(use-package realgud-byebug
+  :commands (realgud:byebug))
 
 (use-package yard-mode
   :diminish (yard-mode)
@@ -348,6 +355,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; rustic provide all functionnalities
 (use-package rustic
   :mode ("\\.rs\\'" . rustic-mode))
+
+;; lua
+(use-package lua-mode
+  :mode ("\\.lua\\'". lua-mode))
 
 ;; cmake
 (use-package cmake-mode
