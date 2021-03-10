@@ -56,6 +56,8 @@
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
 
+(global-so-long-mode)
+
 ;; finally start emacs server
 (server-start)
 
