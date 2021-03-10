@@ -20,6 +20,7 @@
 
 (let ((file-name-handler-alist nil))
   (load custom-file)
+  (load "shadow-settings")
   (load "general-interface")
   (load "programming")
   (load "epilogue")

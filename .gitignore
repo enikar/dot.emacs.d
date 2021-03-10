@@ -24,4 +24,4 @@ request/
 var/
 .historian
 .gitignore
-shadow.el
+elisp/perso/shadow-settings.el
