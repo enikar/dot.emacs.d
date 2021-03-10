@@ -171,7 +171,7 @@
         (no-break-to-space)
         (widen)))))
 
-;; A trick to toggle between to background color
+;; A trick to toggle between two background color
 (defvar-local my/current-background
   '(default ((t (:background "gray15" :foreground "white smoke")))))
 ;; (defvar-local my/alternative-background
