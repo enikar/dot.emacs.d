@@ -4,8 +4,8 @@
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
 ;;; Code:
 
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
 ;; To add a :ensure for each use-package
 ;; (require 'use-package-ensure)
@@ -21,9 +21,8 @@
   :diminish (auto-compile-on-load-mode)
   :diminish (auto-compile-on-save-mode)
   :init
-  (progn
     (auto-compile-on-load-mode)
-    (auto-compile-on-save-mode)))
+    (auto-compile-on-save-mode))
 
 (use-package paradox
   :custom (paradox-automatically-star nil)
@@ -110,7 +109,8 @@
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
-  :bind ("C-," . embrace-commander))
+  :bind ("C-," . embrace-commander)
+  :init (evil-leader/set-key "e" 'embrace-commander))
 
 (use-package evil-embrace
   :after  (evil-surround embrace)
@@ -193,6 +193,7 @@ when switching buffer with ivy-switch-buffer."
 
     (add-to-list 'ivy-ignore-buffers #'persp-ivy-ignore-buffers)
     (setq enable-recursive-minibuffers t)
+    (minibuffer-depth-indicate-mode)
     ;; (setq search-default-mode #'char-fold-to-regexp)
     (global-set-key (kbd "C-s") 'swiper)
     (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -404,7 +405,7 @@ when switching buffer with ivy-switch-buffer."
 
 (use-package company
   :diminish (company-mode)
-  :hook (after-init . global-company-mode)
+  :hook (prog-mode . company-mode)
   :init
     (setq company-require-match nil)
     (setq company-tooltip-align-annotations t)
@@ -461,7 +462,9 @@ when switching buffer with ivy-switch-buffer."
 (use-package undo-tree
   :diminish (undo-tree-mode)
   :commands (undo-tree-visualize)
-  :init (evil-leader/set-key "u" 'undo-tree-visualize))
+  :custom (evil-undo-system 'undo-tree)
+  :init (evil-leader/set-key "u" 'undo-tree-visualize)
+        (global-undo-tree-mode))
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
@@ -484,6 +487,9 @@ when switching buffer with ivy-switch-buffer."
 
 (use-package magit
   :commands (magit))
+
+(use-package libgit)
+(use-package magit-libgit)
 
 (use-package treemacs
   :bind ("C-x t t" . treemacs)
@@ -540,6 +546,8 @@ when switching buffer with ivy-switch-buffer."
 
 (use-package parent-mode
   :commands (parent-mode-list parent-mode-is-derived-p))
+
+(use-package vterm)
 
 (use-package fill-column-indicator
   :bind ("C-x t C-f" . fci-mode)
