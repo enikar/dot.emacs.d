@@ -3,8 +3,8 @@
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
 ;;; Code: 
 
-(eval-when-compile
-  (require 'use-package))
+;; (eval-when-compile
+;;   (require 'use-package))
 
 (use-package persistent-scratch
   :custom (persistent-scratch-save-file "~/.emacs.d/.cache/persistent-scratch")
