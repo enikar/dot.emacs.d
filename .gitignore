@@ -2,6 +2,7 @@
 *.bak
 elpa/
 eshell/
+elisp.old/
 url/
 backup/
 persp-confs/
