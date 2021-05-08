@@ -86,10 +86,8 @@ If the error list is visible, hide it.  Otherwise, show it."
          (haskell-mode . haskell-indentation-mode)
          (haskell-mode . imenu-add-menubar-index)
          (haskell-mode . yas-minor-mode))
-  ;; :load-path "~/.emacs.d/elisp/hasky-cabal"
   :config
   (progn
-    ;;(require 'hasky-cabal)
     (add-hook 'ghci-script-mode-hook (function (lambda() (auto-fill-mode 0))))
     (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
           haskell-process-log t
@@ -128,13 +126,13 @@ If the error list is visible, hide it.  Otherwise, show it."
   :after (haskell-mode)
   :functions (flycheck-add-next-checker)
   :commands (dante-mode)
+  :custom (dante-load-flags '("+c" "-Wall" "-fdiagnostics-color=never" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
          (dante-mode . (lambda () (flycheck-add-next-checker
                               'haskell-dante
                               '(warning . haskell-hlint)))))
   :config
   (progn
-    (setq  dante-load-flags '("+c" "-Wall" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
     (evil-define-key
         '(normal insert)
         'dante-mode-map
@@ -168,9 +166,9 @@ If the error list is visible, hide it.  Otherwise, show it."
   :after (yaml-mode))
 
 (use-package hasky-extensions
-  :commands (hasky-extensions)
   :after (haskell-mode)
-  )
+  :bind (:map haskell-mode-map
+              ("C-c l" . #'hasky-extensions)))
 
 (use-package hasky-stack
   :defer t
@@ -191,11 +189,16 @@ If the error list is visible, hide it.  Otherwise, show it."
            '(("ruby" . "irb --prompt default --noreadline -r irb/completion")
              ("jruby" . "jruby -S irb --prompt default --noreadline -r irb/completion")
              ("rubinius" . "rbx -r irb/completion")
-             ("yarv" . "irb1.9 -r irb/completion")
              ("pry" . "pry -f")))
 
   :commands (inf-ruby)
   :hook (ruby-mode . inf-ruby-minor-mode))
+
+;; get documentation from the ri command
+(use-package yari
+  :commands (yari)
+  :bind ("C-h y" . yari)
+  :hook (ruby-mode . (lambda () (evil-leader/set-key "y" 'yari))))
 
 (use-package robe
   :defer t
@@ -232,6 +235,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package merlin
   :after (tuareg)
+  :custom-face (merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4"))))
   :hook ((tuareg-mode caml-mode) . merlin-mode)
   :config
   (progn
@@ -278,6 +282,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;   (slime-setup))
 
 ;; scheme
+
+
 (use-package geiser
   :defer t
   :custom (geiser-default-implementation 'guile)
@@ -291,6 +297,15 @@ If the error list is visible, hide it.  Otherwise, show it."
     (setq geiser-active-implementations '(guile))
     (require 'flycheck-guile)
     (flycheck-mode t)))
+
+(use-package geiser-guile)
+
+(use-package racket-mode
+  :mode "\\.rkt\\'"
+  :hook (racket-mode . racktet-xp-mode)
+  :config (require 'racket-xp))
+
+(use-package geiser-racket)
 
 ;;;; python
 ;; Pour l'instant python-mode est supprimé en faveur
@@ -340,16 +355,25 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package python-environment
   :after (python-mode))
 
+;; perl5
+(add-hook 'perl-mode-hook #'flycheck-mode)
+;; (setq flycheck-perlcritic-severity 5)
+
 ;; perl6
 ;; flycheck-raku is not available in melpa
 ;; so I git clone the repo, configure the loading
 ;; when raku-mode is activated
+;; (use-package raku-mode
+;;   :load-path "~/.emacs.d/elisp/flycheck-raku"
+;;   :hook (raku-mode . (lambda ()
+;;                        (require 'flycheck-raku)
+;;                        (flycheck-mode)
+;;                        )))
+
+;; flycheck-raku is now available on melpa
+(use-package flycheck-raku)
 (use-package raku-mode
-  :load-path "~/.emacs.d/elisp/flycheck-raku"
-  :hook (raku-mode . (lambda ()
-                       (require 'flycheck-raku)
-                       (flycheck-mode)
-                       )))
+  :hook (raku-mode . flycheck-mode))
 
 ;; rust
 ;; rustic provide all functionnalities
@@ -373,6 +397,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package json-mode
   :mode "\\.json\\'")
+
+(use-package nim-mode
+  :mode ("\\.nim\\'"))
+
 
 ;; LaTeX
 (use-package latex-extra
@@ -398,6 +426,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;   (require 'company-auctex)
 ;;   (company-auctex-init))
 
+
 (load "auctex.el")
 (add-hook 'LaTeX-mode
           #'(lambda()
@@ -406,48 +435,52 @@ If the error list is visible, hide it.  Otherwise, show it."
                 (company-auctex-init)
               )))
 ;; maxima
-(add-to-list 'load-path "~/.emacs.d/elisp/maxima")
+(push  "~/.emacs.d/elisp/maxima" load-path)
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'maxima "maxima" "Maxima interaction" t)
-(add-to-list 'auto-mode-alist '("\\.mac\\'" . maxima-mode))
+(push  '("\\.mac\\'" . maxima-mode) auto-mode-alist)
 
 ;; recutils
 (add-to-list 'load-path "~/.emacs/elisp/recutils")
 (autoload 'rec-mode "rec-mode" "Recutils mode" t)
-(add-to-list 'auto-mode-alist '("\\.rec\\'" . rec-mode))
+(push '("\\.rec\\'" . rec-mode) auto-mode-alist)
 
 ;; gforth
-(add-to-list 'load-path "~/.emacs.d/elisp/gforth")
+(push "~/.emacs.d/elisp/gforth" load-path)
 (autoload 'forth-mode "gforth" "Forth mode" t)
+(setq auto-mode-alist
+  (append '(("\\.fs$" . forth-mode)
+    ("\\.4th$" . forth-mode)
+    ("\\.fth$" . forth-mode)) auto-mode-alist))
+
 
 ;; .desktop files
-(add-to-list 'load-path "~/.emacs.d/elisp/freedesktop")
+(push "~/.emacs.d/elisp/freedesktop" load-path)
 (autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
-(add-to-list 'auto-mode-alist
-             '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode))
+(push '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode) auto-mode-alist)
 
 ;; asymptote
-(add-to-list 'load-path "~/.emacs.d/elisp/asymptote")
+(push "~/.emacs.d/elisp/asymptote" load-path)
 (autoload 'asy-mode "asy-mode.el" "Asymptote major mode." t)
 (autoload 'lasy-mode "asy-mode.el" "hybrid Asymptote/Latex major mode." t)
 (autoload 'asy-insinuate-latex "asy-mode.el" "Asymptote insinuate LaTeX." t)
-(add-to-list 'auto-mode-alist '("\\.asy$" . asy-mode))
+(push '("\\.asy$" . asy-mode) auto-mode-alist)
 
 ;; id-utils
-(add-to-list 'load-path "~/.emacs.d/elisp/id-utils")
+(push "~/.emacs.d/elisp/id-utils" load-path)
 (autoload 'gid "idutils" "run idutils' gid command" t)
 
 ;; latex help
-(add-to-list 'load-path "~/.emacs.d/elisp/latex-help")
+(push "~/.emacs.d/elisp/latex-help" load-path)
 (autoload 'latex-help "latex-help" "Latex help in info" t)
 (define-key help-map "\C-l" 'latex-help)
 
-(add-to-list 'load-path "~/.emacs.d/elisp/pariemacs")
-(autoload 'gp-mode "pari" nil t)                                              
-(autoload 'gp-script-mode "pari" nil t)                                       
-(autoload 'gp "pari" nil t)                                                   
-(autoload 'gpman "pari" nil t)                                                
-(add-to-list 'auto-mode-alist '("\\.gp\\'" . gp-script-mode))
+(push "~/.emacs.d/elisp/pariemacs" load-path)
+(autoload 'gp-mode "pari" nil t)
+(autoload 'gp-script-mode "pari" nil t)
+(autoload 'gp "pari" nil t)
+(autoload 'gpman "pari" nil t)
+(push '("\\.gp\\'" . gp-script-mode) auto-mode-alist)
 
 (provide 'programming)
 ;;; programming.el ends here
