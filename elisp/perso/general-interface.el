@@ -410,9 +410,8 @@ when switching buffer with ivy-switch-buffer."
     (setq company-require-match nil)
     (setq company-tooltip-align-annotations t)
     (setq company-eclim-auto-save nil)
-    (setq company-dabbrev-downcase nil)
-    (require 'company-statistics)
-    (company-statistics-mode))
+    (setq company-dabbrev-downcase nil))
+
 
 (use-package company-fuzzy
   :after (company flx)
@@ -547,11 +546,16 @@ when switching buffer with ivy-switch-buffer."
 (use-package parent-mode
   :commands (parent-mode-list parent-mode-is-derived-p))
 
-(use-package vterm)
+(use-package vterm
+  :init (setq vterm-always-compile-module t))
 
 (use-package fill-column-indicator
   :bind ("C-x t C-f" . fci-mode)
   :commands (fci-mode))
+
+(use-package hl-todo
+  :diminish (hl-todo-mode)
+  :hook ((prog-mode) . hl-todo-mode))
 
 (provide 'general-interface)
 ;;; general-interface.el ends here
