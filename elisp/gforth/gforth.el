@@ -146,10 +146,10 @@
 ;;; https://bugs.debian.org/587318
 ;;;
 ;;;###autoload
-(setq auto-mode-alist
-  (append '(("\\.fs$" . forth-mode)
-    ("\\.4th$" . forth-mode)
-    ("\\.fth$" . forth-mode)) auto-mode-alist))
+;; (setq auto-mode-alist
+;;   (append '(("\\.fs$" . forth-mode)
+;;     ("\\.4th$" . forth-mode)
+;;     ("\\.fth$" . forth-mode)) auto-mode-alist))
 
 ;;; Motion-hooking (dk)
 ;;;
