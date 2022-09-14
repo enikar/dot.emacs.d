@@ -56,9 +56,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
-          (flycheck-python-mypy-executable "python3")
           (flycheck-python-pycompile-executable "python3")
-          (flycheck-python-pylint-executable "python3")
           (flycheck-shellcheck-follow-sources nil)
   :hook (sh-mode . flycheck-mode)
   :bind (("C-x t F" . flycheck-mode)
@@ -287,16 +285,16 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package geiser
   :defer t
   :custom (geiser-default-implementation 'guile)
-          (geiser-guile-manual-lookup-nodes '("Guile Reference" "guile-2.0" "Guile"))
+          (geiser-guile-manual-lookup-nodes '("Guile Reference" "guile-3.0" "Guile"))
           (geiser-guile-manual-lookup-other-window-p t)
           (geiser-guile-warning-level 'high)
+  :hook (scheme-mode . flycheck-mode)
   :defines (geiser-active-implementations)
   :init (setq scheme-program-name "guile")
   :config
   (progn
     (setq geiser-active-implementations '(guile))
-    (require 'flycheck-guile)
-    (flycheck-mode t)))
+    (require 'flycheck-guile)))
 
 (use-package geiser-guile)
 
@@ -307,53 +305,31 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package geiser-racket)
 
-;;;; python
-;; Pour l'instant python-mode est supprimé en faveur
-;; de elpy.
+;;;; python: removed in flavor of emacs's python.el
 ;; (use-package python-mode
-;;   :disabled
 ;;   :custom (python-shell-interpreter "python3")
 ;;           (pylint-command "pylint3" t)
 ;;           (pylint-alternate-pylint-command "pylint")
-;;           (py-shell-name "ipython")
+;;           (py-shell-name "ipython3")
 ;;           (py-keep-windows-configuration t)
-;;           (py-pdb-path "/usr/lib/python3.8/pdb.py")
+;;           (py-pdb-path "/usr/lib/python3.10/pdb.py")
 ;;           (py-split-window-on-execute t)
 ;;           (py-split-windows-on-execute-function 'split-window-horizontally)
-;;           (python-shell-interpreter "python3")
-;;   :mode "\\.py\\'")
+;;   :mode "\\.py\\'"
+;;   :hook (python-mode . flycheck-mode)
+;;         (python-mode . anaconda-mode)
+;;         (python-mode . (lambda() (require 'importmagic))))
 
-;; Les règles de la communauté python sont moisis.
-;; C'est trop rigide leur système d'indentation à 4
-;; espaces uniquement.
-;; (add-hook 'python-mode-hook
-;;           #'(lambda()
-;;               (setq tab-width 2
-;;                     evil-shift-width 2)))
+;; anaconda + python.el is better than elpy !
+(use-package anaconda-mode)
 
-(use-package elpy
-  :defer t
-  :custom
-  (elpy-modules '(elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-yasnippet elpy-module-sane-defaults))
-  :init (advice-add 'python-mode :before 'elpy-enable))
-
-(use-package company-jedi
-  :hook (python-mode . (lambda() (add-to-list 'company-backends 'company-jedi))))
-
-(use-package importmagic
-  :after (python-mode))
-
-;; (use-package python-docstring
-;;   :ensure t
-;;   :after (python-mode))
-
-;; Il faudra décider entre anaconda et elpy
-;; (use-package anaconda-mode
-;;   :ensure t
-;;   :after (python-mode))
-
-(use-package python-environment
-  :after (python-mode))
+(add-hook 'python-mode-hook #'(lambda()
+                                (flycheck-mode)
+                                (anaconda-mode)
+                                (anaconda-eldoc-mode)))
+;; use ipython as interactive python shell
+(setq python-shell-interpreter "ipython3"
+      python-shell-interpreter-args "-i")
 
 ;; perl5
 (add-hook 'perl-mode-hook #'flycheck-mode)
@@ -434,6 +410,10 @@ If the error list is visible, hide it.  Otherwise, show it."
                 (require 'company-auctex)
                 (company-auctex-init)
               )))
+
+;; edit vcard files (.vcf extension)
+(use-package vcard)
+
 ;; maxima
 (push  "~/.emacs.d/elisp/maxima" load-path)
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
@@ -468,7 +448,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;; id-utils
 (push "~/.emacs.d/elisp/id-utils" load-path)
-(autoload 'gid "idutils" "run idutils' gid command" t)
+(autoload 'gid "id-utils" "run id-utils' gid command" t)
 
 ;; latex help
 (push "~/.emacs.d/elisp/latex-help" load-path)
