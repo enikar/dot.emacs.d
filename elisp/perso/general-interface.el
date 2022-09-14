@@ -11,8 +11,14 @@
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
+
+
 (use-package diminish
   :commands (diminish))
+
+(use-package dimmer
+  :custom (dimmer-fraction 0.15)
+  :config (dimmer-mode))
 
 (use-package bind-key)
 
@@ -28,6 +34,7 @@
   :custom (paradox-automatically-star nil)
           (paradox-execute-asynchronously t)
           (paradox-github-token t)
+          ;; (paradox-lines-per-entry 2)
   :commands (paradox-list-packages))
 
 ;; general interface
@@ -150,8 +157,7 @@
 
 (use-package nocomments-mode
   :commands (nocomments-mode)
-  :init (evil-leader/set-key
-          "C" 'nocomments-mode))
+  :init (evil-leader/set-key "C" 'nocomments-mode))
 
 (use-package evil-visualstar
   :custom (evil-visualstar/persistent t)
@@ -324,6 +330,7 @@ when switching buffer with ivy-switch-buffer."
 ;; Install an advice when setup doom modeline.
 ;; Hence, I can redefine the modeline used with
 ;; paradox.
+
 (use-package doom-modeline
   :custom (doom-modeline-minor-modes t)
           (doom-modeline-persp-name t)
@@ -556,6 +563,63 @@ when switching buffer with ivy-switch-buffer."
 (use-package hl-todo
   :diminish (hl-todo-mode)
   :hook ((prog-mode) . hl-todo-mode))
+
+
+
+(require 'hl-line)
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+
+;;;; better dired mode
+(autoload 'dired-omit-mode "dired-x")
+(add-hook 'dired-load-hook
+          (lambda() (load "dired-x")))
+(add-hook 'dired-mode-hook
+          (lambda () (dired-omit-mode 1)))
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+
+
+;; Peut poser un problème lorsqu'on édite un fichier
+;; qui est destiné à être une liste de fichier pour tar
+;; option -T de tar.
+(setq require-final-newline t)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(setq-default indicate-empty-lines t)
+
+(defalias 'man-mode 'Man-mode)
+(setq comint-scroll-show-maximum-output t
+      comint-scroll-to-bottom-on-input t)
+
+(setq save-interprogram-paste-before-kill t
+      scroll-step 1)
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
+(set-charset-priority 'unicode)
+(prefer-coding-system 'utf-8-unix)
+
+;; diminish some minor modes
+(diminish 'auto-revert-mode "ARev")
+(diminish 'eldoc-mode)
+(diminish 'abbrev-mode)
+
+(global-so-long-mode)
+
+
+(defun my/set-personnal-font ()
+  "Restore my favorite font setting."
+  (interactive)
+  (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
+
+;; perhaps I should setq disabled-command-function to nil
+;; thus there were no longer disabled commands.
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+
+(context-menu-mode 1)
 
 (provide 'general-interface)
 ;;; general-interface.el ends here
