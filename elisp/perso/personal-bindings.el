@@ -129,7 +129,8 @@
 
 (with-eval-after-load 'recentf
   (progn
-    (global-set-key (kbd "C-x t C-r") #'recentf-open-files)
+    ;; (global-set-key (kbd "C-x t C-r") #'recentf-open-files)
+    (global-set-key (kbd "C-x t C-r") #'consult-recent-file)
     (global-set-key (kbd "C-x t C-e") #'recentf-edit-list)))
 
 
@@ -153,7 +154,7 @@
   (evil-leader/set-key "gg" 'rgrep))
 
 (defun no-break-to-space ()
-  "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."  
+  "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."
   (interactive)
   (save-window-excursion
     (save-mark-and-excursion

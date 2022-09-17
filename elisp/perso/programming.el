@@ -8,16 +8,12 @@
 ;;   (require 'use-package))
 
 (use-package yasnippet
-  :commands (yas-minor-mode))
+  :commands (yas-minor-mode)
+  :hook ((prog-mode) . yas-minor-mode)
+  :config (yas-reload-all))
 
-(use-package smartparens
-  :diminish (smartparens-mode)
-  :hook ((prog-mode) . smartparens-mode)
-  :commands (sp-split-sexp sp-newline sp-up-sexp)
-  :config
-  (progn
-    (sp-local-pair '(lisp-mode emacs-lisp-mode)  "'" nil :actions nil)
-    (sp-local-pair '(lisp-mode emacs-lisp-mode)  "`" nil :actions nil)))
+(use-package consult-yasnippet
+  :commands (consult-yasnippet))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -71,6 +67,11 @@ If the error list is visible, hide it.  Otherwise, show it."
   :commands (avy-flycheck-goto-error)
   :init (evil-leader/set-key "af" 'avy-flycheck-goto-error))
 
+(use-package consult-flycheck
+  :after (flycheck consult avy avy-flycheck)
+  :commands (consult-flycheck)
+  :init (evil-leader/set-key "Ff" 'consult-flycheck))
+
 (add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
 
 ;;;; language C
@@ -92,12 +93,6 @@ If the error list is visible, hide it.  Otherwise, show it."
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)))
-
-;; (use-package company-ghci
-;;   :ensure t
-;;   :after (company haskell-mode)
-;;   :init (add-to-list 'company-backends 'company-ghci)
-;;   :hook (haskell-mode . company-mode))
 
 ;; (use-package lsp-mode
 ;;   :ensure t
@@ -237,7 +232,6 @@ If the error list is visible, hide it.  Otherwise, show it."
   :hook ((tuareg-mode caml-mode) . merlin-mode)
   :config
   (progn
-    (add-to-list 'company-backends 'merlin-company-backend)
     (setq merlin-command 'opam)))
 
 (use-package flycheck-ocaml
@@ -262,22 +256,14 @@ If the error list is visible, hide it.  Otherwise, show it."
   :hook (lisp-mode . slime-mode)
   :diminish (slime-autodoc-mode)
   :config
-  (require 'slime-company)
   (setq slime-lisp-implementations
         '((sbcl ("sbcl" "--core" "/enikar/lang/lisp/sbcl/sbcl.core-for-slime" "--dynamic-space-size" "2000")
                 :coding-system utf-8-unix)
           (clisp ("clisp" "-I"))
           (ecl ("ecl")))
-        slime-contribs '(slime-fancy slime-company)
-        slime-company-completion 'fuzzy)
-  (slime-setup))
+        slime-contribs '(slime-fancy))
 
-;; (use-package slime-company
-;;   :ensure t
-;;   :after (slime)
-;;   :config
-;;   (add-to-list 'slime-contribs 'slime-company)
-;;   (slime-setup))
+  (slime-setup))
 
 ;; scheme
 
@@ -391,25 +377,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package latexdiff
   :defer t)
 
-(use-package company-auctex
-  :defer t)
-
-;; (use-package auctex
-;;   :ensure t
-;;   :mode ("\\.tex\\'" . tex-site)
-;;   :config
-;;   (TeX-load-hack)
-;;   (require 'company-auctex)
-;;   (company-auctex-init))
-
 
 (load "auctex.el")
-(add-hook 'LaTeX-mode
-          #'(lambda()
-              (progn
-                (require 'company-auctex)
-                (company-auctex-init)
-              )))
 
 ;; edit vcard files (.vcf extension)
 (use-package vcard)

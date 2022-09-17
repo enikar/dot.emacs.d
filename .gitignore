@@ -1,6 +1,8 @@
 *~
 *.bak
 elpa/
+eln-cache/
+anaconda-mode/
 eshell/
 elisp.old/
 url/
@@ -11,7 +13,6 @@ auto-save-alist/
 transient/
 .cache/
 bookmarks
-projectile-bookmarks.eld
 .mc-lists.el
 .session
 recentf
@@ -19,10 +20,8 @@ recentf
 places
 emojis/
 opam-user-setup.el
-company-statistics-cache.el
 elisp/.gitignore
 request/
 var/
-.historian
 .gitignore
 elisp/perso/shadow-settings.el

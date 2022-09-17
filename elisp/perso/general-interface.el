@@ -11,8 +11,6 @@
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
-
-
 (use-package diminish
   :commands (diminish))
 
@@ -96,7 +94,7 @@
     (evil-leader/set-key "-" 'evil-numbers/dec-at-pt)
     (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
     (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'ivy-switch-buffer-other-window)
+    ;;(evil-define-key 'normal (current-global-map) (kbd "C-w b") #'ivy-switch-buffer-other-window)
     (evil-define-key 'normal (current-global-map) (kbd "C-w C-l") #'evil-window-right)
 ))
 
@@ -157,7 +155,7 @@
 
 (use-package nocomments-mode
   :commands (nocomments-mode)
-  :init (evil-leader/set-key "C" 'nocomments-mode))
+  :init (evil-leader/set-key "cn" 'nocomments-mode))
 
 (use-package evil-visualstar
   :custom (evil-visualstar/persistent t)
@@ -176,76 +174,96 @@
 (use-package hydra
   :commands (defhydra))
 
-(use-package counsel
-  :custom (counsel-find-file-at-point t)
-          (counsel-find-file-ignore-regexp "\\.bak$\\|\\.elc$\\|~$"))
-
-(use-package ivy
-  :after (persp-mode)
-  :diminish (ivy-mode)
-  :custom (ivy-mode t)
-          (ivy-use-virtual-buffers t)
-          (ivy-count-format "(%d/%d) ")
-          (ivy-virtual-abbreviate 'abbreviate)
+(use-package vertico
   :config
-  (progn
-    (defun persp-ivy-ignore-buffers (b)
-      "Ignore buffers which are not in the current perspective
-when switching buffer with ivy-switch-buffer."
-      (when persp-mode
-        (let ((persp (get-current-persp)))
-          (if persp
-              (not (persp-contain-buffer-p b persp))))))
+  (vertico-mode)
+  ;; (vertico-mouse-mode)
+  :custom
+  (vertico-count 22)
+  :bind (:map vertico-map
+              ("C-'"       . #'vertico-quick-exit)
+              ;; Have to rebind this because C-m is translated to RET.
+              ("<return>"  . #'exit-minibuffer)
+              ("C-m"       . #'vertico-insert)
+              ("C-c SPC"   . #'vertico-quick-exit)
+              ("DEL"       . #'vertico-directory-delete-char)))
 
-    (add-to-list 'ivy-ignore-buffers #'persp-ivy-ignore-buffers)
-    (setq enable-recursive-minibuffers t)
-    (minibuffer-depth-indicate-mode)
-    ;; (setq search-default-mode #'char-fold-to-regexp)
-    (global-set-key (kbd "C-s") 'swiper)
-    (global-set-key (kbd "M-x") 'counsel-M-x)
-    (global-set-key (kbd "C-x C-f") 'counsel-explorer)
-    (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
-    ;;(global-set-key (kbd "C-x C-b") 'counsel-ibuffer)
-    (global-set-key (kbd "C-x C-r") 'ivy-resume)
-    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    (global-set-key (kbd "C-h f") 'counsel-describe-function)
-    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    (global-set-key (kbd "C-h v") 'counsel-describe-variable)
-    (global-set-key (kbd "<f1> l") 'counsel-find-library)
-    (global-set-key (kbd "<f1> S") 'counsel-info-lookup-symbol)
-    (global-set-key (kbd "<f1> u") 'counsel-unicode-char)
-    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-    (setq ivy-sort-functions-alist
-          (append ivy-sort-functions-alist
-                  '((persp-kill-buffer   . nil)
-                    (persp-remove-buffer . nil)
-                    (persp-add-buffer    . nil)
-                    (persp-switch        . nil)
-                    (persp-window-switch . nil)
-                    (persp-frame-switch  . nil))))
-))
+(use-package consult
+  ;;:config
+  ;; (defun pt/yank-pop ()
+  ;;   "As pt/yank, but calling consult-yank-pop."
+  ;;   (interactive)
+  ;;   (let ((point-before (point)))
+  ;;     (consult-yank-pop)
+  ;;     (indent-region point-before (point))))
 
-(use-package ivy-historian
-  :diminish (ivy-historian-mode historian-mode)
-  :init (ivy-historian-mode))
+  :bind (("C-x b"   . #'consult-buffer)
+         ("C-x r l" . #'consult-bookmark)
+         ("C-x C-f" . #'find-file)
+         ("C-h a"   . #'consult-apropos))
 
-(use-package ivy-hydra
-  :after (ivy hydra))
+  :custom (completion-in-region-function #'consult-completion-in-region)
+          (xref-show-xrefs-function #'consult-xref)
+          (xref-show-definitions-function #'consult-xref)
+          (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
+
+  :init (evil-leader/set-key "m" #'consult-imenu))
+
+(use-package marginalia
+  :config (marginalia-mode))
+
+(use-package orderless
+  :init (setq completion-styles '(substring orderless basic)
+              completion-category-defaults nil
+              completion-category-overrides '((files (style partial-completion)))))
+
+
+(use-package ctrlf
+  :custom (ctrlf-default-search-style 'fuzzy))
+  :config (ctrlf-mode)
+
+(use-package prescient
+  :config (prescient-persist-mode))
+
+(use-package corfu
+  ;; Optional customizations
+  ;; :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  ;; (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `corfu-excluded-modes'.
+  :init
+  (global-corfu-mode))
+
+(use-package dabbrev
+  ;; ;; Swap M-/ and C-M-/
+  ;; :bind (("M-/" . dabbrev-completion)
+  ;;        ("C-M-/" . dabbrev-expand))
+  :bind (("M-²" . dabbrev-completion))
+  ;; Other useful Dabbrev configurations.
+  :custom
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+(use-package cape
+  :init (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+        (add-to-list 'completion-at-point-functions #'cape-file))
 
 (use-package avy
   :config (avy-setup-default))
-
-(use-package ivy-avy)
-
-(use-package ivy-explorer
-  :diminish (ivy-explorer-mode)
-  :after (ivy evil)
-  :init (ivy-explorer-mode 1))
-
-(use-package counsel-etags
-  :after (ivy)
-  :bind (:map evil-normal-state-map
-              ("C-]" . #'counsel-etags-find-tag-at-point)))
 
 ;; useless beacause the minor is not activated
 ;; But I setup some bindings with evil-leader
@@ -302,6 +320,11 @@ when switching buffer with ivy-switch-buffer."
   :commands (ace-link)
   :init (ace-link-setup-default)
   )
+
+(use-package consult-flyspell
+  :commands (consult-flyspell-correct-function)
+  :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
+        (evil-leader/set-key "s" 'consult-flyspell-correct-function))
 
 (use-package session
   :hook (after-init . session-initialize))
@@ -400,31 +423,6 @@ when switching buffer with ivy-switch-buffer."
   :diminish (emojify))
   ;:hook (after-init . global-emojify-mode))
 
-(use-package ivy-rich
-  :init (ivy-rich-mode 1)
-  :config (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
-
-(use-package all-the-icons-ivy-rich
-  :init (all-the-icons-ivy-rich-mode 1))
-
-(use-package flyspell-correct-ivy
-  :defer t)
-
-(use-package company
-  :diminish (company-mode)
-  :hook (prog-mode . company-mode)
-  :init
-    (setq company-require-match nil)
-    (setq company-tooltip-align-annotations t)
-    (setq company-eclim-auto-save nil)
-    (setq company-dabbrev-downcase nil))
-
-
-(use-package company-fuzzy
-  :after (company flx)
-  :diminish (company-fuzzy-mode)
-  :custom (company-fuzzy-sorting-backend 'alphabetic)
-  :config (global-company-fuzzy-mode 1))
 
 (use-package iedit
   :bind ("C-;" . iedit-mode)
@@ -481,21 +479,15 @@ when switching buffer with ivy-switch-buffer."
               ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
   :init (openwith-mode t))
 
-;; projects
-(use-package projectile
-  :diminish (projectile-mode)
-  :custom (projectile-completion-system 'ivy)
-          (projectile-verbose nil)
-  :init (projectile-mode 1)
-  :bind-keymap ("C-c P" . projectile-command-map))
-
-;; TODO: configure persp-mode-projectile-bridge
-
 (use-package magit
   :commands (magit))
 
 (use-package libgit)
 (use-package magit-libgit)
+
+(use-package consult-ls-git
+  :commands (consult-ls-git)
+  :init (evil-leader/set-key "G" 'consult-ls-git))
 
 (use-package treemacs
   :bind ("C-x t t" . treemacs)
@@ -504,12 +496,15 @@ when switching buffer with ivy-switch-buffer."
   :config
   (require 'treemacs-evil)
   (require 'treemacs-persp)
-  (require 'treemacs-projectile)
   (require 'treemacs-magit))
 
 (use-package ripgrep
   :commands (ripgrep-regexp)
-  :init (evil-leader/set-key "gr" 'ripgrep-regexp))
+  :init (evil-leader/set-key "gr" 'ripgrep-regexp)
+        (evil-leader/set-key "gc" 'consult-ripgrep))
+(use-package deadgrep
+  :commands (deadgrep)
+  :init (evil-leader/set-key "gd" 'deadgrep))
 
 (use-package ag
   :commands (ag
@@ -526,13 +521,9 @@ when switching buffer with ivy-switch-buffer."
         (evil-leader/set-key "gaF" 'ag-project-files)
         (evil-leader/set-key "gaR" 'ag-project-regexp))
 
-(use-package pt
-  :commands (pt-regexp
-             pt-regex-file-pattern
-             projectile-pt)
-  :init (evil-leader/set-key "gpp" 'pt-regexp)
-        (evil-leader/set-key "gpf" 'pt-regexp-file-pattern)
-        (evil-leader/set-key "gpP" 'projectile-pt))
+(use-package consult-ag
+  :commands (consult-ag)
+  :init (evil-leader/set-key "gac" 'consult-ag))
 
 (use-package helpful
   :hook (helpful-mode . evil-emacs-state)
@@ -542,16 +533,22 @@ when switching buffer with ivy-switch-buffer."
              helpful-variable
              helpful-command)
   :init
-  (setq counsel-describe-function-function #'helpful-callable)
-  (setq counsel-describe-variable-function #'helpful-variable)
-  (evil-leader/set-key "hf" 'counsel-describe-function)
-  (evil-leader/set-key "hv" 'counsel-describe-variable)
   (evil-leader/set-key "hk" 'helpful-key)
+  (evil-leader/set-key "hf" 'helpful-callable)
+  (evil-leader/set-key "hv" 'helpful-variable)
   (evil-leader/set-key "hp" 'helpful-at-point)
   (evil-leader/set-key "hc" 'helpful-command))
 
+(use-package embark
+  :commands (embark-act)
+  :init (evil-leader/set-key "E" 'embark-act))
+
 (use-package parent-mode
   :commands (parent-mode-list parent-mode-is-derived-p))
+
+(use-package paren
+  :config (show-paren-mode)
+  :custom (show-paren-style 'parenthesis))
 
 (use-package vterm
   :init (setq vterm-always-compile-module t))
@@ -595,8 +592,14 @@ when switching buffer with ivy-switch-buffer."
       scroll-step 1)
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
-(set-charset-priority 'unicode)
-(prefer-coding-system 'utf-8-unix)
+
+(setq truncate-string-ellipsis "…"
+      use-short-answers t
+      compilation-scroll-output 'first-error)
+
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode)
+(setq executable-prefix-env t)
 
 ;; diminish some minor modes
 (diminish 'auto-revert-mode "ARev")

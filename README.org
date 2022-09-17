@@ -1,28 +1,30 @@
 * Introduction
-  These are my settings for emacs 27.
+  These are my settings for emacs 28.
 ** Important
   Not all files are mine. The files in directories:
   elisp/asymptote/
-          flycheck-raku/
-          freedesktop/
-          gforth/
-          hasky-cabal/
-          id-utils/
-          latex-help/
-          maxima/
-          pariemacs/
-          recutils/
-  aren't mine. Instead, They belong to others projects. The directories
-  flycheck-raku/ and hasky-cabal/ are github clone. The others come from
-  debian packages. There are distributed with their respective license, see
-  these project for more details.
+       freedesktop/
+       gforth/
+       hasky-cabal/
+       id-utils/
+       latex-help/
+       maxima/
+       pariemacs/
+       recutils/
+  aren't mine. Instead, They belong to others projects. The directori
+  hasky-cabal/ is a github clone. The others come from debian packages. There
+  are distributed with their respective license, see these project for more
+  details.
 
   All other files are mine. I use GPL v3 license.
-** Use emacs 27
+** Use emacs 28
   Some settings are in early-init.el. Emacs before version 27 doesn't
   read this file.
+
 * Some Packages used
+
 ** use-package
+
 ** evil
    - evil-leader (use undercore as leader-key)
    - evil-quickscope
@@ -35,34 +37,108 @@
    - evil-nerd-commenter
    - evil-visualstar
    - evil-anzu
+
 ** all-the-icons
    - all-the-icons-dired
    - all-the-icons-ibuffer
-   - all-the-icons-ivy-rich
-** doom-modeline
-** ivy
-   - ivy-historian
-   - ivy-hydra
-   - ivy-explorer
-   - ivy-rich
 
-** company
-   - company-fuzzy
+** doom-modeline
+
+** Vertico + consult
+   - vertico
+   - consult
+   - marginalia
+   - orderless
+   - prescient
+** Corfu
+   - corfu
+   - cape
+
 ** persp-mode
-** projectile
+
 ** treemacs
+
 ** others
+   - session
+   - dimmer
    - diminish
    - which-key
    - avy
    - iedit
    - helpful
+   - emabark
    - undo-tree
    - ace-window
    - magit
+   - treemacs
    - ripgrep
+   - deadgrep
    - ag
-   - pt
+   - nocomments-mode
+   - goto-chg
    - fill-column-indicator
    - auto-compile
    - paradox
+   - open-with
+   - vterm
+   - hl-todo
+
+** Programmation
+   - flycheck
+   - yasnippet
+
+*** Haskell
+   - haskell-mode
+   - dante
+   - attrap
+   - haskell-snippets
+   - hasky-cabal
+   - hasky-extensions
+   - hasky-stack
+
+*** Ruby
+   - inf-ruby
+   - yari
+   - robe
+   - ruby-end
+   - rubocop
+   - realgud-pry
+   - realgud-byebug
+   - yard-mode
+   - evil-ruby-text-objects
+
+*** Ocaml
+   - tuareg
+   - merlin
+   - flycheck-ocaml
+   - dune
+   - ocp-indent
+   - utop
+
+*** Common lisp
+   - slime
+
+*** Scheme
+   - geiser
+   - geiser-guile
+   - racket-mode
+   - geiser-racket
+
+*** Python
+  - python.el from emacs
+  - anaconda-mode
+  - importmagic
+
+*** Others languages
+  - raku-mode
+  - rustic (rust)
+  - lua-mode
+  - smalltalk-mode
+  - cmake-mode
+  - yaml-mode
+  - markdown-mode
+  - json-mode
+  - latex-extra
+  - nim-mode
+  - cider (clojure)
+  - go-mode
