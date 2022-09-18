@@ -18,6 +18,7 @@ bookmarks
 recentf
 *.elc
 places
+projects
 emojis/
 opam-user-setup.el
 elisp/.gitignore
