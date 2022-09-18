@@ -83,7 +83,8 @@
         (kbd "N")
         #'evil-ex-search-previous-auto-clear-highlights)
 
-    ;;(evil-ex-define-cmd "ls" #'ibuffer)
+    (evil-ex-define-cmd "ls" #'ibuffer)
+    (global-set-key (kbd "C-x C-b") #'ibuffer)
     ;; settings to use evil-numbers C-a and C-x in vim normal mode
     ;; But C-x is use by emacs, and it is convenient to keep it.
     ;; (define-key evil-normal-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
@@ -160,6 +161,10 @@
 (use-package evil-visualstar
   :custom (evil-visualstar/persistent t)
   :init (global-evil-visualstar-mode t))
+
+(use-package evil-org
+  :hook (org-mode. evil-org-mode))
+
 
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
@@ -250,17 +255,31 @@
   :init
   (global-corfu-mode))
 
+(use-package corfu-doc)
+
+(use-package kind-icon
+  :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(defun dabbrev-completion-all-buffers ()
+      "dabbrev-completion in *all* buffers"
+    (interactive)
+    (let ((current-prefix-arg '(16))) ; c-u c-u
+      (call-interactively #'dabbrev-completion)))
+
 (use-package dabbrev
-  ;; ;; Swap M-/ and C-M-/
-  ;; :bind (("M-/" . dabbrev-completion)
-  ;;        ("C-M-/" . dabbrev-expand))
-  :bind (("M-²" . dabbrev-completion))
+  :bind (("M-²" . #'dabbrev-completion-all-buffers)
+          ;; Swap M-/ and C-M-/
+         ("M-/" . #'dabbrev-completion)
+         ("C-M-/" . #'dabbrev-expand)) ;; dabbrev-expand is also provide by C-p in evil-insert-state
   ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
+
 (use-package cape
   :init (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-        (add-to-list 'completion-at-point-functions #'cape-file))
+        (add-to-list 'completion-at-point-functions #'cape-file)
+  :bind (("M-&" . #'cape-dabbrev)))
 
 (use-package avy
   :config (avy-setup-default))
@@ -326,26 +345,108 @@
   :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
         (evil-leader/set-key "s" 'consult-flyspell-correct-function))
 
-(use-package session
-  :hook (after-init . session-initialize))
+;; (use-package session
+;;   :hook (after-init . session-initialize))
 
-;; Note: The loading occurs after the init file is loaded.
-;; So it's safe to set file-name-handler-alist to nil during
-;; the loading of this file. (I set this in the init file).
-;; Then, when persp-mode restore the default perspective
-;; the file-name-handler-alist has its default value.
-(use-package persp-mode
-  :hook (after-init . (lambda() (persp-mode 1)))
-  :custom (persp-autokill-buffer-on-remove 'kill-weak)
-          (persp-nil-name "none")
-  :config
-  (progn
-    (defun persp-ibuffer (arg)
-      (interactive "P")
-      (with-persp-buffer-list () (ibuffer arg)))
+(use-package desktop
+  :init (desktop-save-mode 1)
+        (setq history-length 250)
+        (setq desktop-globals-to-save
+              (append
+               '(file-name-history
+                 consult--buffer-history
+                 consult--apropos-history
+                 ctrlf-search-history
+                 Info-isearch-initial-history
+                 Info-search-history
+                 Man-topic-history
+                 bookmark-history
+                 buffer-name-history
+                 calc-alg-entry-history
+                 command-history
+                 compile-history
+                 cscope-prompt-minibuffer-history
+                 evil-ex-history
+                 evil-ex-search-history
+                 evil-lion--user-regex-history
+                 evil-search-backward-history
+                 evil-search-forward-history
+                 eww-prompt-history
+                 extended-command-history
+                 face-name-history
+                 flycheck-read-checker-history
+                 geiser-doc--history
+                 goto-line-history
+                 grep-files-history
+                 grep-regexp-history
+                 hi-lock-face-history
+                 hi-lock-regexp-history
+                 info-lookup-history
+                 kmacro-ring
+                 magit-git-command-history
+                 magit-revision-history
+                 minibuffer-history
+                 occur-collect-regexp-history
+                 query-replace-history
+                 read-char-history
+                 read-expression-history
+                 realgud:byebug-minibuffer-history
+                 realgud:perldb-minibuffer-history
+                 realgud:pry-minibuffer-history
+                 regexp-history
+                 set-variable-value-history
+                 shell-command-history
+                 slime-connect-host-history
+                 slime-connect-port-history
+                 slime-inferior-lisp-program-history
+                 slime-minibuffer-history
+                 slime-repl-shortcut-history
+                 table-capture-columns-history
+                 table-capture-justify-history
+                 table-capture-min-cell-width-history
+                 table-cell-height-history
+                 table-cell-span-direction-history
+                 table-cell-split-contents-to-history
+                 table-cell-split-orientation-history
+                 table-cell-width-history
+                 table-col-delim-regexp-history
+                 table-columns-history
+                 table-insert-row-column-history
+                 table-justify-history
+                 table-row-delim-regexp-history
+                 table-rows-history
+                 table-sequence-count-history
+                 table-sequence-increment-history
+                 table-sequence-interval-history
+                 table-sequence-justify-history
+                 table-sequence-string-history
+                 table-source-caption-history
+                 table-source-language-history
+                 table-target-history
+                 tmm--history
+                 transient-history
+                 xref--history
+                 xref--read-identifier-history
+                 )
+               desktop-globals-to-save)))
 
-    (evil-ex-define-cmd "ls" #'persp-ibuffer)
-    (global-set-key (kbd "C-x C-b") #'persp-ibuffer)))
+;; ;; Note: The loading occurs after the init file is loaded.
+;; ;; So it's safe to set file-name-handler-alist to nil during
+;; ;; the loading of this file. (I set this in the init file).
+;; ;; Then, when persp-mode restore the default perspective
+;; ;; the file-name-handler-alist has its default value.
+;; (use-package persp-mode
+;;   :hook (after-init . (lambda() (persp-mode 1)))
+;;   :custom (persp-autokill-buffer-on-remove 'kill-weak)
+;;           (persp-nil-name "none")
+;;   :config
+;;   (progn
+;;     (defun persp-ibuffer (arg)
+;;       (interactive "P")
+;;       (with-persp-buffer-list () (ibuffer arg)))
+
+;;     (evil-ex-define-cmd "ls" #'persp-ibuffer)
+;;     (global-set-key (kbd "C-x C-b") #'persp-ibuffer)))
 
 ;; (use-package doom-modeline
 ;;   :ensure t
@@ -495,7 +596,6 @@
           (treemacs-indentation 1)
   :config
   (require 'treemacs-evil)
-  (require 'treemacs-persp)
   (require 'treemacs-magit))
 
 (use-package ripgrep

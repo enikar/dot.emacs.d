@@ -7,14 +7,14 @@ eshell/
 elisp.old/
 url/
 backup/
-persp-confs/
 games/
 auto-save-alist/
 transient/
 .cache/
+.emacs.desktop
+.emacs.desktop.lock
 bookmarks
 .mc-lists.el
-.session
 recentf
 *.elc
 places

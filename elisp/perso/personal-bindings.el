@@ -12,7 +12,7 @@
 ;;         ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
 ;;         (t (self-insert-command (or arg 1)))))
 
-(global-set-key (kbd "C-c d") #'dabbrev-expand)
+(global-set-key (kbd "C-c d") #'yas-expand)
 (global-set-key (kbd "M-RET")  #'hippie-expand)
 (global-set-key (kbd "C-c h") #'hippie-expand)
 ;;(global-set-key (kbd "C-c e") 'flymake-popup-current-error-menu)

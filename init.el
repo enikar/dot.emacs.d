@@ -6,7 +6,7 @@
 (server-start)
 
 (set-charset-priority 'unicode)
-;;(prefer-coding-system 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
 
 (add-to-list 'custom-theme-load-path (file-name-as-directory "~/.emacs.d/themes/") )
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")

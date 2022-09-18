@@ -10,7 +10,8 @@
 (use-package yasnippet
   :commands (yas-minor-mode)
   :hook ((prog-mode) . yas-minor-mode)
-  :config (yas-reload-all))
+  :config (yas-reload-all)
+  :init (evil-leader/set-key "y" 'yas-describe-tables))
 
 (use-package consult-yasnippet
   :commands (consult-yasnippet))
@@ -83,8 +84,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.l?hs\\'"
   :hook ((haskell-mode . flycheck-mode)
          (haskell-mode . haskell-indentation-mode)
-         (haskell-mode . imenu-add-menubar-index)
-         (haskell-mode . yas-minor-mode))
+         (haskell-mode . imenu-add-menubar-index))
   :config
   (progn
     (add-hook 'ghci-script-mode-hook (function (lambda() (auto-fill-mode 0))))
@@ -145,6 +145,7 @@ If the error list is visible, hide it.  Otherwise, show it."
                           'dante-mode-map
                           (kbd "M-!")
                           #'attrap-attrap))))
+
 
 ;; (use-package retrie
 ;;   :commands (retrie)
@@ -397,6 +398,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; gforth
 (push "~/.emacs.d/elisp/gforth" load-path)
 (autoload 'forth-mode "gforth" "Forth mode" t)
+(autoload 'run-forth "gforth" "Run an inferior Forth process, input and output via buffer *forth*." t)
 (setq auto-mode-alist
   (append '(("\\.fs$" . forth-mode)
     ("\\.4th$" . forth-mode)

@@ -1,13 +1,8 @@
 ;;; epilogue.el --- Load feature that needs to loaded at the end. -*- lexical-binding:t -*-
-;;; Commentary: 
+;;; Commentary:
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
-;;; Code: 
+;;; Code:
 
-;; (eval-when-compile
-;;   (require 'use-package))
-
-;; provoque l'erreur :
-;; Eager macro-expansion failure: (wrong-type-argument listp [(first-item . rest-items) (sp-get-list-items)])
 (use-package persistent-scratch
   :init (progn
           (persistent-scratch-autosave-mode t)
@@ -15,6 +10,15 @@
 
   :custom (persistent-scratch-save-file "~/.emacs.d/.cache/persistent-scratch")
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
+
+;; ;;;; Fix some keystroke for org-mode shadowed by evil: doesn't work!
+;; (with-eval-after-load 'org
+;;   (add-hook 'org-mode-hook
+;;             (lambda()
+;;               (evil-define-key '(normal insert visual motion emacs) org-mode-map
+;;                 (kbd "TAB") #'org-cycle)
+;;                 (kbd "RET") #'org-return)
+;;                 (kbd "|")   #'org-force-self-insert))
 
 (use-package eyebrowse
   :custom (eyebrowse-mode-line-style 'always)
