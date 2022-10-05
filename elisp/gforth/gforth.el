@@ -20,7 +20,7 @@
 ;; and this notice must be preserved on all copies.
 
 ;; Author: Goran Rydqvist <gorry@ida.liu.se>
-;; Maintainer: David KÃ¼hling <dvdkhlng@gmx.de>
+;; Maintainer: David Kühling <dvdkhlng@gmx.de>
 ;; Created: 16 July 88 by Goran Rydqvist
 ;; Keywords: forth, gforth
 
@@ -119,10 +119,10 @@
 ; screen-height existiert nicht in XEmacs, frame-height ersetzen?
 ;
 
-; WÃ¶rter ordentlich hilighten, die nicht auf Whitespace beginnen ( ..)IF
-; -- mit aktueller Konzeption nicht mÃ¶glich??
+; Wörter ordentlich hilighten, die nicht auf Whitespace beginnen ( ..)IF
+; -- mit aktueller Konzeption nicht möglich??
 ;
-; Konfiguration Ã¼ber customization groups
+; Konfiguration über customization groups
 ;
 ; Bereich nur auf Wortanfang/ende ausweiten, wenn Anfang bzw Ende in einem
 ; Wort liegen (?) -- speed!
@@ -133,12 +133,12 @@
 ;
 ; Interface zu GForth Prozessen (Patches von Michael Scholz)
 ;
-; Byte-compile-Code rausschmeiÃŸen, Compilieren im Makefile Ã¼ber Emacs
+; Byte-compile-Code rausschmeißen, Compilieren im Makefile über Emacs
 ; batch-Modus
 ;
-; forth-help Kram rausschmeiÃŸen
+; forth-help Kram rausschmeißen
 ;
-; XEmacs KompatibilitÃ¤t? imenu/speedbar -> fume?
+; XEmacs Kompatibilität? imenu/speedbar -> fume?
 ;
 ; Folding neuschreiben (neue Parser-Informationen benutzen)
 
