@@ -13,7 +13,7 @@
  '(cursor-type 'box)
  '(custom-enabled-themes '(tsdh-modified))
  '(custom-safe-themes
-   '("477f3e50d768e2191554f82d611fa1d82ba4b3691ed6e14e3d84a20072b91edc" default))
+   '("bad41d0c4e81991a29e6eae5a7f6c2900a81023ee762d34fae6050ac5c57c76b" default))
  '(dabbrev-case-replace nil)
  '(dired-dwim-target t)
  '(dired-listing-switches "-alhF --group-directories-first")
@@ -36,18 +36,11 @@
  '(load-prefer-newer t)
  '(make-backup-files t)
  '(package-selected-packages
-   '(desktop+ evil-org corfu-doc kind-icon cape corfu deadgrep duplicate-thing embark embark-consult popper consult-flyspell consult-ls-git consult-yasnippet consult consult-ag consult-flycheck ctrlf marginalia orderless prescient vertico vterm dimmer vcard eev smalltalk-mode geiser-guile geiser-racket hl-todo yari flycheck-raku nim-mode racket-mode libgit magit-libgit realgud-byebug realgud-pry erlang systemd lua-mode fzf latex-extra latex-math-preview latex-preview-pane latexdiff nocomments-mode json-mode evil-visualstar ripgrep emojify evil-nerd-commenter evil-string-inflection attrap cmake-mode dune ocp-indent utop flx hasky-extensions hasky-stack evil-lion flycheck-guile ace-link ag all-the-icons all-the-icons-dired all-the-icons-ibuffer anzu auctex auto-compile avy avy-flycheck cider cider-hydra clojure-mode clojure-mode-extra-font-locking clojure-snippets dante diminish doom-modeline evil evil-anzu evil-args evil-avy evil-better-visual-line evil-embrace evil-goggles evil-iedit-state evil-leader evil-magit evil-matchit evil-mc evil-mc-extras evil-multiedit evil-numbers evil-quickscope evil-ruby-text-objects evil-surround evil-tutor eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint geiser gitconfig-mode go-dlv go-eldoc go-gopath go-imenu go-imports go-mode go-snippets haskell-mode haskell-snippets helpful highlight-indent-guides highlight-numbers highlight-parentheses hydra iedit importmagic inf-ruby ix magit markdown-mode merlin merlin-eldoc multiple-cursors openwith paradox persistent-scratch rainbow-delimiters rainbow-identifiers raku-mode retrie robe rspec-mode rtags rubocop ruby-end rustic semi slime transient treemacs treemacs-evil treemacs-magit tuareg undo-tree use-package w3m which-key with-editor xcscope yaml-mode yard-mode yasnippet yasnippet-snippets))
+   '(semi consult-dir affe consult consult-ag consult-ls-git consult-recoll consult-yasnippet embark-consult vertico all-the-icons-completion py-snippets evil-org corfu-doc kind-icon cape corfu deadgrep duplicate-thing embark popper ctrlf marginalia orderless prescient vterm dimmer eev smalltalk-mode geiser-guile geiser-racket hl-todo yari flycheck-raku nim-mode racket-mode libgit magit-libgit realgud-byebug realgud-pry erlang systemd lua-mode fzf latex-extra latex-math-preview latex-preview-pane latexdiff nocomments-mode json-mode evil-visualstar ripgrep emojify evil-nerd-commenter evil-string-inflection attrap cmake-mode dune ocp-indent utop hasky-extensions hasky-stack evil-lion flycheck-guile ace-link ag all-the-icons all-the-icons-dired all-the-icons-ibuffer anzu auctex auto-compile avy avy-flycheck cider cider-hydra clojure-mode clojure-mode-extra-font-locking clojure-snippets dante diminish doom-modeline evil evil-anzu evil-avy evil-embrace evil-goggles evil-iedit-state evil-leader evil-magit evil-matchit evil-mc evil-mc-extras evil-multiedit evil-numbers evil-quickscope evil-ruby-text-objects evil-surround evil-tutor eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint geiser gitconfig-mode go-dlv go-eldoc go-gopath go-imenu go-imports go-mode go-snippets haskell-mode haskell-snippets helpful highlight-indent-guides highlight-numbers highlight-parentheses hydra iedit importmagic inf-ruby ix magit markdown-mode merlin merlin-eldoc multiple-cursors openwith paradox persistent-scratch rainbow-delimiters rainbow-identifiers raku-mode retrie robe rspec-mode rtags rubocop ruby-end rustic slime transient treemacs treemacs-evil treemacs-magit tuareg undo-tree use-package w3m which-key with-editor xcscope yaml-mode yard-mode yasnippet yasnippet-snippets))
  '(prog-mode-hook '(abbrev-mode))
  '(recentf-menu-filter 'recentf-sort-basenames-ascending)
  '(ruby-insert-encoding-magic-comment nil)
  '(save-place-mode t)
- '(session-globals-include
-   '((kill-ring 20 t)
-     (session-file-alist 50 t)
-     (file-name-history 50 t)
-     search-ring regexp-search-ring))
- '(session-globals-max-size 200)
- '(session-use-package t)
  '(show-paren-mode t)
  '(tramp-default-method "ssh")
  '(unibyte-display-via-language-environment t)
@@ -59,5 +52,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4"))))
- '(which-func ((t (:foreground "gold")))))
+ '(default ((t (:background "gray17" :foreground "white smoke"))))
+ '(merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4")))))
