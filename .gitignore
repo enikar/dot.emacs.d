@@ -4,7 +4,10 @@ elpa/
 eln-cache/
 anaconda-mode/
 eshell/
-elisp.old/
+elisp/old/
+elisp/gforth/
+elisp/latex-help/
+elisp/hasky-cabal/
 url/
 backup/
 games/
