@@ -8,10 +8,11 @@
 ;;   (require 'use-package))
 
 (use-package yasnippet
+  :defer 5
   :commands (yas-minor-mode)
   :hook ((prog-mode) . yas-minor-mode)
   :config (yas-reload-all)
-  :init (evil-leader/set-key "y" 'yas-describe-tables))
+  :init (evil-leader/set-key "y" #'yas-describe-tables))
 
 (use-package consult-yasnippet
   :commands (consult-yasnippet))
@@ -33,7 +34,7 @@
 (use-package highlight-indent-guides
   :diminish (highlight-indent-guides-mode)
   :commands (highlight-indent-guides-mode)
-  :init (evil-leader/set-key "i" 'highlight-indent-guides-mode))
+  :init (evil-leader/set-key "i" #'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
@@ -61,17 +62,13 @@ If the error list is visible, hide it.  Otherwise, show it."
          ("<f5>" . flycheck-first-error)
          ("<f6>" . flycheck-next-error)
          ("<f7>" . flycheck-previous-error))
-  :commands (flycheck flycheck-mode))
-
-(use-package avy-flycheck
-  :after (flycheck)
-  :commands (avy-flycheck-goto-error)
-  :init (evil-leader/set-key "af" 'avy-flycheck-goto-error))
+  :commands (flycheck flycheck-mode)
+  :init (evil-leader/set-key "ff" #'flycheck-mode))
 
 (use-package consult-flycheck
-  :after (flycheck consult avy avy-flycheck)
+  :after (flycheck consult)
   :commands (consult-flycheck)
-  :init (evil-leader/set-key "Ff" 'consult-flycheck))
+  :init (evil-leader/set-key "fc" #'consult-flycheck))
 
 (add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
 
@@ -138,14 +135,9 @@ If the error list is visible, hide it.  Otherwise, show it."
         #'xref-find-references)))
 
 (use-package attrap
+  :after (dante)
   :commands (attrap-attrap)
-  :hook (dante-mode . (lambda()
-                        (evil-define-key
-                          '(normal insert)
-                          'dante-mode-map
-                          (kbd "M-!")
-                          #'attrap-attrap))))
-
+  :bind (:map dante-mode-map ("M-!" . attrap-attrap)))
 
 ;; (use-package retrie
 ;;   :commands (retrie)
@@ -162,7 +154,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package hasky-extensions
   :after (haskell-mode)
   :bind (:map haskell-mode-map
-              ("C-c l" . #'hasky-extensions)))
+              ("C-c l" . hasky-extensions)))
 
 (use-package hasky-stack
   :defer t
@@ -171,11 +163,14 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; ruby
 ;; TODO: de nouveau essayer realgud-byebug.
 ;; Il ne faut pas utiliser :realgud:byebug mais M-x realgud:byebug
-(add-hook 'ruby-mode-hook
-          #'(lambda()
-              (flycheck-mode)
-              (setq tab-width 2
-                    evil-shift-width 2)))
+
+(defun set-tw-sw-to-two()
+  "Set tab-width and shift-width to 2"
+  (setq tab-width 2
+        evil-shift-width 2))
+
+(my/add-hooks 'ruby-mode-hook
+              (list #'flycheck-mode #'evil-ruby-text-objects-mode #'set-tw-sw-to-two))
 
 (use-package inf-ruby
   :custom (inf-ruby-default-implementation "pry")
@@ -185,14 +180,13 @@ If the error list is visible, hide it.  Otherwise, show it."
              ("rubinius" . "rbx -r irb/completion")
              ("pry" . "pry -f")))
 
-  :commands (inf-ruby)
-  :hook (ruby-mode . inf-ruby-minor-mode))
+  :commands (inf-ruby))
+  ;;:hook (ruby-mode . inf-ruby-minor-mode))
 
-;; get documentation from the ri command
+;;;; get documentation from the ri command
 (use-package yari
   :commands (yari)
-  :bind ("C-h y" . yari)
-  :hook (ruby-mode . (lambda () (evil-leader/set-key "y" 'yari))))
+  :bind (:map help-map ("y" . yari)))
 
 (use-package robe
   :defer t
@@ -201,12 +195,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package ruby-end
   :defer t
-  :diminish (ruby-end-mode)
-  :hook (ruby-mode . ruby-end-mode))
-
-(use-package rubocop
-  :diminish (rubocop-mode)
-  :hook (ruby-mode . rubocop-mode))
+  :diminish (ruby-end-mode))
 
 (use-package realgud-pry
   :commands (realgud:pry))
@@ -218,9 +207,15 @@ If the error list is visible, hide it.  Otherwise, show it."
   :diminish (yard-mode)
   :hook (ruby-mode . yard-mode))
 
-(use-package evil-ruby-text-objects
-  :after (evil)
-  :hook (ruby-mode . evil-ruby-text-objects-mode))
+;; (use-package evil-ruby-text-objects
+;;   :after (evil))
+;;   ;;:hook (ruby-mode . evil-ruby-text-objects-mode))
+
+;;;; Crystal
+(use-package crystal-mode
+  :mode "\\.cr\\'"
+  :hook (crystal-mode . evil-ruby-text-objects-mode))
+  ;; :init (push '("crystal" . #'crystal-mode) interpreter-mode-alist))
 
 ;;;; ocaml
 (use-package tuareg
@@ -266,9 +261,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
   (slime-setup))
 
-;; scheme
-
-
+;;;; scheme
 (use-package geiser
   :defer t
   :custom (geiser-default-implementation 'guile)
@@ -292,62 +285,36 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package geiser-racket)
 
-;;;; python: removed in flavor of emacs's python.el
-;; (use-package python-mode
-;;   :custom (python-shell-interpreter "python3")
-;;           (pylint-command "pylint3" t)
-;;           (pylint-alternate-pylint-command "pylint")
-;;           (py-shell-name "ipython3")
-;;           (py-keep-windows-configuration t)
-;;           (py-pdb-path "/usr/lib/python3.10/pdb.py")
-;;           (py-split-window-on-execute t)
-;;           (py-split-windows-on-execute-function 'split-window-horizontally)
-;;   :mode "\\.py\\'"
-;;   :hook (python-mode . flycheck-mode)
-;;         (python-mode . anaconda-mode)
-;;         (python-mode . (lambda() (require 'importmagic))))
-
 ;; anaconda + python.el is better than elpy !
 (use-package anaconda-mode)
 
-(add-hook 'python-mode-hook #'(lambda()
-                                (flycheck-mode)
-                                (anaconda-mode)
-                                (anaconda-eldoc-mode)))
+(my/add-hooks 'python-mode-hook
+              (list #'flycheck-mode #'anaconda-mode #'anaconda-eldoc-mode))
+
 ;; use ipython as interactive python shell
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i")
 
-;; perl5
+;;;; perl5
 (add-hook 'perl-mode-hook #'flycheck-mode)
 ;; (setq flycheck-perlcritic-severity 5)
 
-;; perl6
-;; flycheck-raku is not available in melpa
-;; so I git clone the repo, configure the loading
-;; when raku-mode is activated
-;; (use-package raku-mode
-;;   :load-path "~/.emacs.d/elisp/flycheck-raku"
-;;   :hook (raku-mode . (lambda ()
-;;                        (require 'flycheck-raku)
-;;                        (flycheck-mode)
-;;                        )))
-
+;;;; perl6 aka raku
 ;; flycheck-raku is now available on melpa
 (use-package flycheck-raku)
 (use-package raku-mode
   :hook (raku-mode . flycheck-mode))
 
-;; rust
+;;;; rust
 ;; rustic provide all functionnalities
 (use-package rustic
   :mode ("\\.rs\\'" . rustic-mode))
 
-;; lua
+;;;; lua
 (use-package lua-mode
   :mode ("\\.lua\\'". lua-mode))
 
-;; cmake
+;;;; cmake
 (use-package cmake-mode
   :mode "CMakeLists\\.txt\\'"
         "\\.cmake\\'")
@@ -364,10 +331,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package nim-mode
   :mode ("\\.nim\\'"))
 
-
-;; LaTeX
+;;;; LaTeX
 (use-package latex-extra
-  :hook (LaTeX-mode .  latex-extra-mode))
+  :hook (LaTeX-mode . latex-extra-mode))
 
 (use-package latex-math-preview
   :defer t)
@@ -378,60 +344,24 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package latexdiff
   :defer t)
 
+;; auctex is very boring. They don't respect convention for
+;; autoloading. Loading auctex.el slow down the emacs startup
+(load "auctex" nil t)
 
-(load "auctex.el")
-
-;; edit vcard files (.vcf extension)
-(use-package vcard)
-
-;; maxima
-(push  "~/.emacs.d/elisp/maxima" load-path)
-(autoload 'maxima-mode "maxima" "Maxima mode" t)
-(autoload 'maxima "maxima" "Maxima interaction" t)
-(push  '("\\.mac\\'" . maxima-mode) auto-mode-alist)
-
-;; recutils
-(add-to-list 'load-path "~/.emacs/elisp/recutils")
-(autoload 'rec-mode "rec-mode" "Recutils mode" t)
-(push '("\\.rec\\'" . rec-mode) auto-mode-alist)
-
-;; gforth
+;;;; gforth
 (push "~/.emacs.d/elisp/gforth" load-path)
 (autoload 'forth-mode "gforth" "Forth mode" t)
 (autoload 'run-forth "gforth" "Run an inferior Forth process, input and output via buffer *forth*." t)
 (setq auto-mode-alist
-  (append '(("\\.fs$" . forth-mode)
-    ("\\.4th$" . forth-mode)
-    ("\\.fth$" . forth-mode)) auto-mode-alist))
+  (append '(("\\.fs$" . #'forth-mode)
+    ("\\.4th$" . #'forth-mode)
+    ("\\.fth$" . #'forth-mode)) auto-mode-alist))
 
-
-;; .desktop files
-(push "~/.emacs.d/elisp/freedesktop" load-path)
-(autoload 'desktop-entry-mode "desktop-entry-mode" "Desktop Entry mode" t)
-(push '("\\.desktop\\(\\.in\\)?$" . desktop-entry-mode) auto-mode-alist)
-
-;; asymptote
-(push "~/.emacs.d/elisp/asymptote" load-path)
-(autoload 'asy-mode "asy-mode.el" "Asymptote major mode." t)
-(autoload 'lasy-mode "asy-mode.el" "hybrid Asymptote/Latex major mode." t)
-(autoload 'asy-insinuate-latex "asy-mode.el" "Asymptote insinuate LaTeX." t)
-(push '("\\.asy$" . asy-mode) auto-mode-alist)
-
-;; id-utils
-(push "~/.emacs.d/elisp/id-utils" load-path)
-(autoload 'gid "id-utils" "run id-utils' gid command" t)
-
-;; latex help
+;;;; latex help
 (push "~/.emacs.d/elisp/latex-help" load-path)
-(autoload 'latex-help "latex-help" "Latex help in info" t)
-(define-key help-map "\C-l" 'latex-help)
+(autoload #'latex-help "ltx-help" "Latex help in info" t)
+(define-key help-map (kbd "C-l") #'latex-help)
 
-(push "~/.emacs.d/elisp/pariemacs" load-path)
-(autoload 'gp-mode "pari" nil t)
-(autoload 'gp-script-mode "pari" nil t)
-(autoload 'gp "pari" nil t)
-(autoload 'gpman "pari" nil t)
-(push '("\\.gp\\'" . gp-script-mode) auto-mode-alist)
 
 (provide 'programming)
 ;;; programming.el ends here
