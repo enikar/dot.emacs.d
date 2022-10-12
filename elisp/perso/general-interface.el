@@ -11,11 +11,14 @@
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
+(setq package-native-compile t)
+
 (use-package diminish
   :commands (diminish))
 
 (use-package dimmer
-  :custom (dimmer-fraction 0.15)
+  :custom (dimmer-fraction 0.16)
+          (dimmer-adjustment-mode :foreground)
   :config (dimmer-mode))
 
 (use-package bind-key)
@@ -35,13 +38,13 @@
           ;; (paradox-lines-per-entry 2)
   :commands (paradox-list-packages))
 
-;; general interface
 ;; leader key ala vim.
 (use-package evil-leader
   :custom (evil-leader/leader "_")
   :diminish (evil-leader-mode)
   :init (global-evil-leader-mode)
-        (evil-leader/set-key "w" 'whitespace-mode))
+        (evil-leader/set-key "w" #'whitespace-mode))
+
 
 (use-package evil
   :after (evil-leader)
@@ -54,6 +57,8 @@
           (evil-want-fine-undo t)
   :diminish (evil-mode)
   :hook (dired-mode . evil-emacs-state)
+        (calculator-mode . evil-emacs-state)
+
   :config
   (progn
     (defun evil-ex-search-next-auto-clear-highlights ()
@@ -91,13 +96,13 @@
     ;; (define-key evil-visual-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
     ;; (define-key evil-normal-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
     ;; (define-key evil-visual-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
-    (evil-leader/set-key "+" 'evil-numbers/inc-at-pt)
-    (evil-leader/set-key "-" 'evil-numbers/dec-at-pt)
+    (evil-leader/set-key
+      "+" #'evil-numbers/inc-at-pt
+      "-" #'evil-numbers/dec-at-pt)
     (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
     (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
-    ;;(evil-define-key 'normal (current-global-map) (kbd "C-w b") #'ivy-switch-buffer-other-window)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w C-l") #'evil-window-right)
-))
+    (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'consult-buffer-other-window)
+    (evil-define-key 'normal (current-global-map) (kbd "C-w C-l") #'evil-window-right)))
 
 (use-package evil-quickscope
   :after evil
@@ -115,8 +120,8 @@
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
-  :bind ("C-," . embrace-commander)
-  :init (evil-leader/set-key "e" 'embrace-commander))
+  :bind (("C-," . embrace-commander))
+  :init (evil-leader/set-key "e" #'embrace-commander))
 
 (use-package evil-embrace
   :after  (evil-surround embrace)
@@ -146,17 +151,17 @@
   :init
   (global-set-key (kbd "M-;") #'evilnc-comment-or-uncomment-lines)
   (evil-leader/set-key
-    "ci" 'evilnc-comment-or-uncomment-lines
-    "cl" 'evilnc-quick-comment-or-uncomment-to-the-line
-    "cc" 'evilnc-copy-and-comment-lines
-    "cp" 'evilnc-comment-or-uncomment-paragraphs
-    "cr" 'comment-dwim
-    "cv" 'evilnc-toggle-invert-comment-line-by-line
-    "."  'evilnc-comment-operator))
+    "ci" #'evilnc-comment-or-uncomment-lines
+    "cl" #'evilnc-quick-comment-or-uncomment-to-the-line
+    "cc" #'evilnc-copy-and-comment-lines
+    "cp" #'evilnc-comment-or-uncomment-paragraphs
+    "cr" #'comment-dwim
+    "cv" #'evilnc-toggle-invert-comment-line-by-line
+    "."  #'evilnc-comment-operator))
 
 (use-package nocomments-mode
   :commands (nocomments-mode)
-  :init (evil-leader/set-key "cn" 'nocomments-mode))
+  :init (evil-leader/set-key "cn" #'nocomments-mode))
 
 (use-package evil-visualstar
   :custom (evil-visualstar/persistent t)
@@ -165,26 +170,25 @@
 (use-package evil-org
   :hook (org-mode. evil-org-mode))
 
-
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
   :diminish (which-key-mode)
-  :hook (after-init . which-key-mode)
-  :init (global-unset-key (kbd "C-h C-h")))
+  :hook (after-init . which-key-mode))
+  ;;:init (global-unset-key (kbd "C-h C-h")))
 
 (use-package goto-chg
   :bind (("M-s M-e" . goto-last-change)
          ("M-s M-r" . goto-last-change-reverse)))
 
+(use-package expand-region
+  :bind (("C-=" . er/expand-region)))
+
 (use-package hydra
   :commands (defhydra))
 
 (use-package vertico
-  :config
-  (vertico-mode)
-  ;; (vertico-mouse-mode)
-  :custom
-  (vertico-count 22)
+  :config (vertico-mode)
+  :custom (vertico-count 25)
   :bind (:map vertico-map
               ("C-'"       . #'vertico-quick-exit)
               ;; Have to rebind this because C-m is translated to RET.
@@ -211,8 +215,32 @@
           (xref-show-xrefs-function #'consult-xref)
           (xref-show-definitions-function #'consult-xref)
           (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
+          (consult-preview-key '(:debounce 0.3 any))
 
-  :init (evil-leader/set-key "m" #'consult-imenu))
+  :init (evil-leader/set-key "m" #'consult-imenu)
+        (setq xref-show-xrefs-function #'consult-xref
+              xref-show-definitions-function #'consult-xref)
+        (setq register-preview-delay 0.5
+              register-preview-function #'consult-register-format)
+  :config (setq consult-narrow-key (kbd "C-+"))
+          (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
+
+(defun immediate-which-key-for-narrow (fun &rest args)
+  (let* ((refresh t)
+         (timer (and consult-narrow-key
+                     (memq :narrow args)
+                     (run-at-time 0.05 0.05
+                                  #'(lambda ()
+                                    (if (eq last-input-event (elt consult-narrow-key 0))
+                                        (when refresh
+                                          (setq refresh nil)
+                                          (which-key--update))
+                                      (setq refresh t)))))))
+    (unwind-protect
+        (apply fun args)
+      (when timer
+        (cancel-timer timer)))))
+(advice-add 'consult--read :around #'immediate-which-key-for-narrow)
 
 (use-package marginalia
   :config (marginalia-mode))
@@ -222,13 +250,28 @@
               completion-category-defaults nil
               completion-category-overrides '((files (style partial-completion)))))
 
+(use-package prescient
+  :config (prescient-persist-mode))
+
+(use-package affe
+  :init ;; use orderless as the affe regexp compiler
+  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
+    (setq input (orderless-pattern-compiler input))
+    (cons input (lambda (str) (orderless--highlight input str))))
+  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
+  ;; Manual preview key for `affe-grep'
+  (consult-customize affe-grep :preview-key (kbd "M-."))
+  (evil-leader/set-key "F" #'affe-find))
+
+(use-package consult-dir
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy))
   :config (ctrlf-mode)
-
-(use-package prescient
-  :config (prescient-persist-mode))
 
 (use-package corfu
   ;; Optional customizations
@@ -259,7 +302,7 @@
 
 (use-package kind-icon
   :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
-  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  :config (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
 (defun dabbrev-completion-all-buffers ()
       "dabbrev-completion in *all* buffers"
@@ -268,18 +311,18 @@
       (call-interactively #'dabbrev-completion)))
 
 (use-package dabbrev
-  :bind (("M-²" . #'dabbrev-completion-all-buffers)
+  :bind (("M-²" . dabbrev-completion-all-buffers)
           ;; Swap M-/ and C-M-/
-         ("M-/" . #'dabbrev-completion)
-         ("C-M-/" . #'dabbrev-expand)) ;; dabbrev-expand is also provide by C-p in evil-insert-state
+         ("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand)) ;; dabbrev-expand is also provide by C-p in evil-insert-state
   ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (use-package cape
-  :init (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-        (add-to-list 'completion-at-point-functions #'cape-file)
-  :bind (("M-&" . #'cape-dabbrev)))
+  :init (push #'cape-dabbrev completion-at-point-functions)
+        (push #'cape-file completion-at-point-functions)
+  :bind (("M-&" . cape-dabbrev)))
 
 (use-package avy
   :config (avy-setup-default))
@@ -298,16 +341,16 @@
              avy-goto-line
              evil-avy-mode)
   :init
-  (progn
-    (global-set-key (kbd "M-s M-s")  'avy-goto-char)
-    (evil-leader/set-key "ac" 'avy-goto-char)
-    (evil-leader/set-key "aC" 'avy-goto-char-2)
-    (evil-leader/set-key "as" 'avy-goto-subword-1)
-    (evil-leader/set-key "ar" 'avy-resume)
-    (evil-leader/set-key "aw" 'avy-goto-word-0)
-    (evil-leader/set-key "aW" 'avy-goto-word-1)
-    (evil-leader/set-key "al" 'avy-goto-line)
-    (evil-leader/set-key "aa" 'evil-avy-mode)))
+    (global-set-key (kbd "M-s M-s")  #'avy-goto-char)
+    (evil-leader/set-key
+      "ac" #'avy-goto-char
+      "aC" #'avy-goto-char-2
+      "as" #'avy-goto-subword-1
+      "ar" #'avy-resume
+      "aw" #'avy-goto-word-0
+      "aW" #'avy-goto-word-1
+      "al" #'avy-goto-line
+      "aa" #'evil-avy-mode))
 
 (use-package ace-jump-mode
   :after (evil-leader)
@@ -315,24 +358,14 @@
              ace-jump-char-mode
              ace-jump-line-mode)
   :init
-  (progn
-    (evil-leader/set-key "jw" 'ace-jump-mode)
-    (evil-leader/set-key "jc" 'ace-jump-char-mode)
-    (evil-leader/set-key "jl" 'ace-jump-line-mode)
-  ))
-
-;; (use-package ace-mc
-;;   :after (evil-leader)
-;;   :commands (ace-mc-add-multiple-cursors ace-mc-add-single-cursor)
-;;   :init
-;;   (progn
-;;     (evil-leader/set-key "mM" 'ace-mc-add-single-cursor)
-;;     (evil-leader/set-key "mm" 'ace-mc-add-multiple-cursors)
-;;     ))
+    (evil-leader/set-key
+      "jw" #'ace-jump-mode
+      "jc" #'ace-jump-char-mode
+      "jl" #'ace-jump-line-mode))
 
 (use-package ace-window
   :commands (ace-window)
-  :init (evil-leader/set-key "o" 'ace-window)
+  :init (evil-leader/set-key "o" #'ace-window)
   )
 
 (use-package ace-link
@@ -342,19 +375,19 @@
 
 (use-package consult-flyspell
   :commands (consult-flyspell-correct-function)
-  :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
-        (evil-leader/set-key "s" 'consult-flyspell-correct-function))
+  :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
+        (evil-leader/set-key "s" #'consult-flyspell-correct-function))
 
-;; (use-package session
-;;   :hook (after-init . session-initialize))
+(use-package consult-recoll
+  :commands (consult-recoll)
+  :init (evil-leader/set-key "r" #'consult-recoll))
 
 (use-package desktop
   :init (desktop-save-mode 1)
         (setq history-length 250)
         (setq desktop-globals-to-save
               (append
-               '(file-name-history
-                 consult--buffer-history
+               '(consult--buffer-history
                  consult--apropos-history
                  ctrlf-search-history
                  Info-isearch-initial-history
@@ -368,9 +401,10 @@
                  cscope-prompt-minibuffer-history
                  evil-ex-history
                  evil-ex-search-history
-                 evil-lion--user-regex-history
+                 evil-markers-alist
                  evil-search-backward-history
                  evil-search-forward-history
+                 evil-lion--user-regex-history
                  eww-prompt-history
                  extended-command-history
                  face-name-history
@@ -430,31 +464,9 @@
                  )
                desktop-globals-to-save)))
 
-;; ;; Note: The loading occurs after the init file is loaded.
-;; ;; So it's safe to set file-name-handler-alist to nil during
-;; ;; the loading of this file. (I set this in the init file).
-;; ;; Then, when persp-mode restore the default perspective
-;; ;; the file-name-handler-alist has its default value.
-;; (use-package persp-mode
-;;   :hook (after-init . (lambda() (persp-mode 1)))
-;;   :custom (persp-autokill-buffer-on-remove 'kill-weak)
-;;           (persp-nil-name "none")
-;;   :config
-;;   (progn
-;;     (defun persp-ibuffer (arg)
-;;       (interactive "P")
-;;       (with-persp-buffer-list () (ibuffer arg)))
-
-;;     (evil-ex-define-cmd "ls" #'persp-ibuffer)
-;;     (global-set-key (kbd "C-x C-b") #'persp-ibuffer)))
-
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :hook (after-init . doom-modeline-mode))
-;; Install an advice when setup doom modeline.
+;; Install an advice when setup the doom modeline.
 ;; Hence, I can redefine the modeline used with
 ;; paradox.
-
 (use-package doom-modeline
   :custom (doom-modeline-minor-modes t)
           (doom-modeline-persp-name t)
@@ -520,6 +532,10 @@
 (use-package all-the-icons-ibuffer
   :init (all-the-icons-ibuffer-mode 1))
 
+(use-package all-the-icons-completion
+  :init (all-the-icons-completion-mode 1)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
+
 (use-package emojify
   :diminish (emojify))
   ;:hook (after-init . global-emojify-mode))
@@ -527,7 +543,7 @@
 
 (use-package iedit
   :bind ("C-;" . iedit-mode)
-  :init (evil-leader/set-key ";" 'iedit-mode))
+  :init (evil-leader/set-key ";" #'iedit-mode))
 
 ;; multiple-cursors
 ;; see also https://github.com/fgallina/region-bindings-mode
@@ -547,16 +563,16 @@
 ;;   :init
 ;;   (progn
 ;;     (evil-leader/set-key
-;;       "mw" 'mc/mark-next-like-this-word
-;;       "mb" 'mc/mark-previous-like-this-word
-;;       "mt" 'mc/mark-next-like-this
-;;       "mT" 'mc/mark-previous-like-this
-;;       "ma" 'mc/mark-all-like-this
-;;       "mr" 'mc/mark-all-in-region
-;;       "me" 'mc/mark-more-like-this-extended
-;;       "mW" 'mc/mark-all-words-like-this
-;;       "mS" 'mc/mark-all-symbols-like-this
-;;       "mD" 'mc/mark-all-like-this-dwim)))
+;;       "mw" #'mc/mark-next-like-this-word
+;;       "mb" #'mc/mark-previous-like-this-word
+;;       "mt" #'mc/mark-next-like-this
+;;       "mT" #'mc/mark-previous-like-this
+;;       "ma" #'mc/mark-all-like-this
+;;       "mr" #'mc/mark-all-in-region
+;;       "me" #'mc/mark-more-like-this-extended
+;;       "mW" #'mc/mark-all-words-like-this
+;;       "mS" #'mc/mark-all-symbols-like-this
+;;       "mD" #'mc/mark-all-like-this-dwim)))
 
 ;; use `gr` prefix in normal mode to access mc functionalities
 (use-package evil-mc
@@ -568,7 +584,7 @@
   :diminish (undo-tree-mode)
   :commands (undo-tree-visualize)
   :custom (evil-undo-system 'undo-tree)
-  :init (evil-leader/set-key "u" 'undo-tree-visualize)
+  :init (evil-leader/set-key "U" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
 (use-package openwith
@@ -588,7 +604,7 @@
 
 (use-package consult-ls-git
   :commands (consult-ls-git)
-  :init (evil-leader/set-key "G" 'consult-ls-git))
+  :init (evil-leader/set-key "G" #'consult-ls-git))
 
 (use-package treemacs
   :bind ("C-x t t" . treemacs)
@@ -600,11 +616,12 @@
 
 (use-package ripgrep
   :commands (ripgrep-regexp)
-  :init (evil-leader/set-key "gr" 'ripgrep-regexp)
-        (evil-leader/set-key "gc" 'consult-ripgrep))
+  :init (evil-leader/set-key
+          "gr" #'ripgrep-regexp
+          "gc" #'affe-grep))
 (use-package deadgrep
   :commands (deadgrep)
-  :init (evil-leader/set-key "gd" 'deadgrep))
+  :init (evil-leader/set-key "gd" #'deadgrep))
 
 (use-package ag
   :commands (ag
@@ -614,34 +631,40 @@
              ag-project-files
              ag-project-regexp)
   :init (setq ag-highlight-search t)
-        (evil-leader/set-key "gaa" 'ag)
-        (evil-leader/set-key "gaf" 'ag-files)
-        (evil-leader/set-key "gar" 'ag-regexp)
-        (evil-leader/set-key "gap" 'ag-project)
-        (evil-leader/set-key "gaF" 'ag-project-files)
-        (evil-leader/set-key "gaR" 'ag-project-regexp))
+  (evil-leader/set-key
+    "gaa" #'ag
+    "gaf" #'ag-files
+    "gar" #'ag-regexp
+    "gap" #'ag-project
+    "gaF" #'ag-project-files
+    "gaR" #'ag-project-regexp))
 
 (use-package consult-ag
   :commands (consult-ag)
-  :init (evil-leader/set-key "gac" 'consult-ag))
+  :init (evil-leader/set-key "gac" #'consult-ag))
 
 (use-package helpful
   :hook (helpful-mode . evil-emacs-state)
-  :bind ("C-h k" . helpful-key)
+  :bind (:map help-map ("k" . helpful-key))
   :commands (helpful-at-point
              helpful-callable
              helpful-variable
              helpful-command)
   :init
-  (evil-leader/set-key "hk" 'helpful-key)
-  (evil-leader/set-key "hf" 'helpful-callable)
-  (evil-leader/set-key "hv" 'helpful-variable)
-  (evil-leader/set-key "hp" 'helpful-at-point)
-  (evil-leader/set-key "hc" 'helpful-command))
+  (evil-leader/set-key
+    "hk" #'helpful-key
+    "hf" #'helpful-callable
+    "hv" #'helpful-variable
+    "hp" #'helpful-at-point
+    "hc" #'helpful-command))
 
 (use-package embark
   :commands (embark-act)
-  :init (evil-leader/set-key "E" 'embark-act))
+  :init (evil-leader/set-key "E" #'embark-act))
+
+(use-package duplicate-thing
+  :commands (duplicate-thing)
+  :init (evil-leader/set-key "d" #'duplicate-thing))
 
 (use-package parent-mode
   :commands (parent-mode-list parent-mode-is-derived-p))
@@ -650,31 +673,31 @@
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
 
-(use-package vterm
-  :init (setq vterm-always-compile-module t))
-
 (use-package fill-column-indicator
-  :bind ("C-x t C-f" . fci-mode)
+  :bind (("C-x t C-f" . fci-mode))
   :commands (fci-mode))
 
 (use-package hl-todo
   :diminish (hl-todo-mode)
   :hook ((prog-mode) . hl-todo-mode))
 
-
+(use-package vterm
+  :init (setq vterm-always-compile-module t))
 
 (require 'hl-line)
 (add-hook 'prog-mode-hook #'hl-line-mode)
 (add-hook 'text-mode-hook #'hl-line-mode)
 
+;;;; To access universal argument in evil-normal-state
+(evil-leader/set-key "u" #'universal-argument)
+
 ;;;; better dired mode
 (autoload 'dired-omit-mode "dired-x")
-(add-hook 'dired-load-hook
-          (lambda() (load "dired-x")))
+(with-eval-after-load 'dired (load "dired-x"))
 (add-hook 'dired-mode-hook
-          (lambda () (dired-omit-mode 1)))
+          #'(lambda () (dired-omit-mode 1)))
 
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook #'turn-on-auto-fill)
 
 
 ;; Peut poser un problème lorsqu'on édite un fichier
