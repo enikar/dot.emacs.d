@@ -20,7 +20,7 @@
 (global-set-key (kbd "C-x w f") #'find-file-at-point)
 
 ;; un raccourci pour 'hexl-find-file : je l'utilise parfois souvent...
-(global-set-key (kbd "C-x w h") 'hexl-find-file)
+(global-set-key (kbd "C-x w h") #'hexl-find-file)
 
 ; plus quelques commodités (en anglais ça se dit : convenient)
 ; pour pouvoir insérer un fichier, écrire une région dans un fichier,
@@ -45,7 +45,7 @@
 (global-set-key (kbd "C-x w b") #'font-lock-fontify-block)
 (global-set-key (kbd "C-x w a") #'font-lock-fontify-buffer)
 ;petit truc pour des listes de pages manuels
-(global-set-key (kbd "C-x w m") 'man-follow)
+(global-set-key (kbd "C-x w m") #'man-follow)
 
 ;; pour une raison inconnue, emacs refuse de prendre en compte
 ;; les fonctions qui suivent lorsqu'il est lancé avec l'interface texte !!
@@ -96,10 +96,10 @@
 ;;(define-key function-key-map [C-xt] (kbd "C-x t"))
 ;;(global-set-key (kbd "C-x t t") 'tab8)
 ;;(global-set-key (kbd "C-x t u") 'tab8-undo)
-(global-set-key (kbd "C-x t G") 'toggle-indent-tabs-mode)
+(global-set-key (kbd "C-x t G") #'toggle-indent-tabs-mode)
 ;;(global-set-key (kbd "C-x t b") 'tabify-buffer)
 ;;(global-set-key (kbd "C-x t n") 'untabify-buffer)
-(global-set-key (kbd "C-x t C-p") 'pop-tag-mark)
+(global-set-key (kbd "C-x t C-p") #'pop-tag-mark)
 
 (defun trim-buffer ()
   "Remove trailing white spaces at the end of lines for a complete buffer."
@@ -148,10 +148,10 @@
       "*/tk")
 
 (with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "C-x C-k D") 'dired-only-show-directories))
+  (define-key dired-mode-map (kbd "C-x C-k D") #'dired-only-show-directories))
 
 (with-eval-after-load 'evil-leader
-  (evil-leader/set-key "gg" 'rgrep))
+  (evil-leader/set-key "gg" #'rgrep))
 
 (defun no-break-to-space ()
   "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."
