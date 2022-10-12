@@ -24,8 +24,9 @@
 
 (defun my/recentf-exclude (f)
   "Predicate to exlude filename from the recent file name list"
-    (or (string-equal f my/bookmarks-file-name)
-        (string-equal (file-name-directory f) persp-save-dir)))
+    ;; (or (string-equal f my/bookmarks-file-name)
+    ;;     (string-equal (file-name-directory f) persp-save-dir)))
+  (string-equal f my/bookmarks-file-name))
 
 (setq recentf-exclude  `(,#'my/recentf-exclude))
 
@@ -38,6 +39,5 @@
   (load "personal-bindings")
   (recentf-mode)
   (quietly-read-abbrev-file))
-
 
 ;;; init.el ends here
