@@ -13,6 +13,11 @@
 
 (setq package-native-compile t)
 
+(defun my/add-hooks (mode-hook hooks)
+  "Add hooks in the list `hooks' to `mode-hook'"
+  (dolist (hook hooks)
+    (add-hook mode-hook hook)))
+
 (use-package diminish
   :commands (diminish))
 
@@ -173,8 +178,8 @@
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
   :diminish (which-key-mode)
-  :hook (after-init . which-key-mode))
-  ;;:init (global-unset-key (kbd "C-h C-h")))
+  :hook (after-init . which-key-mode)
+  :init (unbind-key "C-h" help-map))
 
 (use-package goto-chg
   :bind (("M-s M-e" . goto-last-change)
@@ -692,13 +697,13 @@
 (evil-leader/set-key "u" #'universal-argument)
 
 ;;;; better dired mode
-(autoload 'dired-omit-mode "dired-x")
+(autoload #'dired-omit-mode "dired-x")
 (with-eval-after-load 'dired (load "dired-x"))
-(add-hook 'dired-mode-hook
-          #'(lambda () (dired-omit-mode 1)))
+(defun my/set-dired-omit-mode()
+  (dired-omit-mode 1))
 
+(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
-
 
 ;; Peut poser un problème lorsqu'on édite un fichier
 ;; qui est destiné à être une liste de fichier pour tar
