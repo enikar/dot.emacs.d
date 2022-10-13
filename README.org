@@ -2,18 +2,12 @@
   These are my settings for emacs 28.
 ** Important
   Not all files are mine. The files in directories:
-  elisp/asymptote/
-       freedesktop/
-       gforth/
-       hasky-cabal/
-       id-utils/
-       latex-help/
-       maxima/
-       pariemacs/
-       recutils/
-  aren't mine. Instead, They belong to others projects. The directori
+    elisp/gforth/
+    elisp/hasky-cabal/
+    elisp/latex-help/
+  aren't mine. Instead, They belong to others projects. The directory
   hasky-cabal/ is a github clone. The others come from debian packages. There
-  are distributed with their respective license, see these project for more
+  are distributed with their respective license, see these projects for more
   details.
 
   All other files are mine. I use GPL v3 license.
@@ -27,20 +21,21 @@
 
 ** evil
    - evil-leader (use undercore as leader-key)
-   - evil-quickscope
-   - evil-lion
-   - evil-surround
-   - evil-embrace
-   - evil-goggles
-   - evil-string-inflection
-   - evil-matchit
-   - evil-nerd-commenter
-   - evil-visualstar
    - evil-anzu
+   - evil-nerd-commenter
+   - evil-matchit
+   - evil-embrace
+   - evil-surround
+   - evil-goggles
+   - evil-visualstar
+   - evil-lion
+   - evil-string-inflection
+   - evil-quickscope
 
 ** all-the-icons
    - all-the-icons-dired
    - all-the-icons-ibuffer
+   - all-the-icons-completion
 
 ** doom-modeline
 
@@ -64,10 +59,11 @@
    - avy
    - iedit
    - helpful
-   - emabark
+   - embark
    - undo-tree
-   - ace-window
    - magit
+   - paradox
+   - hl-todo
    - treemacs
    - ripgrep
    - deadgrep
@@ -75,11 +71,10 @@
    - nocomments-mode
    - goto-chg
    - fill-column-indicator
-   - auto-compile
-   - paradox
    - open-with
    - vterm
-   - hl-todo
+   - auto-compile
+   - ace-window
 
 ** Programmation
    - flycheck
@@ -99,7 +94,6 @@
    - yari
    - robe
    - ruby-end
-   - rubocop
    - realgud-pry
    - realgud-byebug
    - yard-mode
@@ -129,6 +123,7 @@
 
 *** Others languages
   - raku-mode
+  - crystal-mode
   - rustic (rust)
   - lua-mode
   - smalltalk-mode
