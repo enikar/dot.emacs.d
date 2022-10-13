@@ -275,8 +275,8 @@
          ("C-x C-j" . consult-dir-jump-file)))
 
 (use-package ctrlf
-  :custom (ctrlf-default-search-style 'fuzzy))
-  :config (ctrlf-mode)
+  :custom (ctrlf-default-search-style 'fuzzy)
+  :config (ctrlf-mode))
 
 (use-package corfu
   ;; Optional customizations
