@@ -54,15 +54,16 @@
 (require 'evil)
 (require 'eyebrowse)
 (require 'dash)
+(require 'bind-key)
 
 ;; I just copy/paste code from eyebrowse and adapt
 ;; the method in eyebrowse--format-slot and eyebrowse--read-slot.
 ;; NOTE: This function needs improvement. When a slot
-;; contains two or more windows, nothing is listed (just an number).
+;; contains two or more windows, nothing is listed (just a number).
 (defun evil-eb--format-slot (slot)
   (let* ((n (number-to-string (car slot)))
          (current-slot (eyebrowse--get 'current-slot))
-         (p (cadr slot)) 
+         (p (cadr slot))
          (bname (if (= current-slot (car slot))
                     (buffer-name)
                     (cadr (assoc 'buffer p)))))
@@ -85,14 +86,6 @@ slot to switch to."
     (or choice (eyebrowse--string-to-number candidate)
         (user-error "Invalid slot number"))))
 
-(defun evil-eb--next-window-config (c)
-  (interactive "P")
-  (eyebrowse-next-window-config c))
-
-(defun evil-eb--previous-window-config (c)
-  (interactive "P")
-  (eyebrowse-prev-window-config c))
-
 (defun evil-eb--switch-to-window-config (c)
   (interactive (list (if (numberp current-prefix-arg)
                            current-prefix-arg
@@ -101,62 +94,58 @@ slot to switch to."
 
 ;; TODO: functions to open a new file in new window config (Z E)
 ;; and to swith to a buffer in a new window config (Z B)
-
-(defun evil-eb--make-conses (prefix)
-  (let ((assocs
-         `(("N" . ,#'evil-eb--next-window-config) 
-           ("P" . ,#'evil-eb--previous-window-config)
-           ("A" . ,#'eyebrowse-last-window-config)
-           ("\"" . ,#'evil-eb--switch-to-window-config)
-           ("C" . ,#'eyebrowse-create-window-config)
-           ("Q" . ,#'eyebrowse-close-window-config))))
-        (mapcar #'(lambda(x)
-                    (cons (kbd (concat prefix " " (car x))) (cdr x)))
-                assocs)
-        ))
-;; try to make a prefix-map like in eyebrowse.el
-;; look at variable eyebrowse-mode-map
-;;(define-key evil-normal-state-map (kbd "Z N") 'eyebrowse-next-window-config)
-(defun evil-eb-make-map (map prefix)
-  "Make bindings for others keys than 0 to 9"
-  (let ((bindings (evil-eb--make-conses prefix)))
-    (mapc #'(lambda(x)
-              (define-key map (car x) (cdr x)))
-          bindings)))
-
-(defun evil-eb--make-goto (n)
-  `(lambda () (interactive (eyebrowse-switch-to-window-config ,n))))
-
-(defun evil-eb-make-goto-map (map prefix)
-  "Make bindings for keys 0 to 9"
-  (let ((bindings
-         (mapcar #'(lambda(n)
-                 (cons (kbd (concat prefix " " (number-to-string n)))
-                       (evil-eb--make-goto n)))
-                 (number-sequence 0 9))))
-    (mapc #'(lambda(x) (define-key map (car x) (cdr x)))
-          bindings)))
+;; Finaly, I built a keymap. It's simpler.
+(defvar evil-eb-map
+  (let ((prefix-map (make-sparse-keymap)))
+    (define-key prefix-map (kbd "\"") #'evil-eb--switch-to-window-config)
+    (define-key prefix-map (kbd "0") #'eyebrowse-switch-to-window-config-0)
+    (define-key prefix-map (kbd "1") #'eyebrowse-switch-to-window-config-1)
+    (define-key prefix-map (kbd "2") #'eyebrowse-switch-to-window-config-2)
+    (define-key prefix-map (kbd "3") #'eyebrowse-switch-to-window-config-3)
+    (define-key prefix-map (kbd "4") #'eyebrowse-switch-to-window-config-4)
+    (define-key prefix-map (kbd "5") #'eyebrowse-switch-to-window-config-5)
+    (define-key prefix-map (kbd "6") #'eyebrowse-switch-to-window-config-6)
+    (define-key prefix-map (kbd "7") #'eyebrowse-switch-to-window-config-7)
+    (define-key prefix-map (kbd "8") #'eyebrowse-switch-to-window-config-8)
+    (define-key prefix-map (kbd "9") #'eyebrowse-switch-to-window-config-9)
+    (define-key prefix-map (kbd "C") #'eyebrowse-create-window-config)
+    (define-key prefix-map (kbd "P") #'eyebrowse-prev-window-config)
+    (define-key prefix-map (kbd "N") #'eyebrowse-next-window-config)
+    (define-key prefix-map (kbd "Q") #'eyebrowse-close-window-config)
+    (define-key prefix-map (kbd "A") #'eyebrowse-last-window-config)
+    prefix-map)
+  "Inital keymap for `evil-eyebrowse'.")
 
 (defun evil-eb-update-map (map)
   "Function to define all bindings for `map'"
-  (evil-eb-make-goto-map map "Z")
-  (evil-eb-make-map map "Z"))
+  (define-key map (kbd "Z") evil-eb-map))
+
 
 (defun evil-eb-add-vim-compat (map)
   "Add gT and gt to switch to previous and next
    slot respectively."
-  (define-key map "gT" 'eyebrowse-prev-window-config)
-  (define-key map "gt" 'eyebrowse-next-window-config))
+  (define-key map "gT" #'eyebrowse-prev-window-config)
+  (define-key map "gt" #'eyebrowse-next-window-config))
 
 (evil-eb-update-map evil-normal-state-map)
 (evil-eb-add-vim-compat evil-normal-state-map)
 (with-eval-after-load 'flycheck
   (evil-eb-update-map flycheck-error-list-mode-map))
 
+(with-eval-after-load 'dired
+  (progn
+    (define-key  dired-mode-map "V" #'dired-do-compress)
+    (unbind-key "Z" dired-mode-map)
+    (evil-eb-update-map dired-mode-map)))
+
 ;; Add shortcuts for specific mode
-(add-hook 'Man-mode-hook
-         (function (lambda ()
-                     (evil-eb-update-map Man-mode-map))))
+(with-eval-after-load 'man
+  (if (boundp 'Man-mode-map)
+      (evil-eb-update-map Man-mode-map)))
+
+;; (add-hook 'Man-mode-hook
+;;          (function (lambda ()
+;;                      (evil-eb-update-map Man-mode-map))))
 
 (add-hook 'help-mode-hook
         (function
