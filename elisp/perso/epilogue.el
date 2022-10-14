@@ -20,6 +20,19 @@
 ;;                 (kbd "RET") #'org-return)
 ;;                 (kbd "|")   #'org-force-self-insert))
 
+(use-package evil-collection
+  :diminish (evil-collection-unimpaired-mode)
+  :init (evil-collection-init '(consult
+                                corfu
+                                embark
+                                flycheck
+                                magit
+                                vertico
+                                help
+                                helpful
+                                dired
+                                package-menu)))
+
 (use-package eyebrowse
   :custom (eyebrowse-mode-line-style 'always)
   :init (eyebrowse-mode t)
