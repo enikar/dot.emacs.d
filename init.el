@@ -8,7 +8,7 @@
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
 
-(add-to-list 'custom-theme-load-path (file-name-as-directory "~/.emacs.d/themes/") )
+(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
       abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
       save-abbrevs 'silently
@@ -17,7 +17,7 @@
       initial-scratch-message nil
       ring-bell-function 'ignore)
 
-(add-to-list 'load-path "~/.emacs.d/elisp/perso")
+(push "~/.emacs.d/elisp/perso" load-path)
 
 (defvar-local my/bookmarks-file-name
   (expand-file-name "~/.emacs.d/bookmarks"))
