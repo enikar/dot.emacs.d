@@ -50,7 +50,6 @@
   :init (global-evil-leader-mode)
         (evil-leader/set-key "w" #'whitespace-mode))
 
-
 (use-package evil
   :after (evil-leader)
   :init (evil-mode 1)
@@ -106,8 +105,7 @@
       "-" #'evil-numbers/dec-at-pt)
     (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
     (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'consult-buffer-other-window)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w C-l") #'evil-window-right)))
+    (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'consult-buffer-other-window)))
 
 (use-package evil-quickscope
   :after evil
