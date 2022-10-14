@@ -132,6 +132,7 @@ slot to switch to."
 (with-eval-after-load 'flycheck
   (evil-eb-update-map flycheck-error-list-mode-map))
 
+(declare-function 'dired-do-compress "dired-aux")
 (with-eval-after-load 'dired
   (progn
     (define-key  dired-mode-map "V" #'dired-do-compress)
