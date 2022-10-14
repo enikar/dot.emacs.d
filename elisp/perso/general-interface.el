@@ -177,6 +177,7 @@
 
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
+          (which-key-idle-delay 0.5)
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
   :init (unbind-key "C-h" help-map))
@@ -248,7 +249,8 @@
 (advice-add 'consult--read :around #'immediate-which-key-for-narrow)
 
 (use-package marginalia
-  :config (marginalia-mode))
+  :init (marginalia-mode)
+  :bind (:map minibuffer-local-map ("M-a" . #'marginalia-cycle)))
 
 (use-package orderless
   :init (setq completion-styles '(substring orderless basic)
@@ -332,7 +334,7 @@
 (use-package avy
   :config (avy-setup-default))
 
-;; useless beacause the minor is not activated
+;; useless because the minor is not activated
 ;; But I setup some bindings with evil-leader
 (use-package evil-avy
   :after (avy evil-leader)
@@ -370,13 +372,11 @@
 
 (use-package ace-window
   :commands (ace-window)
-  :init (evil-leader/set-key "o" #'ace-window)
-  )
+  :init (evil-leader/set-key "o" #'ace-window))
 
 (use-package ace-link
   :commands (ace-link)
-  :init (ace-link-setup-default)
-  )
+  :init (ace-link-setup-default))
 
 (use-package consult-flyspell
   :commands (consult-flyspell-correct-function)
@@ -665,7 +665,46 @@
 
 (use-package embark
   :commands (embark-act)
+  :bind (("C-c e" . #'embark-act))
   :init (evil-leader/set-key "E" #'embark-act))
+
+(defun embark-which-key-indicator ()
+  "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+        (which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+           "Become"
+         (format "Act on %s '%s'%s"
+                 (plist-get (car targets) :type)
+                 (embark--truncate-target (plist-get (car targets) :target))
+                 (if (cdr targets) "…" "")))
+       (if prefix
+           (pcase (lookup-key keymap prefix 'accept-default)
+             ((and (pred keymapp) km) km)
+             (_ (key-binding prefix 'accept-default)))
+         keymap)
+       nil nil t (lambda (binding)
+                   (not (string-suffix-p "-argument" (cdr binding))))))))
+
+(setq embark-indicators
+  '(embark-which-key-indicator
+    embark-highlight-indicator
+    embark-isearch-highlight-indicator))
+
+(defun embark-hide-which-key-indicator (fn &rest args)
+  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+         (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+
+(advice-add #'embark-completing-read-prompter
+            :around #'embark-hide-which-key-indicator)
 
 (use-package duplicate-thing
   :commands (duplicate-thing)
@@ -733,9 +772,7 @@
 (diminish 'auto-revert-mode "ARev")
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
-
 (global-so-long-mode)
-
 
 (defun my/set-personnal-font ()
   "Restore my favorite font setting."
