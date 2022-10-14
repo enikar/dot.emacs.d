@@ -23,6 +23,7 @@
  '(display-fill-column-indicator-character 124)
  '(ediff-merge-split-window-function 'split-window-horizontally)
  '(ediff-split-window-function 'split-window-horizontally)
+ '(evil-want-keybinding nil)
  '(fill-column 78)
  '(focus-follows-mouse nil)
  '(fringe-mode nil nil (fringe))
