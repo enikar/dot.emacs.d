@@ -9,10 +9,9 @@
 
 (use-package yasnippet
   :defer 5
-  :commands (yas-minor-mode)
   :hook ((prog-mode) . yas-minor-mode)
   :config (yas-reload-all)
-  :init (evil-leader/set-key "y" #'yas-describe-tables))
+  :init (leader-ala-vim "y" #'yas-describe-tables))
 
 (use-package consult-yasnippet
   :commands (consult-yasnippet))
@@ -33,8 +32,7 @@
 
 (use-package highlight-indent-guides
   :diminish (highlight-indent-guides-mode)
-  :commands (highlight-indent-guides-mode)
-  :init (evil-leader/set-key "i" #'highlight-indent-guides-mode))
+  :init (leader-ala-vim "i" #'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
@@ -57,18 +55,17 @@ If the error list is visible, hide it.  Otherwise, show it."
           (flycheck-python-pycompile-executable "python3")
           (flycheck-shellcheck-follow-sources nil)
   :hook (sh-mode . flycheck-mode)
-  :bind (("C-x t F" . flycheck-mode)
-         ("<f8>" . my/toggle-flycheck-error-list)
-         ("<f5>" . flycheck-first-error)
-         ("<f6>" . flycheck-next-error)
-         ("<f7>" . flycheck-previous-error))
+  :general ("<f8>"  #'my/toggle-flycheck-error-list
+            "<f5>"  #'flycheck-first-error
+            "<f6>"  #'flycheck-next-error
+            "<f7>"  #'flycheck-previous-error)
   :commands (flycheck flycheck-mode)
-  :init (evil-leader/set-key "ff" #'flycheck-mode))
+  :init (leader-ala-vim :no-autload t "ff" #'flycheck-mode)
+        (prefix-c-xt :no-autoload t "f" #'flycheck-mode))
 
 (use-package consult-flycheck
   :after (flycheck consult)
-  :commands (consult-flycheck)
-  :init (evil-leader/set-key "fc" #'consult-flycheck))
+  :init (leader-ala-vim "fc" #'consult-flycheck))
 
 (add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
 
@@ -111,33 +108,29 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
+(defun my/set-flycheck-haskell-checker ()
+  (flycheck-add-next-checker
+   'haskell-dante
+   '(warning . haskell-hlint)))
+
 (use-package dante
   :diminish (dante-mode)
   :after (haskell-mode)
   :functions (flycheck-add-next-checker)
-  :commands (dante-mode)
   :custom (dante-load-flags '("+c" "-Wall" "-fdiagnostics-color=never" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
-         (dante-mode . (lambda () (flycheck-add-next-checker
-                              'haskell-dante
-                              '(warning . haskell-hlint)))))
+         (dante-mode . my/set-flycheck-haskell-checker))
   :config
-  (progn
-    (evil-define-key
-        '(normal insert)
-        'dante-mode-map
-        (kbd "M-.")
-        #'xref-find-definitions)
-    (evil-define-key
-        '(normal insert)
-        'dante-mode-map
-        (kbd "M-?")
-        #'xref-find-references)))
+    (general-def
+        :states '(normal insert)
+        :keymaps 'dante-mode-map
+        "M-?" #'xref-find-references
+        "M-." #'xref-find-definitions))
 
 (use-package attrap
   :after (dante)
   :commands (attrap-attrap)
-  :bind (:map dante-mode-map ("M-!" . attrap-attrap)))
+  :general (:keymaps 'dante-mode-map "M-!" #'attrap-attrap))
 
 ;; (use-package retrie
 ;;   :commands (retrie)
@@ -153,8 +146,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package hasky-extensions
   :after (haskell-mode)
-  :bind (:map haskell-mode-map
-              ("C-c l" . hasky-extensions)))
+  :general (:keymaps 'haskell-mode-map "C-c l"  #'hasky-extensions))
 
 (use-package hasky-stack
   :defer t
@@ -170,7 +162,9 @@ If the error list is visible, hide it.  Otherwise, show it."
         evil-shift-width 2))
 
 (my/add-hooks 'ruby-mode-hook
-              (list #'flycheck-mode #'evil-ruby-text-objects-mode #'set-tw-sw-to-two))
+              #'flycheck-mode
+              #'evil-ruby-text-objects-mode
+              #'set-tw-sw-to-two)
 
 (use-package inf-ruby
   :custom (inf-ruby-default-implementation "pry")
@@ -186,7 +180,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; get documentation from the ri command
 (use-package yari
   :commands (yari)
-  :bind (:map help-map ("y" . yari)))
+  :general (:keymaps 'help-map "y" #'yari))
 
 (use-package robe
   :defer t
@@ -289,7 +283,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package anaconda-mode)
 
 (my/add-hooks 'python-mode-hook
-              (list #'flycheck-mode #'anaconda-mode #'anaconda-eldoc-mode))
+              #'flycheck-mode
+              #'anaconda-mode
+              #'anaconda-eldoc-mode)
 
 ;; use ipython as interactive python shell
 (setq python-shell-interpreter "ipython3"
@@ -350,8 +346,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; gforth
 (push "~/.emacs.d/elisp/gforth" load-path)
-(autoload 'forth-mode "gforth" "Forth mode" t)
-(autoload 'run-forth "gforth" "Run an inferior Forth process, input and output via buffer *forth*." t)
+(autoload #'forth-mode "gforth" "Forth mode" t)
+(autoload #'run-forth "gforth" "Run an inferior Forth process, input and output via buffer *forth*." t)
 (setq auto-mode-alist
   (append '(("\\.fs$" . #'forth-mode)
     ("\\.4th$" . #'forth-mode)
@@ -359,8 +355,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; latex help
 (push "~/.emacs.d/elisp/latex-help" load-path)
-(autoload #'latex-help "ltx-help" "Latex help in info" t)
-(define-key help-map (kbd "C-l") #'latex-help)
+;;(autoload #'latex-help "ltx-help" "Latex help in info" t)
+(general-def help-map "C-l" #'latex-help)
 
 
 (provide 'programming)
