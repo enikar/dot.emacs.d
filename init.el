@@ -8,15 +8,16 @@
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
 
-(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
       abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
       save-abbrevs 'silently
       confirm-kill-processes nil
       native-comp-async-report-warnings-errors 'silent
       initial-scratch-message nil
-      ring-bell-function 'ignore)
+      ring-bell-function 'ignore
+      visible-bell nil)
 
+(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)
 
 (defvar-local my/bookmarks-file-name
@@ -32,11 +33,10 @@
 
 (let ((file-name-handler-alist nil))
   (load custom-file)
-  (load "shadow-settings")
   (load "general-interface")
   (load "programming")
+  (load "personal-commands")
   (load "epilogue")
-  (load "personal-bindings")
   (recentf-mode)
   (quietly-read-abbrev-file))
 
