@@ -6,17 +6,61 @@
 
 ;; (eval-when-compile
 ;;   (require 'use-package))
-
+(require 'use-package)
 ;; To add a :ensure for each use-package
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
 (setq package-native-compile t)
 
-(defun my/add-hooks (mode-hook hooks)
+(defun my/add-hooks (mode-hook &rest hooks)
   "Add hooks in the list `hooks' to `mode-hook'"
   (dolist (hook hooks)
     (add-hook mode-hook hook)))
+
+(defun my/add-hook-multi (hook &rest mode-hooks)
+  "Add a `hook' for multiple `mode-hooks'"
+  (dolist (mode mode-hooks)
+    (add-hook mode hook)))
+
+;;;; general to bind keys in a convenient way.
+(use-package general
+  :config ;;(general-evil-setup)
+          (general-auto-unbind-keys)
+          (general-create-definer prefix-c-xw :prefix "C-x w")
+          (general-create-definer prefix-c-xt :prefix "C-x t")
+          (general-create-definer leader-ala-vim
+            ;;:no-autoload t
+            :prefix ";"
+            :keymaps '(normal visual))
+
+          (prefix-c-xw "F" #'find-file-at-point
+                       "h" #'hexl-find-file
+                       "i" #'insert-file
+                       "w" #'write-region
+                       "v" #'view-file
+                       "c" #'comment-dwim
+                       "l" #'font-lock-mode
+                       "b" #'font-lock-fontify-block
+                       "a" #'font-lock-fontify-buffer
+                       "m" #'man-follow)
+          (prefix-c-xt "C-p" #'pop-tag-mark
+                       "C-r" #'consult-recent-file
+                       "C-e" #'recentf-edit-list)
+          (leader-ala-vim
+            "w"   #'whitespace-mode
+            "gg"  #'rgrep
+            "xd"  #'xref-find-definitions
+            "xr"  #'xref-find-definitions
+            "xs"  #'xref-show-xrefs-function
+            "w"   #'whitespace-mode)
+
+          (general-def "C-c d" #'yas-expand
+                       "M-RET"  #'hippie-expand
+                       "C-c h" #'hippie-expand
+                       "<f11>" #'next-error
+                       "<f12>" #'previous-error
+                       "<f9>" #'compile))
 
 (use-package diminish
   :commands (diminish))
@@ -25,8 +69,6 @@
   :custom (dimmer-fraction 0.16)
           (dimmer-adjustment-mode :foreground)
   :config (dimmer-mode))
-
-(use-package bind-key)
 
 (use-package auto-compile
   :diminish (auto-compile-mode)
@@ -43,28 +85,26 @@
           ;; (paradox-lines-per-entry 2)
   :commands (paradox-list-packages))
 
-;; leader key ala vim.
-(use-package evil-leader
-  :custom (evil-leader/leader "_")
-  :diminish (evil-leader-mode)
-  :init (global-evil-leader-mode)
-        (evil-leader/set-key "w" #'whitespace-mode))
-
+;;(setq evil-want-keybinding nil)
 (use-package evil
-  :after (evil-leader)
   :init (evil-mode 1)
   :custom (evil-ex-search-highlight-all t)
           (evil-ex-search-persistent-highlight nil)
-          (evil-ex-visual-char-range t)
-          (evil-want-C-u-scroll t)
+          (evil-ex-search-case 'smart)
+          ;(evil-ex-visual-char-range t)
+          ;(evil-want-C-u-scroll t)
+          (evil-search-module 'isearch)
           (evil-want-Y-yank-to-eol nil)
           (evil-want-fine-undo t)
+          (evil-want-C-i-jump nil)
   :diminish (evil-mode)
-  :hook (dired-mode . evil-emacs-state)
-        (calculator-mode . evil-emacs-state)
-
   :config
-  (progn
+    (dolist (mode '(dired-mode
+                    ;;Info-mode
+                    ;;help-mode
+                    calculator-mode))
+      (evil-set-initial-state mode 'emacs))
+
     (defun evil-ex-search-next-auto-clear-highlights ()
         (interactive)
         (evil-ex-search-next)
@@ -74,38 +114,28 @@
         (evil-ex-search-previous)
         (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
 
-    (define-key
-        evil-motion-state-map
-        (kbd "/")
-        #'evil-ex-search-forward)
-    (define-key
-        evil-motion-state-map
-        (kbd "?")
-        #'evil-ex-search-backward)
-    (define-key
-        evil-motion-state-map
-        (kbd "n")
-        #'evil-ex-search-next-auto-clear-highlights)
-
-    (define-key
-        evil-motion-state-map
-        (kbd "N")
-        #'evil-ex-search-previous-auto-clear-highlights)
+    (general-def
+        :keymaps 'evil-motion-state-map
+        "/" #'evil-ex-search-forward
+        "?" #'evil-ex-search-backward
+        "n" #'evil-ex-search-next-auto-clear-highlights
+        "N" #'evil-ex-search-previous-auto-clear-highlights)
 
     (evil-ex-define-cmd "ls" #'ibuffer)
-    (global-set-key (kbd "C-x C-b") #'ibuffer)
+    (general-def "C-x C-b" #'ibuffer)
     ;; settings to use evil-numbers C-a and C-x in vim normal mode
     ;; But C-x is use by emacs, and it is convenient to keep it.
-    ;; (define-key evil-normal-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
-    ;; (define-key evil-visual-state-map (kbd "C-c +") #'evil-numbers/inc-at-pt)
-    ;; (define-key evil-normal-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
-    ;; (define-key evil-visual-state-map (kbd "C-c -") #'evil-numbers/dec-at-pt)
-    (evil-leader/set-key
-      "+" #'evil-numbers/inc-at-pt
-      "-" #'evil-numbers/dec-at-pt)
-    (evil-define-key 'normal 'global (kbd "Q") #'evil-fill-and-move)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w e") #'find-file-other-window)
-    (evil-define-key 'normal (current-global-map) (kbd "C-w b") #'consult-buffer-other-window)))
+    (leader-ala-vim :no-autolad t
+      ","   #'evil-repeat-find-char-reverse
+      ";"   #'evil-repeat-find-char
+      "+"   #'evil-numbers/inc-at-pt
+      "-"   #'evil-numbers/dec-at-pt)
+    (general-def
+     :states 'normal
+     :keymaps 'global
+     "Q" #'evil-fill-and-move
+     "C-w e" #'find-file-other-window
+     "C-w b" #'consult-buffer-other-window))
 
 (use-package evil-quickscope
   :after evil
@@ -123,8 +153,8 @@
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
-  :bind (("C-," . embrace-commander))
-  :init (evil-leader/set-key "e" #'embrace-commander))
+  :general ("C-,"  #'embrace-commander)
+  :init (leader-ala-vim "e" #'embrace-commander))
 
 (use-package evil-embrace
   :after  (evil-surround embrace)
@@ -144,27 +174,19 @@
   :init (global-evil-matchit-mode 1))
 
 (use-package evil-nerd-commenter
-  :commands (evilnc-comment-or-uncomment-lines
-             evilnc-quick-comment-or-uncomment-to-the-line
-             evilnc-copy-and-comment-lines
-             evilnc-comment-or-uncomment-paragraphs
-             comment-dwim
-             evilnc-toggle-invert-comment-line-by-line
-             evilnc-comment-operator)
   :init
-  (global-set-key (kbd "M-;") #'evilnc-comment-or-uncomment-lines)
-  (evil-leader/set-key
-    "ci" #'evilnc-comment-or-uncomment-lines
-    "cl" #'evilnc-quick-comment-or-uncomment-to-the-line
+  (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
+  (leader-ala-vim
+    ":"  #'evilnc-comment-operator
     "cc" #'evilnc-copy-and-comment-lines
+    "cj" #'evilnc-quick-comment-or-uncomment-to-the-line
+    "cl" #'evilnc-comment-or-uncomment-lines
     "cp" #'evilnc-comment-or-uncomment-paragraphs
     "cr" #'comment-dwim
-    "cv" #'evilnc-toggle-invert-comment-line-by-line
-    "."  #'evilnc-comment-operator))
+    "cv" #'evilnc-toggle-invert-comment-line-by-line))
 
 (use-package nocomments-mode
-  :commands (nocomments-mode)
-  :init (evil-leader/set-key "cn" #'nocomments-mode))
+  :init (leader-ala-vim "cn" #'nocomments-mode))
 
 (use-package evil-visualstar
   :custom (evil-visualstar/persistent t)
@@ -178,30 +200,40 @@
           (which-key-idle-delay 0.5)
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
-  :init (unbind-key "C-h" help-map))
+  :init (general-unbind help-map "C-h"))
 
 (use-package goto-chg
-  :bind (("M-s M-e" . goto-last-change)
-         ("M-s M-r" . goto-last-change-reverse)))
+  :general ("M-s M-s"  #'goto-last-change)
+           ("M-s M-r"  #'goto-last-change-reverse))
 
 (use-package expand-region
-  :bind (("C-=" . er/expand-region)))
+  :general ("C-="  #'er/expand-region))
 
 (use-package hydra
   :commands (defhydra))
 
 (use-package vertico
+  :demand t
   :config (vertico-mode)
   :custom (vertico-count 25)
-  :bind (:map vertico-map
-              ("C-'"       . #'vertico-quick-exit)
-              ;; Have to rebind this because C-m is translated to RET.
-              ("<return>"  . #'exit-minibuffer)
-              ("C-m"       . #'vertico-insert)
-              ("C-c SPC"   . #'vertico-quick-exit)
-              ("DEL"       . #'vertico-directory-delete-char)))
+  ;; :bind (:map vertico-map
+  ;;             ("C-'"       . #'vertico-quick-exit)
+  ;;             ;; Have to rebind this because C-m is translated to RET.
+  ;;             ("<return>"  . #'exit-minibuffer)
+  ;;             ("C-m"       . #'vertico-insert)
+  ;;             ("C-c SPC"   . #'vertico-quick-exit)
+  ;;             ("DEL"       . #'vertico-directory-delete-char)))
+  :general (:keymaps 'vertico-map
+            :no-autoload t
+            "C-'"        #'vertico-quick-exit
+            ;; "<return>"   #'exit-minibuffer
+            ;; "C-m"        #'vertico-insert
+            ;; "C-c SPC"    #'vertico-quick-exit
+            "C-c SPC"    #'vertico-insert
+            "DEL"        #'vertico-directory-delete-char))
 
 (use-package consult
+  :commands (consult-customize) ;; for affe
   ;;:config
   ;; (defun pt/yank-pop ()
   ;;   "As pt/yank, but calling consult-yank-pop."
@@ -210,10 +242,15 @@
   ;;     (consult-yank-pop)
   ;;     (indent-region point-before (point))))
 
-  :bind (("C-x b"   . #'consult-buffer)
-         ("C-x r l" . #'consult-bookmark)
-         ("C-x C-f" . #'find-file)
-         ("C-h a"   . #'consult-apropos))
+  ;; :bind (("C-x b"   . #'consult-buffer)
+  ;;        ("C-x r l" . #'consult-bookmark)
+  ;;        ("C-x C-f" . #'find-file)
+  ;;        ("C-h a"   . #'consult-apropos))
+  :general
+  ("C-x b"    #'consult-buffer
+   "C-x r l"  #'consult-bookmark
+   "C-x C-f"  #'find-file
+   "C-h a"    #'consult-apropos)
 
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
@@ -221,7 +258,7 @@
           (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
           (consult-preview-key '(:debounce 0.3 any))
 
-  :init (evil-leader/set-key "m" #'consult-imenu)
+  :init (leader-ala-vim "m" #'consult-imenu)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
@@ -248,7 +285,8 @@
 
 (use-package marginalia
   :init (marginalia-mode)
-  :bind (:map minibuffer-local-map ("M-a" . #'marginalia-cycle)))
+  :general (:keymaps 'minibuffer-local-map
+                     "M-a"  #'marginalia-cycle))
 
 (use-package orderless
   :init (setq completion-styles '(substring orderless basic)
@@ -264,15 +302,19 @@
     (setq input (orderless-pattern-compiler input))
     (cons input (lambda (str) (orderless--highlight input str))))
   (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
-  ;; Manual preview key for `affe-grep'
-  (consult-customize affe-grep :preview-key (kbd "M-."))
-  (evil-leader/set-key "F" #'affe-find))
+  (leader-ala-vim
+    "gf" #'affe-find
+    "gc" #'affe-grep)
+  :custom (affe-count 100)
+  :config ;; Manual preview key for `affe-grep'
+  (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
-         :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
+  ;;:commands (consult-dir)
+  :general ("C-x C-d"  #'consult-dir)
+           (:keymaps 'vertico-map
+            "C-x C-d"  #'consult-dir
+            "C-x C-j"  #'consult-dir-jump-file))
 
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
@@ -316,10 +358,11 @@
       (call-interactively #'dabbrev-completion)))
 
 (use-package dabbrev
-  :bind (("M-²" . dabbrev-completion-all-buffers)
-          ;; Swap M-/ and C-M-/
-         ("M-/" . dabbrev-completion)
-         ("C-M-/" . dabbrev-expand)) ;; dabbrev-expand is also provide by C-p in evil-insert-state
+  :general
+  ("M-²"  #'dabbrev-completion-all-buffers
+   ;; Swap M-/ and C-M-/
+   "M-/"  #'dabbrev-completion
+   "C-M-/"  #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
   ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
@@ -327,63 +370,46 @@
 (use-package cape
   :init (push #'cape-dabbrev completion-at-point-functions)
         (push #'cape-file completion-at-point-functions)
-  :bind (("M-&" . cape-dabbrev)))
+  :general ("M-&"  #'cape-dabbrev))
 
 (use-package avy
   :config (avy-setup-default))
 
 ;; useless because the minor is not activated
-;; But I setup some bindings with evil-leader
+;; But I setup some bindings with my leader-ala-vim
 (use-package evil-avy
-  :after (avy evil-leader)
-  :commands (avy-goto-char
-             avy-goto-char
-             avy-goto-char-2
-             avy-goto-subword-1
-             avy-resume
-             avy-goto-word-0
-             avy-goto-word-1
-             avy-goto-line
-             evil-avy-mode)
+  :after (avy)
   :init
-    (global-set-key (kbd "M-s M-s")  #'avy-goto-char)
-    (evil-leader/set-key
-      "ac" #'avy-goto-char
-      "aC" #'avy-goto-char-2
-      "as" #'avy-goto-subword-1
-      "ar" #'avy-resume
-      "aw" #'avy-goto-word-0
-      "aW" #'avy-goto-word-1
-      "al" #'avy-goto-line
-      "aa" #'evil-avy-mode))
+    (leader-ala-vim
+      "aa"  #'evil-avy-mode
+      "ac"  #'avy-goto-char
+      "aC"  #'avy-goto-char-2
+      "al"  #'avy-goto-line
+      "ar"  #'avy-resume
+      "as"  #'avy-goto-subword-1
+      "aw"  #'avy-goto-word-0
+      "aW"  #'avy-goto-word-1))
 
 (use-package ace-jump-mode
-  :after (evil-leader)
-  :commands (ace-jump-mode
-             ace-jump-char-mode
-             ace-jump-line-mode)
   :init
-    (evil-leader/set-key
-      "jw" #'ace-jump-mode
-      "jc" #'ace-jump-char-mode
-      "jl" #'ace-jump-line-mode))
+  (leader-ala-vim
+    "ja"  #'ace-jump-mode
+    "jc"  #'ace-jump-char-mode
+    "jl"  #'ace-jump-line-mode))
 
 (use-package ace-window
-  :commands (ace-window)
-  :init (evil-leader/set-key "o" #'ace-window))
+  :init (leader-ala-vim "o" #'ace-window))
 
 (use-package ace-link
   :commands (ace-link)
   :init (ace-link-setup-default))
 
 (use-package consult-flyspell
-  :commands (consult-flyspell-correct-function)
   :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
-        (evil-leader/set-key "s" #'consult-flyspell-correct-function))
+        (leader-ala-vim "s" #'consult-flyspell-correct-function))
 
 (use-package consult-recoll
-  :commands (consult-recoll)
-  :init (evil-leader/set-key "r" #'consult-recoll))
+  :init (leader-ala-vim "r" #'consult-recoll))
 
 (use-package desktop
   :init (desktop-save-mode 1)
@@ -545,27 +571,16 @@
 
 
 (use-package iedit
-  :bind ("C-;" . iedit-mode)
-  :init (evil-leader/set-key ";" #'iedit-mode))
+  :general ("C-;"  #'iedit-mode))
 
 ;; multiple-cursors
 ;; see also https://github.com/fgallina/region-bindings-mode
 ;; to activate bindings when a region is selected
 
 ;; (use-package multiple-cursors
-;;   :commands (mc/mark-next-like-this-word
-;;              mc/mark-previous-like-this-word
-;;              mc/mark-next-like-this
-;;              mc/mark-previous-like-this
-;;              mc/mark-all-like-this
-;;              mc/mark-all-in-region
-;;              mc/mark-more-like-this-extended
-;;              mc/mark-all-words-like-this
-;;              mc/mark-all-symbols-like-this
-;;              mc/mark-all-like-this-dwim)
 ;;   :init
 ;;   (progn
-;;     (evil-leader/set-key
+;;     (leader-ala-vim
 ;;       "mw" #'mc/mark-next-like-this-word
 ;;       "mb" #'mc/mark-previous-like-this-word
 ;;       "mt" #'mc/mark-next-like-this
@@ -585,9 +600,8 @@
 
 (use-package undo-tree
   :diminish (undo-tree-mode)
-  :commands (undo-tree-visualize)
   :custom (evil-undo-system 'undo-tree)
-  :init (evil-leader/set-key "U" #'undo-tree-visualize)
+  :init (leader-ala-vim "U" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
 (use-package openwith
@@ -606,35 +620,25 @@
 (use-package magit-libgit)
 
 (use-package consult-ls-git
-  :commands (consult-ls-git)
-  :init (evil-leader/set-key "G" #'consult-ls-git))
+  :init (leader-ala-vim "G" #'consult-ls-git))
 
 (use-package treemacs
-  :bind ("C-x t t" . treemacs)
+  :commands (treemacs)
   :custom (treemacs-width 40)
           (treemacs-indentation 1)
-  :config
-  (require 'treemacs-evil)
-  (require 'treemacs-magit))
+  :init (prefix-c-xt "t" #'treemacs)
+  :config (require 'treemacs-all-the-icons)
+          (require 'treemacs-evil)
+          (require 'treemacs-magit))
 
 (use-package ripgrep
-  :commands (ripgrep-regexp)
-  :init (evil-leader/set-key
-          "gr" #'ripgrep-regexp
-          "gc" #'affe-grep))
+  :init (leader-ala-vim "gr" #'ripgrep-regexp))
 (use-package deadgrep
-  :commands (deadgrep)
-  :init (evil-leader/set-key "gd" #'deadgrep))
+  :init (leader-ala-vim "gd" #'deadgrep))
 
 (use-package ag
-  :commands (ag
-             ag-files
-             ag-regexp
-             ag-project
-             ag-project-files
-             ag-project-regexp)
   :init (setq ag-highlight-search t)
-  (evil-leader/set-key
+  (leader-ala-vim
     "gaa" #'ag
     "gaf" #'ag-files
     "gar" #'ag-regexp
@@ -643,18 +647,13 @@
     "gaR" #'ag-project-regexp))
 
 (use-package consult-ag
-  :commands (consult-ag)
-  :init (evil-leader/set-key "gac" #'consult-ag))
+  :init (leader-ala-vim "gac" #'consult-ag))
 
 (use-package helpful
   :hook (helpful-mode . evil-emacs-state)
-  :bind (:map help-map ("k" . helpful-key))
-  :commands (helpful-at-point
-             helpful-callable
-             helpful-variable
-             helpful-command)
+  :general (:keymaps 'help-map "k"  #'helpful-key)
   :init
-  (evil-leader/set-key
+  (leader-ala-vim
     "hk" #'helpful-key
     "hf" #'helpful-callable
     "hv" #'helpful-variable
@@ -662,9 +661,8 @@
     "hc" #'helpful-command))
 
 (use-package embark
-  :commands (embark-act)
-  :bind (("C-c e" . #'embark-act))
-  :init (evil-leader/set-key "E" #'embark-act))
+  :general ("C-c e"  #'embark-act)
+  :init (leader-ala-vim "E" #'embark-act))
 
 (defun embark-which-key-indicator ()
   "An embark indicator that displays keymaps using which-key.
@@ -705,8 +703,7 @@ targets."
             :around #'embark-hide-which-key-indicator)
 
 (use-package duplicate-thing
-  :commands (duplicate-thing)
-  :init (evil-leader/set-key "d" #'duplicate-thing))
+  :init (leader-ala-vim "d" #'duplicate-thing))
 
 (use-package parent-mode
   :commands (parent-mode-list parent-mode-is-derived-p))
@@ -716,8 +713,8 @@ targets."
   :custom (show-paren-style 'parenthesis))
 
 (use-package fill-column-indicator
-  :bind (("C-x t C-f" . fci-mode))
-  :commands (fci-mode))
+  :commands (fci-mode)
+  :init (prefix-c-xt "C-f"  #'fci-mode))
 
 (use-package hl-todo
   :diminish (hl-todo-mode)
@@ -727,20 +724,45 @@ targets."
   :init (setq vterm-always-compile-module t))
 
 (require 'hl-line)
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'text-mode-hook #'hl-line-mode)
+(my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
 
-;;;; To access universal argument in evil-normal-state
-(evil-leader/set-key "u" #'universal-argument)
+
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
-(with-eval-after-load 'dired (load "dired-x"))
+(with-eval-after-load 'dired (require 'dired-x))
 (defun my/set-dired-omit-mode()
   (dired-omit-mode 1))
 
-(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
+(defun dired-up-directory-same-buffer ()
+  "Go up in the same buffer."
+  (interactive)
+  (find-alternate-file ".."))
+
+;; To show only directories in dired
+(fset 'dired-only-show-directories
+      "*/tk")
+
+(general-define-key
+ :keymaps 'dired-mode-map
+ "^" #'dired-up-directory-same-buffer
+ "C-x C-k D" #'dired-only-show-directories)
+
+(my/add-hooks 'dired-mode-hook
+           #'my/set-dired-omit-mode)
+
+(setq dired-dwim-target t)
+
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
+;; bind another key for keyboard-quit
+(general-def "<cancel>" #'keyboard-quit) ;;
+;;;; global auto-revert-mode borrows from spacemacs
+;; Auto refresh
+(global-auto-revert-mode 1)
+;; ;; Also auto refresh dired, but be quiet about it
+;; (setq global-auto-revert-non-file-buffers t
+;;       auto-revert-verbose nil)
+;; (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
 ;; Peut poser un problème lorsqu'on édite un fichier
 ;; qui est destiné à être une liste de fichier pour tar
@@ -767,23 +789,20 @@ targets."
 (setq executable-prefix-env t)
 
 ;; diminish some minor modes
-(diminish 'auto-revert-mode "ARev")
+;; (diminish 'auto-revert-mode "ARev")
+(diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
 (global-so-long-mode)
 
-(defun my/set-personnal-font ()
-  "Restore my favorite font setting."
-  (interactive)
-  (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
-
-;; perhaps I should setq disabled-command-function to nil
-;; thus there were no longer disabled commands.
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'scroll-left 'disabled nil)
+;; No disable commands
 (put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+;;(put 'erase-buffer 'disabled nil)
+(put 'scroll-left 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
 
 (context-menu-mode 1)
 
