@@ -15,12 +15,11 @@
   Some settings are in early-init.el. Emacs before version 27 doesn't
   read this file.
 
-* Some Packages used
+* Some packages used
 
 ** use-package
 
 ** evil
-   - evil-leader (use undercore as leader-key)
    - evil-anzu
    - evil-nerd-commenter
    - evil-matchit
@@ -31,6 +30,8 @@
    - evil-lion
    - evil-string-inflection
    - evil-quickscope
+   - evil-avy
+   - evil-visualstar
 
 ** all-the-icons
    - all-the-icons-dired
@@ -45,13 +46,19 @@
    - marginalia
    - orderless
    - prescient
+   - embark
 ** Corfu
    - corfu
    - cape
 
 ** treemacs
+   - treemacs-evil
+   - treemacs-magit
+   - treemacs-all-the-icons
 
 ** others
+   - eyebrowse
+   - general.el (for all keybindings)
    - desktop.el (from emacs)
    - dimmer
    - diminish
@@ -59,7 +66,6 @@
    - avy
    - iedit
    - helpful
-   - embark
    - undo-tree
    - magit
    - paradox
@@ -68,6 +74,8 @@
    - ripgrep
    - deadgrep
    - ag
+   - wgrep
+   - wgrep-ag
    - nocomments-mode
    - goto-chg
    - fill-column-indicator
@@ -76,7 +84,7 @@
    - auto-compile
    - ace-window
 
-** Programmation
+** Programming
    - flycheck
    - yasnippet
 
