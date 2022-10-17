@@ -31,24 +31,26 @@
           (general-create-definer prefix-c-xt :prefix "C-x t")
           (general-create-definer leader-ala-vim
             ;;:no-autoload t
-            :prefix ";"
+            :prefix "SPC"
             :keymaps '(normal visual))
 
-          (prefix-c-xw "F" #'find-file-at-point
+          (prefix-c-xw "f" #'find-file-at-point ;; gf
                        "h" #'hexl-find-file
-                       "i" #'insert-file
-                       "w" #'write-region
+                       "i" #'insert-file       ;;  :r
+                       "w" #'write-region      ;; visual, then :w
                        "v" #'view-file
-                       "c" #'comment-dwim
+                       "c" #'comment-dwim      ;; SPC cr
                        "l" #'font-lock-mode
                        "b" #'font-lock-fontify-block
                        "a" #'font-lock-fontify-buffer
                        "m" #'man-follow)
+
           (prefix-c-xt "C-p" #'pop-tag-mark
                        "C-r" #'consult-recent-file
                        "C-e" #'recentf-edit-list)
+
           (leader-ala-vim
-            "w"   #'whitespace-mode
+            "SPC" #'execute-extended-command
             "gg"  #'rgrep
             "xd"  #'xref-find-definitions
             "xr"  #'xref-find-definitions
@@ -126,8 +128,6 @@
     ;; settings to use evil-numbers C-a and C-x in vim normal mode
     ;; But C-x is use by emacs, and it is convenient to keep it.
     (leader-ala-vim :no-autolad t
-      ","   #'evil-repeat-find-char-reverse
-      ";"   #'evil-repeat-find-char
       "+"   #'evil-numbers/inc-at-pt
       "-"   #'evil-numbers/dec-at-pt)
     (general-def
@@ -177,7 +177,7 @@
   :init
   (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
   (leader-ala-vim
-    ":"  #'evilnc-comment-operator
+    ";"  #'evilnc-comment-operator
     "cc" #'evilnc-copy-and-comment-lines
     "cj" #'evilnc-quick-comment-or-uncomment-to-the-line
     "cl" #'evilnc-comment-or-uncomment-lines
@@ -360,6 +360,7 @@
 (use-package dabbrev
   :general
   ("M-²"  #'dabbrev-completion-all-buffers
+   "s-²"  #'dabbrev-completion-all-buffers
    ;; Swap M-/ and C-M-/
    "M-/"  #'dabbrev-completion
    "C-M-/"  #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
@@ -370,7 +371,9 @@
 (use-package cape
   :init (push #'cape-dabbrev completion-at-point-functions)
         (push #'cape-file completion-at-point-functions)
-  :general ("M-&"  #'cape-dabbrev))
+  :general ("M-&"  #'cape-dabbrev
+            "M-³"  #'cape-dabbrev
+            "s-³"  #'cape-dabbrev))
 
 (use-package avy
   :config (avy-setup-default))
@@ -743,7 +746,7 @@ targets."
 (fset 'dired-only-show-directories
       "*/tk")
 
-(general-define-key
+(general-def
  :keymaps 'dired-mode-map
  "^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
