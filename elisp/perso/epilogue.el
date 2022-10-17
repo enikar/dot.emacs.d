@@ -3,6 +3,9 @@
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
 ;;; Code:
 
+(require 'general-interface)
+(require 'programming)
+
 (use-package persistent-scratch
   :init (progn
           (persistent-scratch-autosave-mode t)

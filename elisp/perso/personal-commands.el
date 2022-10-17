@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
+(require 'general-interface)
 
 (defun my-hscroll-mode ()
   "Set buffer local truncate-lines's value to t."

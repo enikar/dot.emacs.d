@@ -7,6 +7,8 @@
 ;; (eval-when-compile
 ;;   (require 'use-package))
 
+(require 'general-interface)
+
 (use-package yasnippet
   :defer 5
   :hook ((prog-mode) . yas-minor-mode)
