@@ -33,10 +33,10 @@
 
 (let ((file-name-handler-alist nil))
   (load custom-file)
-  (load "general-interface")
-  (load "programming")
-  (load "personal-commands")
-  (load "epilogue")
+  (require 'general-interface)
+  (require 'programming)
+  (require 'personal-commands)
+  (require 'epilogue)
   (recentf-mode)
   (quietly-read-abbrev-file))
 
