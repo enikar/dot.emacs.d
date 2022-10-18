@@ -31,7 +31,7 @@
           (general-create-definer prefix-c-xt :prefix "C-x t")
           (general-unbind :states '(normal viusal) "SPC")
           (general-create-definer leader-ala-vim
-            :states '(normal visual insert emacs)
+            :states '(normal visual operator insert emacs)
             :prefix "SPC"
             :non-normal-prefix "M-SPC"
             :prefix-command 'leader-ala-vim-command
@@ -65,12 +65,11 @@
             "xs"    #'xref-show-xrefs-function
             "w"     #'whitespace-mode)
 
-          (general-def "C-c d" #'yas-expand
-                       "M-RET"  #'hippie-expand
+          (general-def "M-RET" #'hippie-expand
                        "C-c h" #'hippie-expand
-                       "<f11>" #'next-error
-                       "<f12>" #'previous-error
-                       "<f9>" #'compile))
+                       "<f9>"  #'compile
+                       "<f11>" #'previous-error
+                       "<f12>" #'next-error))
 
 (use-package diminish
   :commands (diminish))

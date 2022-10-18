@@ -11,6 +11,7 @@
 
 (use-package yasnippet
   :defer 5
+  :general (prog-mode-map "C-c d" #'yas-expand)
   :hook ((prog-mode) . yas-minor-mode)
   :config (yas-reload-all)
   :init (leader-ala-vim "y" #'yas-describe-tables))
