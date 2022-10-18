@@ -313,7 +313,7 @@
   (leader-ala-vim
     "gf" #'affe-find
     "gc" #'affe-grep)
-  :custom (affe-count 100)
+  :custom (affe-count 30)
   :config ;; Manual preview key for `affe-grep'
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
@@ -351,8 +351,6 @@
   ;; See also `corfu-excluded-modes'.
   :init
   (global-corfu-mode))
-
-(use-package corfu-doc)
 
 (use-package kind-icon
   :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
