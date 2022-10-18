@@ -26,13 +26,16 @@
 ;;;; general to bind keys in a convenient way.
 (use-package general
   :config ;;(general-evil-setup)
-          (general-auto-unbind-keys)
+          ;;(general-auto-unbind-keys)
           (general-create-definer prefix-c-xw :prefix "C-x w")
           (general-create-definer prefix-c-xt :prefix "C-x t")
+          (general-unbind :states '(normal viusal) "SPC")
           (general-create-definer leader-ala-vim
-            ;;:no-autoload t
+            :states '(normal visual insert emacs)
             :prefix "SPC"
-            :keymaps '(normal visual))
+            :non-normal-prefix "M-SPC"
+            :prefix-command 'leader-ala-vim-command
+            :prefix-map 'leader-ala-vim-map)
 
           (prefix-c-xw "f" #'find-file-at-point ;; gf
                        "h" #'hexl-find-file
@@ -50,12 +53,17 @@
                        "C-e" #'recentf-edit-list)
 
           (leader-ala-vim
-            "SPC" #'execute-extended-command
-            "gg"  #'rgrep
-            "xd"  #'xref-find-definitions
-            "xr"  #'xref-find-definitions
-            "xs"  #'xref-show-xrefs-function
-            "w"   #'whitespace-mode)
+            ""      '(nil :wk "leader-ala-vim menu")
+            "SPC"   #'execute-extended-command
+            "M-SPC" #'just-one-space
+            ":"     #'eval-expression
+            "g"     '(:ignore t :wk "Searching")
+            "gg"    #'rgrep
+            "x"     '(:ignore t :wk "Xref")
+            "xd"    #'xref-find-definitions
+            "xr"    #'xref-find-definitions
+            "xs"    #'xref-show-xrefs-function
+            "w"     #'whitespace-mode)
 
           (general-def "C-c d" #'yas-expand
                        "M-RET"  #'hippie-expand
@@ -178,6 +186,7 @@
   (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
   (leader-ala-vim
     ";"  #'evilnc-comment-operator
+    "c" '(:ignore t :wk "Comments")
     "cc" #'evilnc-copy-and-comment-lines
     "cj" #'evilnc-quick-comment-or-uncomment-to-the-line
     "cl" #'evilnc-comment-or-uncomment-lines
@@ -310,7 +319,6 @@
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package consult-dir
-  ;;:commands (consult-dir)
   :general ("C-x C-d"  #'consult-dir)
            (:keymaps 'vertico-map
             "C-x C-d"  #'consult-dir
@@ -349,6 +357,8 @@
 
 (use-package kind-icon
   :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+          (kind-icon-default-style
+           '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.7 :scale 1.0))
   :config (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
 (defun dabbrev-completion-all-buffers ()
@@ -384,6 +394,7 @@
   :after (avy)
   :init
     (leader-ala-vim
+      "a"   '(:ignore t :wk "Avy")
       "aa"  #'evil-avy-mode
       "ac"  #'avy-goto-char
       "aC"  #'avy-goto-char-2
@@ -396,6 +407,7 @@
 (use-package ace-jump-mode
   :init
   (leader-ala-vim
+    "j"   '(:ingore t :wk "Ace-jump")
     "ja"  #'ace-jump-mode
     "jc"  #'ace-jump-char-mode
     "jl"  #'ace-jump-line-mode))
@@ -642,6 +654,7 @@
 (use-package ag
   :init (setq ag-highlight-search t)
   (leader-ala-vim
+    "ga"  '(:ignore t :wk "Ag")
     "gaa" #'ag
     "gaf" #'ag-files
     "gar" #'ag-regexp
@@ -652,11 +665,23 @@
 (use-package consult-ag
   :init (leader-ala-vim "gac" #'consult-ag))
 
+(defun my/helpful-quit-window ()
+  (general-def
+    :keymaps 'helpful-mode-map
+    :states 'normal
+    "q" #'quit-window))
+
 (use-package helpful
-  :hook (helpful-mode . evil-emacs-state)
-  :general (:keymaps 'help-map "k"  #'helpful-key)
+  :hook (helpful-mode . my/helpful-quit-window)
+  :general (:keymaps 'help-map
+                     "C" #'helpful-command
+                     "f" #'helpful-callable
+                     "k" #'helpful-key
+                     "v" #'helpful-variable)
+           ;; (:keymaps '(helpful-mode-map override) "q" #'quit-window)
   :init
   (leader-ala-vim
+    "h"  '(:ignore t :wk "Helpful")
     "hk" #'helpful-key
     "hf" #'helpful-callable
     "hv" #'helpful-variable
@@ -807,7 +832,7 @@ targets."
 (put 'dired-find-alternate-file 'disabled nil)
 
 
-(context-menu-mode 1)
+;;(context-menu-mode 1)
 
 (provide 'general-interface)
 ;;; general-interface.el ends here

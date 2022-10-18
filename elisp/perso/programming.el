@@ -62,7 +62,10 @@ If the error list is visible, hide it.  Otherwise, show it."
             "<f6>"  #'flycheck-next-error
             "<f7>"  #'flycheck-previous-error)
   :commands (flycheck flycheck-mode)
-  :init (leader-ala-vim :no-autload t "ff" #'flycheck-mode)
+  :init (leader-ala-vim
+          :no-autload t
+          "f" '(:ignore t :wk "Flycheck")
+          "ff" #'flycheck-mode)
         (prefix-c-xt :no-autoload t "f" #'flycheck-mode))
 
 (use-package consult-flycheck
