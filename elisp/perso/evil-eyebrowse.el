@@ -48,13 +48,12 @@
 ;; In addition, when possible, `gt'and `gT' work as in vim, i.e.
 ;; go to next and previous slot respectively.
 
-
 ;;; Code:
 
 (require 'evil)
 (require 'eyebrowse)
 (require 'dash)
-(require 'bind-key)
+(require 'general)
 
 ;; I just copy/paste code from eyebrowse and adapt
 ;; the method in eyebrowse--format-slot and eyebrowse--read-slot.
@@ -135,8 +134,9 @@ slot to switch to."
 (declare-function 'dired-do-compress "dired-aux")
 (with-eval-after-load 'dired
   (progn
-    (define-key  dired-mode-map "V" #'dired-do-compress)
-    (unbind-key "Z" dired-mode-map)
+    (general-def dired-mode-map "V" #'dired-do-compress)
+    ;;(unbind-key "Z" dired-mode-map)
+    (general-unbind dired-mode-map "Z")
     (evil-eb-update-map dired-mode-map)))
 
 ;; Add shortcuts for specific mode
