@@ -4,6 +4,26 @@
 ;;; Code:
 (require 'general-interface)
 
+;; Unbind the bindings to emacs tab function in "C-x t" prefix.
+;; I use eyebrowse instead.
+(general-unbind
+  "C-x t RET"
+  "C-x t 0"
+  "C-x t 1"
+  "C-x t 2"
+  "C-x t d"
+  "C-x t G"
+  "C-x t M"
+  "C-x t m"
+  "C-x t N"
+  "C-x t n"
+  "C-x t O"
+  "C-x t o"
+  "C-x t p"
+  "C-x t r"
+  "C-x t u"
+  "C-x t C-r")
+
 (defun my-hscroll-mode ()
   "Set buffer local truncate-lines's value to t."
   (interactive)
@@ -55,9 +75,7 @@
     (save-excursion
       (untabify (point-min) (point-max)))))
 
-;;(define-key function-key-map [C-xt] (kbd "C-x t"))
-
-(prefix-c-xt "G" #'toggle-indent-tabs-mode)
+(prefix-c-xt "g" #'toggle-indent-tabs-mode)
 
 (defun trim-buffer ()
   "Remove trailing white spaces at the end of lines for a complete buffer."
@@ -80,7 +98,7 @@
         (trim-buffer)
         (widen)))))
 
-(prefix-c-xt "C-b" #'trim-buffer)
+(prefix-c-xt "b" #'trim-buffer)
 
 (defun no-break-to-space ()
   "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."

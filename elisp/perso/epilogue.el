@@ -14,11 +14,26 @@
   :custom (persistent-scratch-save-file "~/.emacs.d/.cache/persistent-scratch")
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
 
-
 (use-package eyebrowse
   :custom (eyebrowse-mode-line-style 'always)
   :init (eyebrowse-mode t)
   :config (require 'evil-eyebrowse))
+
+;; Finally, bind "C-x t" prefix
+(prefix-c-xt
+  "e" #'recentf-edit-list
+  "i" #'indent-region
+  "p" #'pop-tag-mark
+  "r" #'consult-recent-file
+  "t" #'treemacs
+  "C-f" #'fci-mode)
+
+(prefix-c-xt
+  :no-autload t ; autoload is done with use-package declaration
+  "f" #'flycheck-mode)
+
+;; for which-key
+(general-unbind evil-window-map "C-h")
 
 (provide 'epilogue)
 ;;; epilogue.el ends here

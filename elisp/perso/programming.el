@@ -60,14 +60,14 @@ If the error list is visible, hide it.  Otherwise, show it."
   :hook (sh-mode . flycheck-mode)
   :general ("<f8>"  #'my/toggle-flycheck-error-list
             "<f5>"  #'flycheck-first-error
-            "<f6>"  #'flycheck-next-error
-            "<f7>"  #'flycheck-previous-error)
+            "<f6>"  #'flycheck-previous-error
+            "<f7>"  #'flycheck-next-error)
   :commands (flycheck flycheck-mode)
   :init (leader-ala-vim
           :no-autload t
           "f" '(:ignore t :wk "Flycheck")
-          "ff" #'flycheck-mode)
-        (prefix-c-xt :no-autoload t "f" #'flycheck-mode))
+          "ff" #'flycheck-mode))
+        ;; (prefix-c-xt :no-autoload t "f" #'flycheck-mode)) ;; deferred to epilogue.el
 
 (use-package consult-flycheck
   :after (flycheck consult)

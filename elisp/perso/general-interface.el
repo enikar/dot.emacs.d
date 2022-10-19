@@ -37,20 +37,20 @@
             :prefix-command 'leader-ala-vim-command
             :prefix-map 'leader-ala-vim-map)
 
-          (prefix-c-xw "f" #'find-file-at-point ;; gf
-                       "h" #'hexl-find-file
-                       "i" #'insert-file       ;;  :r
-                       "w" #'write-region      ;; visual, then :w
-                       "v" #'view-file
-                       "c" #'comment-dwim      ;; SPC cr
-                       "l" #'font-lock-mode
-                       "b" #'font-lock-fontify-block
-                       "a" #'font-lock-fontify-buffer
-                       "m" #'man-follow)
+          (prefix-c-xw
+            "f" #'find-file-at-point ;; gf
+            "h" #'hexl-find-file
+            "i" #'insert-file       ;;  :r
+            "w" #'write-region      ;; visual, then :w
+            "v" #'view-file
+            "c" #'comment-dwim      ;; SPC cr
+            "l" #'font-lock-mode
+            "b" #'font-lock-fontify-block
+            "a" #'font-lock-fontify-buffer
+            "m" #'man-follow)
 
-          (prefix-c-xt "C-p" #'pop-tag-mark
-                       "C-r" #'consult-recent-file
-                       "C-e" #'recentf-edit-list)
+          ;; prefix-c-xt bindings are deferred to personal-commands.el
+          ;; and epilogue.el to ensure they are included properly.
 
           (leader-ala-vim
             ""      '(nil :wk "leader-ala-vim menu")
@@ -65,11 +65,12 @@
             "xs"    #'xref-show-xrefs-function
             "w"     #'whitespace-mode)
 
-          (general-def "M-RET" #'hippie-expand
-                       "C-c h" #'hippie-expand
-                       "<f9>"  #'compile
-                       "<f11>" #'previous-error
-                       "<f12>" #'next-error))
+          (general-def
+            "M-RET" #'hippie-expand
+            "C-c h" #'hippie-expand
+            "<f9>"  #'compile
+            "<f11>" #'previous-error
+            "<f12>" #'next-error))
 
 (use-package diminish
   :commands (diminish))
@@ -638,7 +639,7 @@
   :commands (treemacs)
   :custom (treemacs-width 40)
           (treemacs-indentation 1)
-  :init (prefix-c-xt "t" #'treemacs)
+  ;;:init (prefix-c-xt "t" #'treemacs) ;; deferred to epilogue.el
   :config (require 'treemacs-all-the-icons)
           (require 'treemacs-evil)
           (require 'treemacs-magit))
@@ -737,9 +738,9 @@ targets."
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
 
-(use-package fill-column-indicator
-  :commands (fci-mode)
-  :init (prefix-c-xt "C-f"  #'fci-mode))
+(use-package fill-column-indicator)
+  ;;:commands (fci-mode)     ;; managed by general.el
+  ;;:init (prefix-c-xt "C-f" #'fci-mode)  ;; deferred to epilogue.el
 
 (use-package hl-todo
   :diminish (hl-todo-mode)
@@ -750,8 +751,6 @@ targets."
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
-
-
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
