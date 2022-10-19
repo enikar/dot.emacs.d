@@ -171,6 +171,33 @@ slot to switch to."
              (define-key package-menu-mode-map (kbd "^") #'beginning-of-line)
              )))
 
+;; Define a special binding for Customization buffers. It can also be usefull
+;; for special mode where emacs state is more handy.
+(defvar evil-eb-map2
+  (let ((prefix-map (make-sparse-keymap)))
+    (define-key prefix-map (kbd "M-\"") #'evil-eb--switch-to-window-config)
+    (define-key prefix-map (kbd "0") #'eyebrowse-switch-to-window-config-0)
+    (define-key prefix-map (kbd "1") #'eyebrowse-switch-to-window-config-1)
+    (define-key prefix-map (kbd "2") #'eyebrowse-switch-to-window-config-2)
+    (define-key prefix-map (kbd "3") #'eyebrowse-switch-to-window-config-3)
+    (define-key prefix-map (kbd "4") #'eyebrowse-switch-to-window-config-4)
+    (define-key prefix-map (kbd "5") #'eyebrowse-switch-to-window-config-5)
+    (define-key prefix-map (kbd "6") #'eyebrowse-switch-to-window-config-6)
+    (define-key prefix-map (kbd "7") #'eyebrowse-switch-to-window-config-7)
+    (define-key prefix-map (kbd "8") #'eyebrowse-switch-to-window-config-8)
+    (define-key prefix-map (kbd "9") #'eyebrowse-switch-to-window-config-9)
+    (define-key prefix-map (kbd "M-c") #'eyebrowse-create-window-config)
+    (define-key prefix-map (kbd "M-p") #'eyebrowse-prev-window-config)
+    (define-key prefix-map (kbd "M-n") #'eyebrowse-next-window-config)
+    (define-key prefix-map (kbd "M-q") #'eyebrowse-close-window-config)
+    (define-key prefix-map (kbd "M-a") #'eyebrowse-last-window-config)
+    prefix-map)
+  "Inital keymap for `Eyebrowse' for special buffer that need emacs state.")
+
+(defun my/eyebrowse-customization-buffer-bindings ()
+  (define-key custom-mode-map (kbd "M-z") evil-eb-map2))
+(add-hook 'Custom-mode-hook #'my/eyebrowse-customization-buffer-bindings)
+
 (provide 'evil-eyebrowse)
 
 ;;; evil-eyebrowse.el ends here
