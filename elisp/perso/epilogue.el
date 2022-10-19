@@ -15,29 +15,30 @@
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
 
 (use-package eyebrowse
-  :custom (eyebrowse-mode-line-style 'always)
   :init (eyebrowse-mode t)
+  :custom (eyebrowse-mode-line-style 'always)
+  :general ("C-<right>" #'eyebrowse-next-window-config
+            "C-<left>" #'eyebrowse-prev-window-config)
   :config (require 'evil-eyebrowse))
 
 ;; Finally, bind "C-x t" prefix
 (prefix-c-xt
-  "e" #'recentf-edit-list
-  "i" #'indent-region
-  "p" #'pop-tag-mark
-  "r" #'consult-recent-file
-  "t" #'treemacs
+  "e"   #'recentf-edit-list
+  "i"   #'indent-region
+  "p"   #'pop-tag-mark
+  "r"   #'consult-recent-file
+  "t"   #'treemacs
   "C-f" #'fci-mode)
 
 (prefix-c-xt
   :no-autload t ; autoload is done with use-package declaration
   "f" #'flycheck-mode)
 
-;; for which-key
 (general-unbind evil-window-map
-  "C-h" ; use by which-key
+  "C-h"    ; use by which-key
   ;; "gt"  ; bindings to emacs tab functions
   ;; "gT"
-  "g" ; remove the prefix is sufficient
+  "g"      ; remove the prefix is sufficient
   )
 
 (provide 'epilogue)
