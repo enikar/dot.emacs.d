@@ -225,13 +225,6 @@
   :demand t
   :config (vertico-mode)
   :custom (vertico-count 25)
-  ;; :bind (:map vertico-map
-  ;;             ("C-'"       . #'vertico-quick-exit)
-  ;;             ;; Have to rebind this because C-m is translated to RET.
-  ;;             ("<return>"  . #'exit-minibuffer)
-  ;;             ("C-m"       . #'vertico-insert)
-  ;;             ("C-c SPC"   . #'vertico-quick-exit)
-  ;;             ("DEL"       . #'vertico-directory-delete-char)))
   :general (:keymaps 'vertico-map
             :no-autoload t
             "C-'"        #'vertico-quick-exit
@@ -251,10 +244,6 @@
   ;;     (consult-yank-pop)
   ;;     (indent-region point-before (point))))
 
-  ;; :bind (("C-x b"   . #'consult-buffer)
-  ;;        ("C-x r l" . #'consult-bookmark)
-  ;;        ("C-x C-f" . #'find-file)
-  ;;        ("C-h a"   . #'consult-apropos))
   :general
   ("C-x b"    #'consult-buffer
    "C-x r l"  #'consult-bookmark
