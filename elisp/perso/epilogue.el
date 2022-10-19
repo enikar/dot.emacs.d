@@ -33,7 +33,12 @@
   "f" #'flycheck-mode)
 
 ;; for which-key
-(general-unbind evil-window-map "C-h")
+(general-unbind evil-window-map
+  "C-h" ; use by which-key
+  ;; "gt"  ; bindings to emacs tab functions
+  ;; "gT"
+  "g" ; remove the prefix is sufficient
+  )
 
 (provide 'epilogue)
 ;;; epilogue.el ends here
