@@ -49,8 +49,16 @@
             "a" #'font-lock-fontify-buffer
             "m" #'man-follow)
 
-          ;; prefix-c-xt bindings are deferred to personal-commands.el
-          ;; and epilogue.el to ensure they are included properly.
+          ;; unbind all "C-x t" bindings (functions for using emacs tab).
+          (general-unbind "C-x t")
+
+          (prefix-c-xt
+            "e"   #'recentf-edit-list
+            "i"   #'indent-region
+            "p"   #'pop-tag-mark)
+            ;; "r"   #'consult-recent-file
+            ;; "t"   #'treemacs
+            ;; "C-f" #'fci-mode)
 
           (leader-ala-vim
             ""      '(nil :wk "leader-ala-vim menu")
@@ -143,7 +151,12 @@
      :keymaps 'global
      "Q" #'evil-fill-and-move
      "C-w e" #'find-file-other-window
-     "C-w b" #'consult-buffer-other-window))
+     "C-w b" #'consult-buffer-other-window)
+    (general-unbind evil-window-map
+      "C-h"    ; use by which-key
+      ;; "gt"  ; bindings to emacs tab functions
+      ;; "gT"
+      "g"))    ; remove the prefix is sufficient
 
 (use-package evil-quickscope
   :after evil
@@ -257,6 +270,7 @@
           (consult-preview-key '(:debounce 0.3 any))
 
   :init (leader-ala-vim "m" #'consult-imenu)
+        (prefix-c-xt "r" #'consult-recent-file)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
@@ -628,7 +642,7 @@
   :commands (treemacs)
   :custom (treemacs-width 40)
           (treemacs-indentation 1)
-  ;;:init (prefix-c-xt "t" #'treemacs) ;; deferred to epilogue.el
+  :init (prefix-c-xt "t" #'treemacs)
   :config (require 'treemacs-all-the-icons)
           (require 'treemacs-evil)
           (require 'treemacs-magit))
@@ -727,9 +741,9 @@ targets."
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
 
-(use-package fill-column-indicator)
+(use-package fill-column-indicator
   ;;:commands (fci-mode)     ;; managed by general.el
-  ;;:init (prefix-c-xt "C-f" #'fci-mode)  ;; deferred to epilogue.el
+ :init (prefix-c-xt "C-f" #'fci-mode))
 
 (use-package hl-todo
   :diminish (hl-todo-mode)

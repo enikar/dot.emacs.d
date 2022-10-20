@@ -21,25 +21,5 @@
             "C-<left>" #'eyebrowse-prev-window-config)
   :config (require 'evil-eyebrowse))
 
-;; Finally, bind "C-x t" prefix
-(prefix-c-xt
-  "e"   #'recentf-edit-list
-  "i"   #'indent-region
-  "p"   #'pop-tag-mark
-  "r"   #'consult-recent-file
-  "t"   #'treemacs
-  "C-f" #'fci-mode)
-
-(prefix-c-xt
-  :no-autload t ; autoload is done with use-package declaration
-  "f" #'flycheck-mode)
-
-(general-unbind evil-window-map
-  "C-h"    ; use by which-key
-  ;; "gt"  ; bindings to emacs tab functions
-  ;; "gT"
-  "g"      ; remove the prefix is sufficient
-  )
-
 (provide 'epilogue)
 ;;; epilogue.el ends here

@@ -4,26 +4,6 @@
 ;;; Code:
 (require 'general-interface)
 
-;; Unbind the bindings to emacs tab function in "C-x t" prefix.
-;; I use eyebrowse instead.
-(general-unbind
-  "C-x t RET"
-  "C-x t 0"
-  "C-x t 1"
-  "C-x t 2"
-  "C-x t d"
-  "C-x t G"
-  "C-x t M"
-  "C-x t m"
-  "C-x t N"
-  "C-x t n"
-  "C-x t O"
-  "C-x t o"
-  "C-x t p"
-  "C-x t r"
-  "C-x t u"
-  "C-x t C-r")
-
 (defun my-hscroll-mode ()
   "Set buffer local truncate-lines's value to t."
   (interactive)

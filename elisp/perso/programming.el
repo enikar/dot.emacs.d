@@ -66,8 +66,8 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init (leader-ala-vim
           :no-autload t
           "f" '(:ignore t :wk "Flycheck")
-          "ff" #'flycheck-mode))
-        ;; (prefix-c-xt :no-autoload t "f" #'flycheck-mode)) ;; deferred to epilogue.el
+          "ff" #'flycheck-mode)
+        (prefix-c-xt :no-autoload t "f" #'flycheck-mode))
 
 (use-package consult-flycheck
   :after (flycheck consult)
