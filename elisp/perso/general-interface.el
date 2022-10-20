@@ -50,15 +50,12 @@
             "m" #'man-follow)
 
           ;; unbind all "C-x t" bindings (functions for using emacs tab).
-          (general-unbind "C-x t")
+          (general-unbind ctl-x-map "t")
 
           (prefix-c-xt
             "e"   #'recentf-edit-list
             "i"   #'indent-region
             "p"   #'pop-tag-mark)
-            ;; "r"   #'consult-recent-file
-            ;; "t"   #'treemacs
-            ;; "C-f" #'fci-mode)
 
           (leader-ala-vim
             ""      '(nil :wk "leader-ala-vim menu")
@@ -69,7 +66,7 @@
             "gg"    #'rgrep
             "x"     '(:ignore t :wk "Xref")
             "xd"    #'xref-find-definitions
-            "xr"    #'xref-find-definitions
+            "xr"    #'xref-find-references
             "xs"    #'xref-show-xrefs-function
             "w"     #'whitespace-mode)
 
