@@ -128,6 +128,8 @@ slot to switch to."
 
 (evil-eb-update-map evil-normal-state-map)
 (evil-eb-add-vim-compat evil-normal-state-map)
+
+;; Modify key bindings for specific modes
 (with-eval-after-load 'flycheck
   (evil-eb-update-map flycheck-error-list-mode-map))
 
@@ -139,7 +141,6 @@ slot to switch to."
     (general-unbind dired-mode-map "Z")
     (evil-eb-update-map dired-mode-map)))
 
-;; Add shortcuts for specific mode
 (with-eval-after-load 'man
   (if (boundp 'Man-mode-map)
       (evil-eb-update-map Man-mode-map)))
@@ -148,28 +149,31 @@ slot to switch to."
 ;;          (function (lambda ()
 ;;                      (evil-eb-update-map Man-mode-map))))
 
-(add-hook 'help-mode-hook
-        (function
-         (lambda ()
-           (evil-eb-update-map help-mode-map))))
+(defun evil-eb-help-mode-bindings ()
+  (if (boundp 'help-mode-map)
+      (evil-eb-update-map help-mode-map)))
+
+(add-hook 'help-mode-hook #'evil-eb-help-mode-bindings)
 
 
-(add-hook 'Info-mode-hook
-        (function
-         (lambda ()
-           (evil-eb-update-map Info-mode-map)
-           )))
+(defun evil-eb-info-mode-bindings ()
+  (if (boundp 'Info-mode-map)
+      (evil-eb-update-map Info-mode-map)))
+
+(add-hook 'Info-mode-hook #'evil-eb-info-mode-bindings)
 
 ;; Add some shortcut to the packages-menu-mode (list-packages)
 ;; in his map (package-menu-mode-map). We use package-menu-mode-hook.
-(add-hook 'package-menu-mode-hook
-          (function
-           (lambda ()
-             (evil-eb-update-map package-menu-mode-map)
-             (evil-eb-add-vim-compat package-menu-mode-map)
-             (define-key package-menu-mode-map (kbd "$") #'end-of-line)
-             (define-key package-menu-mode-map (kbd "^") #'beginning-of-line)
-             )))
+(defun evil-eb-package-menu-bindings ()
+  (if (boundp 'package-menu-mode-map)
+      (progn
+        (evil-eb-update-map package-menu-mode-map)
+        (evil-eb-add-vim-compat package-menu-mode-map)
+        (define-key package-menu-mode-map (kbd "$") #'end-of-line)
+        (define-key package-menu-mode-map (kbd "^") #'beginning-of-line))))
+
+(add-hook 'package-menu-mode-hook #'evil-eb-package-menu-bindings)
+
 
 ;; Define a special binding for Customization buffers. It can also be usefull
 ;; for special mode where emacs state is more handy.
@@ -191,11 +195,14 @@ slot to switch to."
     (define-key prefix-map (kbd "M-n") #'eyebrowse-next-window-config)
     (define-key prefix-map (kbd "M-q") #'eyebrowse-close-window-config)
     (define-key prefix-map (kbd "M-a") #'eyebrowse-last-window-config)
+    (define-key prefix-map (kbd "Z")   #'zap-to-char) ; keep a binding to zap-to-char
     prefix-map)
   "Inital keymap for `Eyebrowse' for special buffer that need emacs state.")
 
 (defun my/eyebrowse-customization-buffer-bindings ()
-  (define-key custom-mode-map (kbd "M-z") evil-eb-map2))
+  (if (boundp 'custom-mode-map)
+      (define-key custom-mode-map (kbd "M-z") evil-eb-map2)))
+
 (add-hook 'Custom-mode-hook #'my/eyebrowse-customization-buffer-bindings)
 
 (provide 'evil-eyebrowse)
