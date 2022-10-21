@@ -71,6 +71,7 @@
             "w"     #'whitespace-mode)
 
           (general-def
+            "<cancel>" #'keyboard-quit
             "M-RET" #'hippie-expand
             "C-c h" #'hippie-expand
             "<f9>"  #'compile
@@ -749,14 +750,42 @@ targets."
 (use-package vterm
   :init (setq vterm-always-compile-module t))
 
+(setq save-interprogram-paste-before-kill t
+      comint-scroll-show-maximum-output t
+      comint-scroll-to-bottom-on-input t
+      scroll-step 1
+      confirm-kill-processes nil
+      native-comp-async-report-warnings-errors 'silent
+      initial-scratch-message nil
+      ring-bell-function 'ignore
+      visible-bell nil
+      truncate-string-ellipsis "…"
+      use-short-answers t
+      enable-recursive-minibuffers t
+      require-final-newline t
+      executable-prefix-env t
+      dired-dwim-target t
+      compilation-scroll-output 'first-error)
+
+(add-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(minibuffer-depth-indicate-mode)
+
+(setq-default tab-width 4
+              indent-tabs-mode nil
+              indicate-empty-lines t)
+
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
+(prefix-c-xt "h" #'hl-line-mode)
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
 (with-eval-after-load 'dired (require 'dired-x))
 (defun my/set-dired-omit-mode()
   (dired-omit-mode 1))
+
+(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
 
 (defun dired-up-directory-same-buffer ()
   "Go up in the same buffer."
@@ -772,14 +801,7 @@ targets."
  "^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
 
-(my/add-hooks 'dired-mode-hook
-           #'my/set-dired-omit-mode)
 
-(setq dired-dwim-target t)
-
-(add-hook 'text-mode-hook #'turn-on-auto-fill)
-;; bind another key for keyboard-quit
-(general-def "<cancel>" #'keyboard-quit) ;;
 ;;;; global auto-revert-mode borrows from spacemacs
 ;; Auto refresh
 (global-auto-revert-mode 1)
@@ -787,30 +809,6 @@ targets."
 ;; (setq global-auto-revert-non-file-buffers t
 ;;       auto-revert-verbose nil)
 ;; (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
-
-;; Peut poser un problème lorsqu'on édite un fichier
-;; qui est destiné à être une liste de fichier pour tar
-;; option -T de tar.
-(setq require-final-newline t)
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-(setq-default indicate-empty-lines t)
-
-(defalias 'man-mode 'Man-mode)
-(setq comint-scroll-show-maximum-output t
-      comint-scroll-to-bottom-on-input t)
-
-(setq save-interprogram-paste-before-kill t
-      scroll-step 1)
-(setq-default tab-width 4)
-(setq-default indent-tabs-mode nil)
-
-(setq truncate-string-ellipsis "…"
-      use-short-answers t
-      compilation-scroll-output 'first-error)
-
-(setq enable-recursive-minibuffers t)
-(minibuffer-depth-indicate-mode)
-(setq executable-prefix-env t)
 
 ;; diminish some minor modes
 ;; (diminish 'auto-revert-mode "ARev")

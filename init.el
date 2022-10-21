@@ -10,12 +10,7 @@
 
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
       abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
-      save-abbrevs 'silently
-      confirm-kill-processes nil
-      native-comp-async-report-warnings-errors 'silent
-      initial-scratch-message nil
-      ring-bell-function 'ignore
-      visible-bell nil)
+      save-abbrevs 'silently)
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)
