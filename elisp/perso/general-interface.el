@@ -29,7 +29,7 @@
           ;;(general-auto-unbind-keys)
           (general-create-definer prefix-c-xw :prefix "C-x w")
           (general-create-definer prefix-c-xt :prefix "C-x t")
-          (general-unbind :states '(normal viusal) "SPC")
+          (general-unbind :states '(normal viusal operator) "SPC")
           (general-create-definer leader-ala-vim
             :states '(normal visual operator insert emacs)
             :prefix "SPC"
@@ -72,11 +72,11 @@
 
           (general-def
             "<cancel>" #'keyboard-quit
-            "M-RET" #'hippie-expand
-            "C-c h" #'hippie-expand
-            "<f9>"  #'compile
-            "<f11>" #'previous-error
-            "<f12>" #'next-error))
+            "M-RET"    #'hippie-expand
+            "C-c h"    #'hippie-expand
+            "<f9>"     #'compile
+            "<f11>"    #'previous-error
+            "<f12>"    #'next-error))
 
 (use-package diminish
   :commands (diminish))
@@ -801,6 +801,7 @@ targets."
  "^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
 
+;;(context-menu-mode 1)
 
 ;;;; global auto-revert-mode borrows from spacemacs
 ;; Auto refresh
@@ -824,9 +825,6 @@ targets."
 ;;(put 'erase-buffer 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
-
-
-;;(context-menu-mode 1)
 
 (provide 'general-interface)
 ;;; general-interface.el ends here
