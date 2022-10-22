@@ -132,10 +132,11 @@
 
     (general-def
         :keymaps 'evil-motion-state-map
-        "/" #'evil-ex-search-forward
-        "?" #'evil-ex-search-backward
-        "n" #'evil-ex-search-next-auto-clear-highlights
-        "N" #'evil-ex-search-previous-auto-clear-highlights)
+        "C-a" #'evil-jump-forward ; instead of C-i
+        "/"   #'evil-ex-search-forward
+        "?"   #'evil-ex-search-backward
+        "n"   #'evil-ex-search-next-auto-clear-highlights
+        "N"   #'evil-ex-search-previous-auto-clear-highlights)
 
     (evil-ex-define-cmd "ls" #'ibuffer)
     (general-def "C-x C-b" #'ibuffer)
@@ -609,8 +610,12 @@
 ;; use `gr` prefix in normal mode to access mc functionalities
 (use-package evil-mc
   :diminish (evil-mc-mode)
-  :init (global-evil-mc-mode 1))
-
+  :init (global-evil-mc-mode 1)
+        (general-def
+          :keymaps 'evil-mc-key-map
+          :states '(normal visual)
+          "C-t" #'evil-jump-to-tag ; want to keep jump to tag
+          "g C-t" #'evil-mc-skip-and-goto-next-match))
 
 (use-package undo-tree
   :diminish (undo-tree-mode)
