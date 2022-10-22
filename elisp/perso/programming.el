@@ -73,12 +73,13 @@ If the error list is visible, hide it.  Otherwise, show it."
   :after (flycheck consult)
   :init (leader-ala-vim "fc" #'consult-flycheck))
 
-(add-hook 'shell-mode-hook (function (lambda () (setq tab-width 8))))
-
 ;;;; language C
 (use-package xcscope
   :defer t)
 
+(defun my/no-auto-fill ()
+  (auto-fill-mode 0))
+²
 ;;;; haskell
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
@@ -87,7 +88,7 @@ If the error list is visible, hide it.  Otherwise, show it."
          (haskell-mode . imenu-add-menubar-index))
   :config
   (progn
-    (add-hook 'ghci-script-mode-hook (function (lambda() (auto-fill-mode 0))))
+    (add-hook 'ghci-script-mode-hook #'my/no-auto-fill)
     (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t
@@ -345,6 +346,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package latexdiff
   :defer t)
+
+(defun my/set-tab-with-to-8 ()
+  (setq tab-width 8))
+(add-hook 'shell-mode-hook #'my/set-tab-with-to-8)
 
 ;; auctex is very boring. They don't respect convention for
 ;; autoloading. Loading auctex.el slow down the emacs startup
