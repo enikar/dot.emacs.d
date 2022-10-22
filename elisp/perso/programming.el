@@ -79,7 +79,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
-²
+
 ;;;; haskell
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
