@@ -173,11 +173,11 @@
   :config (global-evil-surround-mode 1))
 
 (use-package embrace
+  :hook (org-mode-hook . embrace-org-mode-hook)
   :general ("C-,"  #'embrace-commander)
-  :init (leader-ala-vim "e" #'embrace-commander))
+           (leader-ala-vim "e" #'embrace-commander))
 
 (use-package evil-embrace
-  :after  (evil-surround embrace)
   :config (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-goggles
@@ -194,8 +194,8 @@
   :init (global-evil-matchit-mode 1))
 
 (use-package evil-nerd-commenter
-  :init
-  (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
+  :general
+  ("M-;" #'evilnc-comment-or-uncomment-lines)
   (leader-ala-vim
     ";"  #'evilnc-comment-operator
     "c" '(:ignore t :wk "Comments")
@@ -619,6 +619,9 @@
   :custom (evil-undo-system 'undo-tree)
   :init (leader-ala-vim "U" #'undo-tree-visualize)
         (global-undo-tree-mode))
+
+(use-package browse-kill-ring
+  :general (:states 'insert "M-y" #'browse-kill-ring))
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
