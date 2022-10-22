@@ -584,29 +584,26 @@
   :diminish (emojify))
   ;:hook (after-init . global-emojify-mode))
 
-
 (use-package iedit
   :general ("C-;"  #'iedit-mode))
 
-;; multiple-cursors
+(use-package evil-multiedit
+  :commands (evil-multiedit-ex-match)
+  :general (general-def :states 'visual
+                     "R" #'evil-multiedit-match-all
+                     "M-d" #'evil-multiedit-match-and-next
+                     "M-D" #'evil-multiedit-match-and-prev
+                     "C-M-d" #'evil-multiedit-restore
+           (general-def :states '(normal insert)
+                     "M-d" #'evil-multiedit-match-symbol-and-next
+                     "M-D" #'evil-multiedit-match-symbol-and-prev)
+           (general-def :states 'insert
+                     "C-M-d" #'evil-multiedit-toggle-marker-here))
+  :init (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
+
+;; multiple-cursors for evil
 ;; see also https://github.com/fgallina/region-bindings-mode
 ;; to activate bindings when a region is selected
-
-;; (use-package multiple-cursors
-;;   :init
-;;   (progn
-;;     (leader-ala-vim
-;;       "mw" #'mc/mark-next-like-this-word
-;;       "mb" #'mc/mark-previous-like-this-word
-;;       "mt" #'mc/mark-next-like-this
-;;       "mT" #'mc/mark-previous-like-this
-;;       "ma" #'mc/mark-all-like-this
-;;       "mr" #'mc/mark-all-in-region
-;;       "me" #'mc/mark-more-like-this-extended
-;;       "mW" #'mc/mark-all-words-like-this
-;;       "mS" #'mc/mark-all-symbols-like-this
-;;       "mD" #'mc/mark-all-like-this-dwim)))
-
 ;; use `gr` prefix in normal mode to access mc functionalities
 (use-package evil-mc
   :diminish (evil-mc-mode)
@@ -614,7 +611,7 @@
         (general-def
           :keymaps 'evil-mc-key-map
           :states '(normal visual)
-          "C-t" #'evil-jump-to-tag ; want to keep jump to tag
+          "C-t" #'pop-tag-mark ; want to keep pop tag
           "g C-t" #'evil-mc-skip-and-goto-next-match))
 
 (use-package undo-tree
