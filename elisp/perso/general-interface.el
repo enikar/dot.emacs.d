@@ -228,7 +228,8 @@
            ("M-s M-r"  #'goto-last-change-reverse))
 
 (use-package expand-region
-  :general ("C-="  #'er/expand-region))
+  :general ("C-="  #'er/expand-region)
+           (leader-ala-vim "=" #'er/expand-region))
 
 (use-package hydra
   :commands (defhydra))
