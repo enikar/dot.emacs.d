@@ -32,6 +32,8 @@
    - evil-quickscope
    - evil-avy
    - evil-visualstar
+   - evil-mc
+   - evil-multiedit
 
 ** all-the-icons
    - all-the-icons-dired
@@ -47,6 +49,8 @@
    - orderless
    - prescient
    - embark
+   - affe
+
 ** Corfu
    - corfu
    - cape
@@ -67,6 +71,7 @@
    - iedit
    - helpful
    - undo-tree
+   - browse-kill-ring
    - magit
    - paradox
    - hl-todo
@@ -80,9 +85,9 @@
    - goto-chg
    - fill-column-indicator
    - open-with
+   - duplicate-thing
    - vterm
    - auto-compile
-   - ace-window
 
 ** Programming
    - flycheck
