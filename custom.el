@@ -50,7 +50,7 @@
  '(vc-make-backup-files t)
  '(warning-minimum-level :error)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((use-package) (use-package))))
+ '(warning-suppress-types '((use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
