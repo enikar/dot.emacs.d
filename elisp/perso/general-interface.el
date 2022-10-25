@@ -633,14 +633,14 @@
 (use-package browse-kill-ring
   :general (:states 'insert "M-y" #'browse-kill-ring))
 
-;; Folding. There are several possibilities.
+;;;; Folding. There are several possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
 ;; - origami: M-x origami-mode
 ;; - vdiff (vim diff): inside a vdiff session
 ;; - evil-vimish-fold: M-x evil-vimish-fold-mode
 ;; Folding is also possible in ouline-mode, org-mode and
-;; hide-ifdef-mode.
+;; hide-ifdef-mode (these are built in emacs).
 ;; Hideshow is built in emacs, so it has my preference.
 (use-package origami
   :general (leader-ala-vim
@@ -672,8 +672,9 @@
 (require 'cl-lib)
 (defun myfold/set-folding-method (fold-method)
   "Set folding method to `fold-method'."
-  (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
-    (funcall m -1))
+  (let ((inhibit-message t))
+    (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
+      (funcall m -1)))
   (cl-case fold-method
     (hideshow (hs-minor-mode))
     (origami (origami-mode))
@@ -704,8 +705,7 @@
              "vb" #'vdiff-buffers
              "vB" #'vdiff-buffers3
              "vc" #'vdiff-current-file
-             "vm" #'vdiff-merge-conflict
-             ))
+             "vm" #'vdiff-merge-conflict))
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
