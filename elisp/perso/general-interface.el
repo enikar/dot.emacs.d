@@ -109,7 +109,7 @@
           (evil-ex-search-case 'smart)
           ;(evil-ex-visual-char-range t)
           ;(evil-want-C-u-scroll t)
-          (evil-search-module 'isearch)
+          (evil-search-module 'evil-search)
           (evil-want-Y-yank-to-eol nil)
           (evil-want-fine-undo t)
           (evil-want-C-i-jump nil)
@@ -331,6 +331,13 @@
   :custom (ctrlf-default-search-style 'fuzzy)
   :config (ctrlf-mode))
 
+;; (defun corfu-enable-in-minibuffer ()
+;;   "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+;;   (when (where-is-internal #'completion-at-point (list (current-local-map)))
+;;     ;; (setq-local corfu-auto nil) Enable/disable auto completion
+;;     (corfu-mode 1)))
+;;(add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+
 (use-package corfu
   ;; Optional customizations
   ;; :custom
@@ -353,6 +360,7 @@
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
+  ;; :hook (minibuffer-setup-hook . corfu-enable-in-minibuffer)
   :init
   (global-corfu-mode))
 
@@ -414,7 +422,7 @@
     "jl"  #'ace-jump-line-mode))
 
 (use-package ace-window
-  :init (leader-ala-vim "o" #'ace-window))
+  :init (leader-ala-vim "O" #'ace-window))
 
 (use-package ace-link
   :commands (ace-link)
@@ -623,6 +631,57 @@
 
 (use-package browse-kill-ring
   :general (:states 'insert "M-y" #'browse-kill-ring))
+
+;; Folding. There are several possibilities.
+;; Use:
+;; - hideshow: M-x hs-minor-mode
+;; - origami: M-x origami-mode
+;; - vdiff (vim diff): inside a vdiff session
+;; - evil-vimish-fold: M-x evil-vimish-fold-mode
+;; Folding is also possible in ouline-mode, org-mode and
+;; hide-ifdef-mode.
+;; Hideshow is built in emacs, so it has my preference.
+
+(use-package origami
+  :general (leader-ala-vim
+             "o" '(:ignore t :wk "Origami")
+             "om" #'origami-mode ;; to use it
+             "oo" #'origami-open-node
+             "oO" #'origami-open-node-recursively
+             "os" #'origami-show-node
+             "oS" #'origami-show-only-node
+             "oc" #'origami-close-node
+             "oC" #'origami-close-node-recursively
+             "oa" #'origami-open-all-nodes
+             "oA" #'origami-close-all-nodes
+             "ot" #'origami-toggle-node
+             "oT" #'origami-toggle-node-recursively
+             "oH" #'origami-toggle-all-nodes
+             "o<" #'origami-previous-fold
+             "o>" #'origami-next-fold
+             "of" #'origami-forward-fold
+             "oF" #'origami-forward-fold-same-level
+             "oB" #'origami-backward-fold-same-level
+             "ou" #'origami-undo
+             "or" #'origami-redo
+             "oR" #'origami-reset))
+
+;; vimdiff, ediff is perfect but they aren't folding possibilities
+;; with it. Vdiff is also very nice.
+(use-package vdiff
+  :general (leader-ala-vim
+             "v" '(:ignore t :wk "Vdiff")
+             "vv" #'vdiff-hydra/body
+             "vf" #'vdiff-files
+             "vF" #'vdiff-files3
+             "vb" #'vdiff-buffers
+             "vB" #'vdiff-buffers3
+             "vc" #'vdiff-current-file
+             "vm" #'vdiff-merge-conflict
+             ))
+
+;; Manual definition of folds ala vim..
+(use-package evil-vimish-fold)
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
