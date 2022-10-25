@@ -642,14 +642,16 @@
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode.
 ;; Hideshow is built in emacs, so it has my preference.
+(require 'cl-lib)
 (defun myfold/set-folding-method (fold-method)
   "Set folding method to `fold-method'."
   (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
     (funcall m -1))
-  (cond ((eq fold-method 'hideshow) (hs-minor-mode))
-        ((eq fold-method 'origami) (origami-mode))
-        ((eq fold-method 'vimish)  (evil-vimish-fold-mode))
-        ((eq fold-method 'none) nil)))
+  (cl-case fold-method
+    (hideshow (hs-minor-mode))
+    (origami (origami-mode))
+    (vimish  (evil-vimish-fold-mode))
+    (none nil)))
 
 (defun myfold/choose-fold-method (fold-method)
   (interactive (list
