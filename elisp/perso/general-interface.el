@@ -144,7 +144,8 @@
     ;; But C-x is use by emacs, and it is convenient to keep it.
     (leader-ala-vim :no-autolad t
       "+"   #'evil-numbers/inc-at-pt
-      "-"   #'evil-numbers/dec-at-pt)
+      "-"   #'evil-numbers/dec-at-pt
+      "TAB" `(,#'evil-switch-to-windows-last-buffer :wk "Last buffer"))
     (general-def
      :states 'normal
      :keymaps 'global
@@ -641,6 +642,25 @@
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode.
 ;; Hideshow is built in emacs, so it has my preference.
+(defun myfold/set-folding-method (fold-method)
+  "Set folding method to `fold-method'."
+  (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
+    (funcall m -1))
+  (cond ((eq fold-method 'hideshow) (hs-minor-mode))
+        ((eq fold-method 'origami) (origami-mode))
+        ((eq fold-method 'vimish)  (evil-vimish-fold-mode))
+        ((eq fold-method 'none) nil)))
+
+(defun myfold/choose-fold-method (fold-method)
+  (interactive (list
+                (let ((candidate
+                       (completing-read "Folding method: "
+                                        '(hideshow origami vimish none))))
+                  candidate)))
+  (myfold/set-folding-method (intern fold-method)))
+
+(leader-ala-vim
+  "F" `(,#'myfold/choose-fold-method :wk "Choose folding method"))
 
 (use-package origami
   :general (leader-ala-vim
