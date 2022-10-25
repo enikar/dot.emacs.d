@@ -642,32 +642,9 @@
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode.
 ;; Hideshow is built in emacs, so it has my preference.
-(require 'cl-lib)
-(defun myfold/set-folding-method (fold-method)
-  "Set folding method to `fold-method'."
-  (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
-    (funcall m -1))
-  (cl-case fold-method
-    (hideshow (hs-minor-mode))
-    (origami (origami-mode))
-    (vimish  (evil-vimish-fold-mode))
-    (none nil)))
-
-(defun myfold/choose-fold-method (fold-method)
-  (interactive (list
-                (let ((candidate
-                       (completing-read "Folding method: "
-                                        '(hideshow origami vimish none))))
-                  candidate)))
-  (myfold/set-folding-method (intern fold-method)))
-
-(leader-ala-vim
-  "F" `(,#'myfold/choose-fold-method :wk "Choose folding method"))
-
 (use-package origami
   :general (leader-ala-vim
              "o" '(:ignore t :wk "Origami")
-             "om" #'origami-mode ;; to use it
              "oo" #'origami-open-node
              "oO" #'origami-open-node-recursively
              "os" #'origami-show-node
@@ -688,6 +665,34 @@
              "or" #'origami-redo
              "oR" #'origami-reset))
 
+;; Manual definition of folds ala vim..
+(use-package evil-vimish-fold)
+
+;; Choose a folding method
+(require 'cl-lib)
+(defun myfold/set-folding-method (fold-method)
+  "Set folding method to `fold-method'."
+  (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
+    (funcall m -1))
+  (cl-case fold-method
+    (hideshow (hs-minor-mode))
+    (origami (origami-mode))
+    (vimish  (evil-vimish-fold-mode))
+    (none nil)))
+
+(defun myfold/choose-folding-method (fold-method)
+  "Choose a folding method among `hideshow', `origami', `vimish' and
+   `none'."
+  (interactive (list
+                (let ((candidate
+                       (completing-read "Folding method: "
+                                        '(hideshow origami vimish none))))
+                  candidate)))
+  (myfold/set-folding-method (intern fold-method)))
+
+(leader-ala-vim
+  "F" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
+
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
 ;; with it. Vdiff is also very nice.
 (use-package vdiff
@@ -701,9 +706,6 @@
              "vc" #'vdiff-current-file
              "vm" #'vdiff-merge-conflict
              ))
-
-;; Manual definition of folds ala vim..
-(use-package evil-vimish-fold)
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
