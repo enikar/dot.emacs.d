@@ -331,8 +331,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package json-mode
   :mode "\\.json\\'")
 
+;;;; nim. Nim-mode depends on flycheck-nimsuggest
+;; Activating nimsuggest-mode activate flycheck-mode using
+;; flycheck-nimsuggest.
 (use-package nim-mode
-  :mode ("\\.nim\\'"))
+  :mode ("\\.nim\\'")
+  :hook (nim-mode . nimsuggest-mode))
 
 ;;;; LaTeX
 (use-package latex-extra
