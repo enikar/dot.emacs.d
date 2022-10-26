@@ -30,3 +30,4 @@ request/
 var/
 .gitignore
 elisp/perso/shadow-settings.el
+/tramp
