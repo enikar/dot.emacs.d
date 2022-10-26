@@ -115,6 +115,7 @@
   :diminish (evil-mode)
   :config
     (dolist (mode '(dired-mode
+                    view-mode
                     ;;Info-mode
                     ;;help-mode
                     calculator-mode))
@@ -863,11 +864,14 @@ targets."
 
 (setq-default tab-width 4
               indent-tabs-mode nil
+              tab-always-indent 'completion
+              tab-first-completion 'word-or-paren-or-punct
               indicate-empty-lines t)
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
 (prefix-c-xt "h" #'hl-line-mode)
+(global-so-long-mode)
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
@@ -892,7 +896,7 @@ targets."
  "C-x C-k D" #'dired-only-show-directories)
 
 
-;; for Info-mode, with this method we can't bind "SPC"
+;;;; for Info-mode, with this method we can't bind "SPC"
 ;; (with-eval-after-load 'info
 ;;   (define-key Info-mode-map (kbd "M-SPC") leader-ala-vim-map))
 
@@ -910,8 +914,6 @@ targets."
     "SPC" leader-ala-vim-map))
 (add-hook 'Info-mode-hook #'leader-ala-vim-info-mode)
 
-;;(context-menu-mode 1)
-
 ;;;; global auto-revert-mode borrows from spacemacs
 ;; Auto refresh
 (global-auto-revert-mode 1)
@@ -920,14 +922,12 @@ targets."
 ;;       auto-revert-verbose nil)
 ;; (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
-;; diminish some minor modes
-;; (diminish 'auto-revert-mode "ARev")
+;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
-(global-so-long-mode)
 
-;; No disable commands
+;;;; No disable commands
 (put 'narrow-to-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
