@@ -8,6 +8,7 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(auth-source-save-behavior nil)
  '(column-number-indicator-zero-based nil)
  '(column-number-mode t)
  '(cursor-type 'box)
