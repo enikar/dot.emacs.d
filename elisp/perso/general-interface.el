@@ -31,10 +31,10 @@
           (general-create-definer prefix-c-xt :prefix "C-x t")
           (general-unbind :states '(normal viusal operator) "SPC")
           (general-create-definer leader-ala-vim
-            :states '(normal visual operator insert emacs)
+            :states '(normal visual motion operator insert emacs)
             :prefix "SPC"
             :non-normal-prefix "M-SPC"
-            :prefix-command 'leader-ala-vim-command
+            ;;:prefix-command 'leader-ala-vim-command
             :prefix-map 'leader-ala-vim-map)
 
           (prefix-c-xw
@@ -69,7 +69,6 @@
             "xr"    #'xref-find-references
             "xs"    #'xref-show-xrefs-function
             "w"     #'whitespace-mode)
-
           (general-def
             "<cancel>" #'keyboard-quit
             "M-RET"    #'hippie-expand
@@ -682,13 +681,15 @@
     (none nil)))
 
 (defun myfold/choose-folding-method (fold-method)
-  "Choose a folding method among `hideshow', `origami', `vimish' and
+  "Choose a folding method among `hideshow', `origami', `vimish' or
    `none'."
-  (interactive (list
-                (let ((candidate
-                       (completing-read "Folding method: "
-                                        '(hideshow origami vimish none))))
-                  candidate)))
+  (interactive
+   (list
+    (let ((candidate
+           (completing-read
+            "Folding method: "
+            '(hideshow origami vimish none))))
+      candidate)))
   (myfold/set-folding-method (intern fold-method)))
 
 (leader-ala-vim
@@ -889,6 +890,25 @@ targets."
  :keymaps 'dired-mode-map
  "^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
+
+
+;; for Info-mode, with this method we can't bind "SPC"
+;; (with-eval-after-load 'info
+;;   (define-key Info-mode-map (kbd "M-SPC") leader-ala-vim-map))
+
+;; So, as we want to use SPC (next-page is also bound to C-f), we use
+;; 'local of general-def :keymaps keyword, evil-local-set-key is used
+;; by general in this case. The binding is local to the *buffer* not for every
+;; buffers with the same mode. It's why Info-mode-hook is used.
+
+;; Priorities of map :
+;; general-override-mode-map > general-override-local-mode-map > global-map
+(defun leader-ala-vim-info-mode ()
+  (general-def
+    :keymaps 'local
+    :states '(normal motion visual operator emacs)
+    "SPC" leader-ala-vim-map))
+(add-hook 'Info-mode-hook #'leader-ala-vim-info-mode)
 
 ;;(context-menu-mode 1)
 
