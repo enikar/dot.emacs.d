@@ -1,9 +1,16 @@
 (setq package-user-dir "~/.emacs.d/elpa")
 (setq package-archives
     '(("melpa" . "https://melpa.org/packages/")
-      ("gnu"   . "https://elpa.gnu.org/packages/")
+      ("elpa"   . "https://elpa.gnu.org/packages/")
+      ("elpa-devel" . "https://elpa.gnu.org/devel/")
       ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-      ;; ("org"   . "https://orgmode.org/elpa/")))
+
+(setq package-archive-priorities
+      '(("melpa" . 3)
+        ("elpa" . 2)
+        ("nongnu" . 1)))
+;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
+;; none for the moment.
 
 (setq load-prefer-newer t)
 
