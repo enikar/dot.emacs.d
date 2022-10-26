@@ -8,7 +8,8 @@
 (setq package-archive-priorities
       '(("melpa" . 3)
         ("elpa" . 2)
-        ("nongnu" . 1)))
+        ("nongnu" . 1)
+        ("elpa-devel" . 1)))
 ;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
 ;; none for the moment.
 
