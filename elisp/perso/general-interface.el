@@ -630,6 +630,12 @@
   :init (leader-ala-vim "U" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
+(use-package resrtart-emacs
+  :init (leader-ala-vim
+          "q" '(:ignore t :wk "Quitting")
+          "qq" #'save-buffers-kill-terminal
+          "qr" #'restart-emacs))
+
 (use-package browse-kill-ring
   :general (:states 'insert "M-y" #'browse-kill-ring))
 
