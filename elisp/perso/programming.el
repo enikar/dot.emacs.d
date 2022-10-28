@@ -11,13 +11,22 @@
 
 (use-package yasnippet
   :defer 5
-  :general (prog-mode-map "C-c d" #'yas-expand)
   :hook ((prog-mode) . yas-minor-mode)
-  :config (yas-reload-all)
-  :init (leader-ala-vim "y" #'yas-describe-tables))
+  :general (yas-minor-mode-map
+            "C-c & e"   #'yas-expand
+            "C-c & t"   #'yas-describe-tables)
+           (leader-ala-vim
+             "y" '(:ignore t :wk "Yasnippet")
+             "ye" #'yas-expand
+             "yt" #'yas-describe-tables
+             "yn" #'yas-new-snippet
+             "ys" #'yas-insert-snippet
+             "yv" #'yas-visit-snippet-file)
+  :config (yas-reload-all))
 
 (use-package consult-yasnippet
-  :commands (consult-yasnippet))
+  :general (yas-minor-mode-map "C-c & c" #'consult-yasnippet)
+           (leader-ala-vim "yc" #'consult-yasnippet))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -138,6 +147,11 @@ If the error list is visible, hide it.  Otherwise, show it."
   :after (dante)
   :commands (attrap-attrap)
   :general (:keymaps 'dante-mode-map "M-!" #'attrap-attrap))
+
+(use-package hlint-refactor
+  :hook (haskell-mode . hlint-refactor-mode)
+  :general (:keymaps 'haskell-mode-map
+                     "C-c ," '(:ignore t :wk "Refactor")))
 
 ;; (use-package retrie
 ;;   :commands (retrie)
