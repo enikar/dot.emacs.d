@@ -379,8 +379,9 @@
 
 (use-package dabbrev
   :general
-  ("M-²"  #'dabbrev-completion-all-buffers
-   "s-²"  #'dabbrev-completion-all-buffers
+  ("M-³"  #'dabbrev-completion-all-buffers
+   "s-³"  #'dabbrev-completion-all-buffers
+   "M-&"  #'dabbrev-completion-all-buffers
    ;; Swap M-/ and C-M-/
    "M-/"  #'dabbrev-completion
    "C-M-/"  #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
@@ -391,15 +392,14 @@
 (use-package cape
   :init (push #'cape-dabbrev completion-at-point-functions)
         (push #'cape-file completion-at-point-functions)
-  :general ("M-&"  #'cape-dabbrev
-            "M-³"  #'cape-dabbrev
-            "s-³"  #'cape-dabbrev))
+  :general ("M-²"  #'cape-dabbrev
+            "s-²"  #'cape-dabbrev))
 
 (use-package avy
   :config (avy-setup-default))
 
-;; useless because the minor is not activated
-;; But I setup some bindings with my leader-ala-vim
+;; Useless because the minor is not activated, as well that changes
+;; only fFtT operators. I setup some bindings with my leader-ala-vim
 (use-package evil-avy
   :after (avy)
   :init
@@ -408,6 +408,7 @@
       "aa"  #'evil-avy-mode
       "ac"  #'avy-goto-char
       "aC"  #'avy-goto-char-2
+      "ai"  #'avy-isearch
       "al"  #'avy-goto-line
       "ar"  #'avy-resume
       "as"  #'avy-goto-subword-1
@@ -417,10 +418,10 @@
 (use-package ace-jump-mode
   :init
   (leader-ala-vim
-    "j"   '(:ingore t :wk "Ace-jump")
-    "ja"  #'ace-jump-mode
-    "jc"  #'ace-jump-char-mode
-    "jl"  #'ace-jump-line-mode))
+    "J"   '(:ingore t :wk "Ace-jump")
+    "Ja"  #'ace-jump-mode
+    "Jc"  #'ace-jump-char-mode
+    "Jl"  #'ace-jump-line-mode))
 
 (use-package ace-window
   :init (leader-ala-vim "O" #'ace-window))
@@ -428,6 +429,17 @@
 (use-package ace-link
   :commands (ace-link)
   :init (ace-link-setup-default))
+
+(use-package symbol-overlay
+  :general (leader-ala-vim
+             "j" '(:ignore t :wk "Symbol")
+             "jf" #'symbol-overlay-jump-first
+             "jh" #'symbol-overlay-put
+             "jl" #'symbol-overlay-jump-last
+             "jm" #'symbol-overlay-mode
+             "jn" #'symbol-overlay-jump-next
+             "jp" #'symbol-overlay-jump-prev
+             "jr" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
 
 (use-package consult-flyspell
   :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
@@ -862,6 +874,7 @@ targets."
       require-final-newline t
       executable-prefix-env t
       dired-dwim-target t
+      dired-kill-when-opening-new-dired-buffer t
       compilation-scroll-output 'first-error)
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
@@ -887,10 +900,10 @@ targets."
 
 (add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
 
-(defun dired-up-directory-same-buffer ()
-  "Go up in the same buffer."
-  (interactive)
-  (find-alternate-file ".."))
+;; (defun dired-up-directory-same-buffer ()
+;;   "Go up in the same buffer."
+;;   (interactive)
+;;   (find-alternate-file ".."))
 
 ;; To show only directories in dired
 (fset 'dired-only-show-directories
@@ -898,7 +911,7 @@ targets."
 
 (general-def
  :keymaps 'dired-mode-map
- "^" #'dired-up-directory-same-buffer
+ ;;"^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
 
 
