@@ -477,6 +477,7 @@
                  hi-lock-face-history
                  hi-lock-regexp-history
                  info-lookup-history
+                 kill-ring
                  kmacro-ring
                  magit-git-command-history
                  magit-revision-history
@@ -643,8 +644,8 @@
           "qq" #'save-buffers-kill-terminal
           "qr" #'restart-emacs))
 
-(use-package browse-kill-ring
-  :general (:states 'insert "M-y" #'browse-kill-ring))
+;; (use-package browse-kill-ring
+;;   :general (:states 'insert "M-y" #'browse-kill-ring))
 
 ;;;; Folding. There are several possibilities.
 ;; Use:
@@ -786,12 +787,14 @@
            ;; (:keymaps '(helpful-mode-map override) "q" #'quit-window)
   :init
   (leader-ala-vim
-    "h"  '(:ignore t :wk "Helpful")
+    "h"  '(:ignore t :wk "Help")
     "hk" #'helpful-key
     "hf" #'helpful-callable
     "hv" #'helpful-variable
     "hp" #'helpful-at-point
-    "hc" #'helpful-command))
+    "hc" #'helpful-command
+    "hd" #'shortdoc-display-group
+    "ho" #'describe-symbol))
 
 (use-package embark
   :general ("C-c e"  #'embark-act)
@@ -838,9 +841,6 @@ targets."
 (use-package duplicate-thing
   :init (leader-ala-vim "d" #'duplicate-thing))
 
-(use-package parent-mode
-  :commands (parent-mode-list parent-mode-is-derived-p))
-
 (use-package paren
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
@@ -857,6 +857,7 @@ targets."
   :init (setq vterm-always-compile-module t))
 
 (setq save-interprogram-paste-before-kill t
+      kill-do-not-save-duplicates t
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       scroll-step 1
@@ -872,6 +873,11 @@ targets."
       executable-prefix-env t
       dired-dwim-target t
       dired-kill-when-opening-new-dired-buffer t
+      next-error-message-highlight t
+      help-enable-symbol-autoload t
+      describe-bindings-outline t
+      nobreak-char-display t
+      nobreak-char-ascii-display nil
       compilation-scroll-output 'first-error)
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
@@ -884,6 +890,8 @@ targets."
               tab-first-completion 'word-or-paren-or-punct
               indicate-empty-lines t)
 
+;; (set-input-meta-mode 'encoded)
+
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
 (prefix-c-xt "h" #'hl-line-mode)
@@ -891,11 +899,15 @@ targets."
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
-(with-eval-after-load 'dired (require 'dired-x))
+(with-eval-after-load 'dired
+  (setq dired-x-hands-off-my-keys nil)
+  (require 'dired-x))
 (defun my/set-dired-omit-mode()
   (dired-omit-mode 1))
 
 (add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
+(setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
+                                   auto-mode-alist))
 
 ;; (defun dired-up-directory-same-buffer ()
 ;;   "Go up in the same buffer."
