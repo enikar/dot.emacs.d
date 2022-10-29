@@ -10,7 +10,8 @@
 
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
       abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
-      save-abbrevs 'silently)
+      save-abbrevs 'silently
+      completions-detailed t)
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)
