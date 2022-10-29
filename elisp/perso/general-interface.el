@@ -29,7 +29,7 @@
           ;;(general-auto-unbind-keys)
           (general-create-definer prefix-c-xw :prefix "C-x w")
           (general-create-definer prefix-c-xt :prefix "C-x t")
-          (general-unbind :states '(normal viusal operator) "SPC")
+          (general-unbind :states '(normal viusal motion operator) "SPC")
           (general-create-definer leader-ala-vim
             :states '(normal visual motion operator insert emacs)
             :prefix "SPC"
@@ -40,7 +40,7 @@
           (prefix-c-xw
             "f" #'find-file-at-point ;; gf
             "h" #'hexl-find-file
-            "i" #'insert-file       ;;  :r
+            "i" #'insert-file       ;; :r
             "w" #'write-region      ;; visual, then :w
             "v" #'view-file
             "c" #'comment-dwim      ;; SPC cr
@@ -69,6 +69,7 @@
             "xr"    #'xref-find-references
             "xs"    #'xref-show-xrefs-function
             "w"     #'whitespace-mode)
+
           (general-def
             "<cancel>" #'keyboard-quit
             "M-RET"    #'hippie-expand
@@ -149,7 +150,7 @@
     (general-def
      :states 'normal
      :keymaps 'global
-     "Q" #'evil-fill-and-move
+     "Q"     #'evil-fill-and-move
      "C-w e" #'find-file-other-window
      "C-w b" #'consult-buffer-other-window)
     (general-unbind evil-window-map
@@ -415,31 +416,25 @@
       "aw"  #'avy-goto-word-0
       "aW"  #'avy-goto-word-1))
 
-(use-package ace-jump-mode
-  :init
-  (leader-ala-vim
-    "J"   '(:ingore t :wk "Ace-jump")
-    "Ja"  #'ace-jump-mode
-    "Jc"  #'ace-jump-char-mode
-    "Jl"  #'ace-jump-line-mode))
-
 (use-package ace-window
-  :init (leader-ala-vim "O" #'ace-window))
+  :init (leader-ala-vim "ao" #'ace-window))
 
 (use-package ace-link
-  :commands (ace-link)
-  :init (ace-link-setup-default))
+  :init (ace-link-setup-default)
+        (leader-ala-vim "aL" #'ace-link))
 
 (use-package symbol-overlay
   :general (leader-ala-vim
-             "j" '(:ignore t :wk "Symbol")
-             "jf" #'symbol-overlay-jump-first
-             "jh" #'symbol-overlay-put
-             "jl" #'symbol-overlay-jump-last
-             "jm" #'symbol-overlay-mode
-             "jn" #'symbol-overlay-jump-next
-             "jp" #'symbol-overlay-jump-prev
-             "jr" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
+             "j"  '(:ignore t :wk "Symbol overlay")
+             "jc" `(,#'symbol-overlay-remove-all :wk "clear overlay")
+             "jj" #'symbol-overlay-put))
+             ;; "jf" #'symbol-overlay-jump-first
+             ;; "jh" #'symbol-overlay-put
+             ;; "jl" #'symbol-overlay-jump-last
+             ;; "jm" #'symbol-overlay-mode
+             ;; "jn" #'symbol-overlay-jump-next
+             ;; "jp" #'symbol-overlay-jump-prev
+             ;; "jr" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
 
 (use-package consult-flyspell
   :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
