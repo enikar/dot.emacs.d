@@ -145,9 +145,12 @@ slot to switch to."
   (if (boundp 'Man-mode-map)
       (evil-eb-update-map Man-mode-map)))
 
-;; (add-hook 'Man-mode-hook
-;;          (function (lambda ()
-;;                      (evil-eb-update-map Man-mode-map))))
+
+(defun evil-eb-ibuffer-mode-bindings ()
+  (if (boundp 'ibuffer-mode-map)
+      (evil-eb-update-map ibuffer-mode-map)))
+
+(add-hook 'ibuffer-mode-hook #'evil-eb-ibuffer-mode-bindings)
 
 (defun evil-eb-help-mode-bindings ()
   (if (boundp 'help-mode-map)
@@ -197,7 +200,7 @@ slot to switch to."
     (define-key prefix-map (kbd "M-a") #'eyebrowse-last-window-config)
     (define-key prefix-map (kbd "Z")   #'zap-to-char) ; keep a binding to zap-to-char
     prefix-map)
-  "Inital keymap for `Eyebrowse' for special buffer that need emacs state.")
+  "Inital keymap for `Eyebrowse' for special buffers that need emacs state.")
 
 (defun my/eyebrowse-customization-buffer-bindings ()
   (if (boundp 'custom-mode-map)
