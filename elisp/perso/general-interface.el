@@ -737,6 +737,8 @@
 (use-package libgit)
 (use-package magit-libgit)
 
+(use-package vdiff-magit)
+
 (use-package consult-ls-git
   :init (leader-ala-vim "G" #'consult-ls-git))
 
