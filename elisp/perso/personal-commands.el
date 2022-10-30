@@ -116,5 +116,25 @@
   (interactive)
   (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
 
+;; Two functions borrow from Mickey Petersen:
+;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
+(defun get-buffers-matching-mode (mode)
+  "Returns a list of buffers where their major-mode is equal to MODE"
+  (let ((buffer-mode-matches '()))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (eq mode major-mode)
+          (push buf buffer-mode-matches))))
+    buffer-mode-matches))
+
+(defun multi-occur-in-this-mode ()
+  "Show all lines matching REGEXP in buffers with this major mode."
+  (interactive)
+  (multi-occur
+   (get-buffers-matching-mode major-mode)
+   (car (occur-read-primary-args))))
+
+(general-def "M-s M-m" #'multi-occur-in-this-mode)
+
 (provide 'personal-commands)
 ;;; personal-commands.el ends here
