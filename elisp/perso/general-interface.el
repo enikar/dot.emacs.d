@@ -51,7 +51,12 @@
 
           ;; unbind all "C-x t" bindings (functions for using emacs tab).
           (general-unbind ctl-x-map "t")
-
+          (general-unbind help-map
+            "g"
+            "n"
+            "C-c"
+            "C-t"
+            "C-w")
           (prefix-c-xt
             "e"   #'recentf-edit-list
             "i"   #'indent-region
@@ -71,12 +76,13 @@
             "w"     #'whitespace-mode)
 
           (general-def
-            "<cancel>" #'keyboard-quit
-            "M-RET"    #'hippie-expand
-            "C-c h"    #'hippie-expand
-            "<f9>"     #'compile
-            "<f11>"    #'previous-error
-            "<f12>"    #'next-error))
+            "<cancel>"         #'keyboard-quit
+            "<XF86Calculator>" #'calc
+            "M-RET"            #'hippie-expand
+            "<f9>"             #'compile
+            "<f11>"            #'previous-error
+            "<f12>"            #'next-error
+            "M-s m"            #'multi-occur))
 
 (use-package diminish
   :commands (diminish))
@@ -114,9 +120,10 @@
           (evil-want-fine-undo t)
           (evil-want-C-i-jump nil)
   :diminish (evil-mode)
+  :hook (view-mode . evil-emacs-state)
   :config
     (dolist (mode '(dired-mode
-                    view-mode
+                    finder-mode
                     ;;Info-mode
                     ;;help-mode
                     calculator-mode))
@@ -263,7 +270,9 @@
   ("C-x b"    #'consult-buffer
    "C-x r l"  #'consult-bookmark
    "C-x C-f"  #'find-file
-   "C-h a"    #'consult-apropos)
+   "C-h a"    #'consult-apropos
+   "C-c m"    #'consult-imenu)
+  (prefix-c-xt "r" #'consult-recent-file)
 
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
@@ -271,9 +280,7 @@
           (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
           (consult-preview-key '(:debounce 0.3 any))
 
-  :init (leader-ala-vim "m" #'consult-imenu)
-        (prefix-c-xt "r" #'consult-recent-file)
-        (setq xref-show-xrefs-function #'consult-xref
+  :init (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
@@ -417,7 +424,8 @@
       "aW"  #'avy-goto-word-1))
 
 (use-package ace-window
-  :init (leader-ala-vim "ao" #'ace-window))
+  :general ("M-o" #'ace-window)
+           (leader-ala-vim "ao" #'ace-window))
 
 (use-package ace-link
   :init (ace-link-setup-default)
@@ -738,8 +746,6 @@
 (use-package libgit)
 (use-package magit-libgit)
 
-(use-package vdiff-magit)
-
 (use-package consult-ls-git
   :init (leader-ala-vim "G" #'consult-ls-git))
 
@@ -771,14 +777,17 @@
 (use-package consult-ag
   :init (leader-ala-vim "gac" #'consult-ag))
 
-(defun my/helpful-quit-window ()
+(defun my/helpful-help-bindings ()
   (general-def
     :keymaps 'helpful-mode-map
-    :states 'normal
-    "q" #'quit-window))
+    :states '(normal emacs)
+    "c" #'help-customise
+    "q" #'quit-window
+    "i" #'help-goto-info
+    "s" #'help-view-source))
 
 (use-package helpful
-  :hook (helpful-mode . my/helpful-quit-window)
+  :hook (helpful-mode . my/helpful-help-bindings)
   :general (:keymaps 'help-map
                      "C" #'helpful-command
                      "f" #'helpful-callable
@@ -873,6 +882,7 @@ targets."
       executable-prefix-env t
       dired-dwim-target t
       dired-kill-when-opening-new-dired-buffer t
+      dired-switches-in-mode-line 'as-is
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
@@ -945,10 +955,10 @@ targets."
 ;;;; global auto-revert-mode borrows from spacemacs
 ;; Auto refresh
 (global-auto-revert-mode 1)
-;; ;; Also auto refresh dired, but be quiet about it
-;; (setq global-auto-revert-non-file-buffers t
-;;       auto-revert-verbose nil)
-;; (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
+(push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
