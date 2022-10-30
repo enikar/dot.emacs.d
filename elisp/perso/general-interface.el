@@ -216,7 +216,7 @@
   :init (global-evil-visualstar-mode t))
 
 (use-package evil-org
-  :hook (org-mode. evil-org-mode))
+  :hook (org-mode . evil-org-mode))
 
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
@@ -638,7 +638,7 @@
   :init (leader-ala-vim "U" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
-(use-package resrtart-emacs
+(use-package restart-emacs
   :init (leader-ala-vim
           "q" '(:ignore t :wk "Quitting")
           "qq" #'save-buffers-kill-terminal
