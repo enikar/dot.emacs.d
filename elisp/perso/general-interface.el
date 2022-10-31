@@ -68,7 +68,7 @@
             "M-SPC" #'just-one-space
             ":"     #'eval-expression
             "g"     '(:ignore t :wk "Searching")
-            "gg"    #'rgrep
+            "gr"    #'rgrep
             "x"     '(:ignore t :wk "Xref")
             "xd"    #'xref-find-definitions
             "xr"    #'xref-find-references
@@ -124,6 +124,7 @@
   :config
     (dolist (mode '(dired-mode
                     finder-mode
+                    shortdoc-mode
                     ;;Info-mode
                     ;;help-mode
                     calculator-mode))
@@ -741,13 +742,17 @@
   :init (openwith-mode t))
 
 (use-package magit
-  :commands (magit))
+  :general ("C-c g" #'magit-file-dispatch)
+           (leader-ala-vim
+             "m" '(:ignore t :wk "Magit")
+             "mm" #'magit
+             "md" #'magit-file-dispatch))
 
 (use-package libgit)
 (use-package magit-libgit)
 
 (use-package consult-ls-git
-  :init (leader-ala-vim "G" #'consult-ls-git))
+  :init (leader-ala-vim "mf" #'consult-ls-git))
 
 (use-package treemacs
   :commands (treemacs)
@@ -759,7 +764,7 @@
           (require 'treemacs-magit))
 
 (use-package ripgrep
-  :init (leader-ala-vim "gr" #'ripgrep-regexp))
+  :init (leader-ala-vim "gg" #'ripgrep-regexp))
 (use-package deadgrep
   :init (leader-ala-vim "gd" #'deadgrep))
 
