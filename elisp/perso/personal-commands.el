@@ -4,12 +4,15 @@
 ;;; Code:
 (require 'general-interface)
 
-(defun my-hscroll-mode ()
-  "Set buffer local truncate-lines's value to t."
+;; TODO: look to visual-line-mode
+(defun toogle-hscroll-mode ()
+  "Toggle buffer local truncate-lines's value."
   (interactive)
-  (set-variable 'truncate-lines t))
+  (if truncate-lines
+      (set-variable 'truncate-lines nil)
+    (set-variable 'truncate-lines t)))
 
-(prefix-c-xw "s" #'my-hscroll-mode)
+(prefix-c-xw "s" #'toggle-hscroll-mode)
 
 (defvar-local tab8-old-tab-width 0)
 (defun tab8 ()
@@ -41,6 +44,8 @@
       (message "Now indent-tabs-mode is on"))
   (setq indent-tabs-mode (not indent-tabs-mode)))
 
+(prefix-c-xw "g" #'toggle-indent-tabs-mode)
+
 (defun tabify-buffer ()
   "tabify a buffer"
   (interactive)
@@ -55,7 +60,6 @@
     (save-excursion
       (untabify (point-min) (point-max)))))
 
-(prefix-c-xt "g" #'toggle-indent-tabs-mode)
 
 (defun trim-buffer ()
   "Remove trailing white spaces at the end of lines for a complete buffer."
@@ -78,7 +82,9 @@
         (trim-buffer)
         (widen)))))
 
-(prefix-c-xt "b" #'trim-buffer)
+(prefix-c-xw
+  "t" #'trim-buffer
+  "r" #'trim-region)
 
 (defun no-break-to-space ()
   "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."

@@ -44,9 +44,6 @@
             "w" #'write-region      ;; visual, then :w
             "v" #'view-file
             "c" #'comment-dwim      ;; SPC cr
-            "l" #'font-lock-mode
-            "b" #'font-lock-fontify-block
-            "a" #'font-lock-fontify-buffer
             "m" #'man-follow)
 
           ;; unbind all "C-x t" bindings (functions for using emacs tab).
@@ -58,9 +55,12 @@
             "C-t"
             "C-w")
           (prefix-c-xt
-            "e"   #'recentf-edit-list
-            "i"   #'indent-region
-            "p"   #'pop-tag-mark)
+            "a" #'font-lock-fontify-buffer
+            "b" #'font-lock-fontify-block
+            "e" #'recentf-edit-list
+            "i" #'indent-region
+            "l" #'font-lock-mode
+            "p" #'pop-tag-mark)
 
           (leader-ala-vim
             ""      '(nil :wk "leader-ala-vim menu")
