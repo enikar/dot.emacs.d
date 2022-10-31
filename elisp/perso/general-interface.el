@@ -42,9 +42,7 @@
             "h" #'hexl-find-file
             "i" #'insert-file       ;; :r
             "w" #'write-region      ;; visual, then :w
-            "v" #'view-file
-            "c" #'comment-dwim      ;; SPC cr
-            "m" #'man-follow)
+            "v" #'view-file)
 
           ;; unbind all "C-x t" bindings (functions for using emacs tab).
           (general-unbind ctl-x-map "t")
@@ -57,9 +55,11 @@
           (prefix-c-xt
             "a" #'font-lock-fontify-buffer
             "b" #'font-lock-fontify-block
+            "c" #'comment-dwim      ;; SPC cr
             "e" #'recentf-edit-list
             "i" #'indent-region
             "l" #'font-lock-mode
+            "m" #'man-follow        ;; But evil-lookup bind to K is better
             "p" #'pop-tag-mark)
 
           (leader-ala-vim
@@ -125,6 +125,7 @@
     (dolist (mode '(dired-mode
                     finder-mode
                     shortdoc-mode
+                    diff-mode
                     ;;Info-mode
                     ;;help-mode
                     calculator-mode))
