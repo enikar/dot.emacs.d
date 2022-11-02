@@ -73,7 +73,8 @@
             "xd"    #'xref-find-definitions
             "xr"    #'xref-find-references
             "xs"    #'xref-show-xrefs-function
-            "w"     #'whitespace-mode)
+            "T"     '(:ingore t :wk "Toggling")
+            "Tw"     #'whitespace-mode)
 
           (general-def
             "<cancel>"         #'keyboard-quit
@@ -119,6 +120,7 @@
           (evil-want-Y-yank-to-eol nil)
           (evil-want-fine-undo t)
           (evil-want-C-i-jump nil)
+          (evil-kbd-macro-suppress-motion-error t)
   :diminish (evil-mode)
   :hook (view-mode . evil-emacs-state)
   :config
@@ -126,6 +128,7 @@
                     finder-mode
                     shortdoc-mode
                     diff-mode
+                    deadgrep-mode
                     ;;Info-mode
                     ;;help-mode
                     calculator-mode))
@@ -185,8 +188,8 @@
 
 (use-package embrace
   :hook (org-mode-hook . embrace-org-mode-hook)
-  :general ("C-,"  #'embrace-commander)
-           (leader-ala-vim "e" #'embrace-commander))
+  :init (general-def "C-,"  #'embrace-commander)
+        (leader-ala-vim "e" #'embrace-commander))
 
 (use-package evil-embrace
   :config (evil-embrace-enable-evil-surround-integration))
@@ -205,8 +208,8 @@
   :init (global-evil-matchit-mode 1))
 
 (use-package evil-nerd-commenter
-  :general
-  ("M-;" #'evilnc-comment-or-uncomment-lines)
+  :init
+  (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
   (leader-ala-vim
     ";"  #'evilnc-comment-operator
     "c" '(:ignore t :wk "Comments")
@@ -239,12 +242,42 @@
            ("M-s M-r"  #'goto-last-change-reverse))
 
 (use-package expand-region
-  :general ("C-="  #'er/expand-region)
-           (leader-ala-vim "=" #'er/expand-region))
+  :init (general-def "C-="  #'er/expand-region)
+        (leader-ala-vim "=" #'er/expand-region))
 
 (use-package hydra
   :commands (defhydra))
 
+(use-package avy
+  :config (avy-setup-default))
+
+;; Useless because the minor is not activated, as well that changes
+;; only fFtT operators. I setup some bindings with my leader-ala-vim
+(use-package evil-avy
+  :after (avy)
+  :init
+    (leader-ala-vim
+      "a"   '(:ignore t :wk "Avy")
+      "aa"  #'evil-avy-mode
+      "ac"  #'avy-goto-char
+      "aC"  #'avy-goto-char-2
+      "ai"  #'avy-isearch
+      "al"  #'avy-goto-line
+      "ar"  #'avy-resume
+      "as"  #'avy-goto-subword-1
+      "aw"  #'avy-goto-word-0
+      "aW"  #'avy-goto-word-1))
+
+(use-package ace-window
+  :init (general-def "M-o" #'ace-window)
+        (leader-ala-vim "ao" #'ace-window))
+
+(use-package ace-link
+  :init (ace-link-setup-default)
+        (leader-ala-vim "aL" #'ace-link))
+
+;; vertico + consult + embark + marginalia + orderless + marginalia + prescient…
+;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package vertico
   :demand t
   :config (vertico-mode)
@@ -268,21 +301,21 @@
   ;;     (consult-yank-pop)
   ;;     (indent-region point-before (point))))
 
-  :general
-  ("C-x b"    #'consult-buffer
-   "C-x r l"  #'consult-bookmark
-   "C-x C-f"  #'find-file
-   "C-h a"    #'consult-apropos
-   "C-c m"    #'consult-imenu)
-  (prefix-c-xt "r" #'consult-recent-file)
-
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
           (xref-show-definitions-function #'consult-xref)
           (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
-          (consult-preview-key '(:debounce 0.3 any))
+          (consult-preview-key '(:debounce 0.5 any))
 
-  :init (setq xref-show-xrefs-function #'consult-xref
+  :init (general-def
+          "C-x b"    #'consult-buffer
+          "C-x r l"  #'consult-bookmark
+          "C-x C-f"  #'find-file
+          "C-h a"    #'consult-apropos
+          "C-c m"    #'consult-imenu)
+        (prefix-c-xt "r" #'consult-recent-file)
+
+        (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
@@ -333,10 +366,72 @@
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package consult-dir
-  :general ("C-x C-d"  #'consult-dir)
-           (:keymaps 'vertico-map
-            "C-x C-d"  #'consult-dir
-            "C-x C-j"  #'consult-dir-jump-file))
+  :init (general-def "C-x C-d"  #'consult-dir)
+        (general-def :keymaps 'vertico-map
+          "C-x C-d"  #'consult-dir
+          "C-x C-j"  #'consult-dir-jump-file))
+
+;; Add actions to use ace-window from embark.
+;; From: https://karthinks.com/software/fifteen-ways-to-use-embark/
+(eval-when-compile
+  (defmacro my/embark-ace-action (fn)
+    `(defun ,(intern (concat "my/embark-ace-" (symbol-name fn))) ()
+       (interactive)
+       (with-demoted-errors "%s"
+         (require 'ace-window)
+         (let ((aw-dispatch-always t))
+           (aw-switch-to-window (aw-select nil))
+           (call-interactively (symbol-function ',fn)))))))
+
+(use-package embark
+  :custom (embark-help-key (kbd "?"))
+  :init
+  (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
+  (general-def "C-c b"  #'embark-act)
+  (leader-ala-vim "b" #'embark-act)
+  (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
+  (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
+  (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark)))
+
+;; Use which key to show the embark's actions.
+;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
+(defun embark-which-key-indicator ()
+  "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+        (which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+           "Become"
+         (format "Act on %s '%s'%s"
+                 (plist-get (car targets) :type)
+                 (embark--truncate-target (plist-get (car targets) :target))
+                 (if (cdr targets) "…" "")))
+       (if prefix
+           (pcase (lookup-key keymap prefix 'accept-default)
+             ((and (pred keymapp) km) km)
+             (_ (key-binding prefix 'accept-default)))
+         keymap)
+       nil nil t (lambda (binding)
+                   (not (string-suffix-p "-argument" (cdr binding))))))))
+
+(setq embark-indicators
+  '(embark-which-key-indicator
+    embark-highlight-indicator
+    embark-isearch-highlight-indicator))
+
+(defun embark-hide-which-key-indicator (fn &rest args)
+  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+         (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+
+(advice-add #'embark-completing-read-prompter
+            :around #'embark-hide-which-key-indicator)
 
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
@@ -389,12 +484,12 @@
 
 (use-package dabbrev
   :general
-  ("M-³"  #'dabbrev-completion-all-buffers
-   "s-³"  #'dabbrev-completion-all-buffers
-   "M-&"  #'dabbrev-completion-all-buffers
+  ("M-³"   #'dabbrev-completion-all-buffers
+   "s-³"   #'dabbrev-completion-all-buffers
+   "M-&"   #'dabbrev-completion-all-buffers
    ;; Swap M-/ and C-M-/
-   "M-/"  #'dabbrev-completion
-   "C-M-/"  #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
+   "M-/"   #'dabbrev-completion
+   "C-M-/" #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
   ;; Other useful Dabbrev configurations.
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
@@ -405,36 +500,8 @@
   :general ("M-²"  #'cape-dabbrev
             "s-²"  #'cape-dabbrev))
 
-(use-package avy
-  :config (avy-setup-default))
-
-;; Useless because the minor is not activated, as well that changes
-;; only fFtT operators. I setup some bindings with my leader-ala-vim
-(use-package evil-avy
-  :after (avy)
-  :init
-    (leader-ala-vim
-      "a"   '(:ignore t :wk "Avy")
-      "aa"  #'evil-avy-mode
-      "ac"  #'avy-goto-char
-      "aC"  #'avy-goto-char-2
-      "ai"  #'avy-isearch
-      "al"  #'avy-goto-line
-      "ar"  #'avy-resume
-      "as"  #'avy-goto-subword-1
-      "aw"  #'avy-goto-word-0
-      "aW"  #'avy-goto-word-1))
-
-(use-package ace-window
-  :general ("M-o" #'ace-window)
-           (leader-ala-vim "ao" #'ace-window))
-
-(use-package ace-link
-  :init (ace-link-setup-default)
-        (leader-ala-vim "aL" #'ace-link))
-
 (use-package symbol-overlay
-  :general (leader-ala-vim
+  :init (leader-ala-vim
              "j"  '(:ignore t :wk "Symbol overlay")
              "jc" `(,#'symbol-overlay-remove-all :wk "clear overlay")
              "jj" #'symbol-overlay-put))
@@ -617,17 +684,17 @@
 
 (use-package evil-multiedit
   :commands (evil-multiedit-ex-match)
-  :general (general-def :states 'visual
-                     "R" #'evil-multiedit-match-all
-                     "M-d" #'evil-multiedit-match-and-next
-                     "M-D" #'evil-multiedit-match-and-prev
-                     "C-M-d" #'evil-multiedit-restore
-           (general-def :states '(normal insert)
-                     "M-d" #'evil-multiedit-match-symbol-and-next
-                     "M-D" #'evil-multiedit-match-symbol-and-prev)
-           (general-def :states 'insert
-                     "C-M-d" #'evil-multiedit-toggle-marker-here))
-  :init (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
+  :init (general-def :states 'visual
+          "R" #'evil-multiedit-match-all
+          "M-d" #'evil-multiedit-match-and-next
+          "M-D" #'evil-multiedit-match-and-prev
+          "C-M-d" #'evil-multiedit-restore
+        (general-def :states '(normal insert)
+          "M-d" #'evil-multiedit-match-symbol-and-next
+          "M-D" #'evil-multiedit-match-symbol-and-prev)
+        (general-def :states 'insert
+          "C-M-d" #'evil-multiedit-toggle-marker-here))
+        (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
 
 ;; multiple-cursors for evil
 ;; see also https://github.com/fgallina/region-bindings-mode
@@ -645,7 +712,7 @@
 (use-package undo-tree
   :diminish (undo-tree-mode)
   :custom (evil-undo-system 'undo-tree)
-  :init (leader-ala-vim "U" #'undo-tree-visualize)
+  :init (leader-ala-vim "u" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
 (use-package restart-emacs
@@ -666,28 +733,31 @@
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode (these are built in emacs).
 ;; Hideshow is built in emacs, so it has my preference.
+;; the :load-path of use-package doesn't work. I wonder why.
+(push (expand-file-name "origami.d/" "~/.emacs.d/elisp") load-path)
 (use-package origami
-  :general (leader-ala-vim
-             "o" '(:ignore t :wk "Origami")
-             "oo" #'origami-open-node
-             "oO" #'origami-open-node-recursively
-             "os" #'origami-show-node
-             "oS" #'origami-show-only-node
-             "oc" #'origami-close-node
-             "oC" #'origami-close-node-recursively
-             "oa" #'origami-open-all-nodes
-             "oA" #'origami-close-all-nodes
-             "ot" #'origami-toggle-node
-             "oT" #'origami-toggle-node-recursively
-             "oH" #'origami-toggle-all-nodes
-             "o<" #'origami-previous-fold
-             "o>" #'origami-next-fold
-             "of" #'origami-forward-fold
-             "oF" #'origami-forward-fold-same-level
-             "oB" #'origami-backward-fold-same-level
-             "ou" #'origami-undo
-             "or" #'origami-redo
-             "oR" #'origami-reset))
+  :commands (origami-mode)
+  :init (leader-ala-vim
+          "o" '(:ignore t :wk "Origami")
+          "oo" #'origami-open-node
+          "oO" #'origami-open-node-recursively
+          "os" #'origami-show-node
+          "oS" #'origami-show-only-node
+          "oc" #'origami-close-node
+          "oC" #'origami-close-node-recursively
+          "oa" #'origami-open-all-nodes
+          "oA" #'origami-close-all-nodes
+          "ot" #'origami-toggle-node
+          "oT" #'origami-toggle-node-recursively
+          "oH" #'origami-toggle-all-nodes
+          "o<" #'origami-previous-fold
+          "o>" #'origami-next-fold
+          "of" #'origami-forward-fold
+          "oF" #'origami-forward-fold-same-level
+          "oB" #'origami-backward-fold-same-level
+          "ou" #'origami-undo
+          "or" #'origami-redo
+          "oR" #'origami-reset))
 
 ;; Manual definition of folds ala vim..
 (use-package evil-vimish-fold)
@@ -709,29 +779,28 @@
   "Choose a folding method among `hideshow', `origami', `vimish' or
    `none'."
   (interactive
-   (list
     (let ((candidate
            (completing-read
             "Folding method: "
             '(hideshow origami vimish none))))
-      candidate)))
+      `(,candidate)))
   (myfold/set-folding-method (intern fold-method)))
 
 (leader-ala-vim
-  "F" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
+  "Tf" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
 
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
 ;; with it. Vdiff is also very nice.
 (use-package vdiff
-  :general (leader-ala-vim
-             "v" '(:ignore t :wk "Vdiff")
-             "vv" #'vdiff-hydra/body
-             "vf" #'vdiff-files
-             "vF" #'vdiff-files3
-             "vb" #'vdiff-buffers
-             "vB" #'vdiff-buffers3
-             "vc" #'vdiff-current-file
-             "vm" #'vdiff-merge-conflict))
+  :init (leader-ala-vim
+          "v" '(:ignore t :wk "Vdiff")
+          "vv" #'vdiff-hydra/body
+          "vf" #'vdiff-files
+          "vF" #'vdiff-files3
+          "vb" #'vdiff-buffers
+          "vB" #'vdiff-buffers3
+          "vc" #'vdiff-current-file
+          "vm" #'vdiff-merge-conflict))
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
@@ -743,26 +812,17 @@
   :init (openwith-mode t))
 
 (use-package magit
-  :general ("C-c g" #'magit-file-dispatch)
-           (leader-ala-vim
-             "m" '(:ignore t :wk "Magit")
-             "mm" #'magit
-             "md" #'magit-file-dispatch))
+  :init (general-def "C-c g" #'magit-file-dispatch)
+        (leader-ala-vim
+          "m" '(:ignore t :wk "Magit")
+          "mm" #'magit
+          "md" #'magit-file-dispatch))
 
 (use-package libgit)
 (use-package magit-libgit)
 
 (use-package consult-ls-git
   :init (leader-ala-vim "mf" #'consult-ls-git))
-
-(use-package treemacs
-  :commands (treemacs)
-  :custom (treemacs-width 40)
-          (treemacs-indentation 1)
-  :init (prefix-c-xt "t" #'treemacs)
-  :config (require 'treemacs-all-the-icons)
-          (require 'treemacs-evil)
-          (require 'treemacs-magit))
 
 (use-package ripgrep
   :init (leader-ala-vim "gg" #'ripgrep-regexp))
@@ -811,54 +871,21 @@
     "hd" #'shortdoc-display-group
     "ho" #'describe-symbol))
 
-(use-package embark
-  :general ("C-c e"  #'embark-act)
-  :init (leader-ala-vim "E" #'embark-act))
-
-(defun embark-which-key-indicator ()
-  "An embark indicator that displays keymaps using which-key.
-The which-key help message will show the type and value of the
-current target followed by an ellipsis if there are further
-targets."
-  (lambda (&optional keymap targets prefix)
-    (if (null keymap)
-        (which-key--hide-popup-ignore-command)
-      (which-key--show-keymap
-       (if (eq (plist-get (car targets) :type) 'embark-become)
-           "Become"
-         (format "Act on %s '%s'%s"
-                 (plist-get (car targets) :type)
-                 (embark--truncate-target (plist-get (car targets) :target))
-                 (if (cdr targets) "…" "")))
-       (if prefix
-           (pcase (lookup-key keymap prefix 'accept-default)
-             ((and (pred keymapp) km) km)
-             (_ (key-binding prefix 'accept-default)))
-         keymap)
-       nil nil t (lambda (binding)
-                   (not (string-suffix-p "-argument" (cdr binding))))))))
-
-(setq embark-indicators
-  '(embark-which-key-indicator
-    embark-highlight-indicator
-    embark-isearch-highlight-indicator))
-
-(defun embark-hide-which-key-indicator (fn &rest args)
-  "Hide the which-key indicator immediately when using the completing-read prompter."
-  (which-key--hide-popup-ignore-command)
-  (let ((embark-indicators
-         (remq #'embark-which-key-indicator embark-indicators)))
-      (apply fn args)))
-
-(advice-add #'embark-completing-read-prompter
-            :around #'embark-hide-which-key-indicator)
-
 (use-package duplicate-thing
   :init (leader-ala-vim "d" #'duplicate-thing))
 
 (use-package paren
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
+
+(use-package treemacs
+  :commands (treemacs)
+  :custom (treemacs-width 40)
+          (treemacs-indentation 1)
+  :init (prefix-c-xt "t" #'treemacs)
+  :config (require 'treemacs-all-the-icons)
+          (require 'treemacs-evil)
+          (require 'treemacs-magit))
 
 (use-package fill-column-indicator
   ;;:commands (fci-mode)     ;; managed by general.el
