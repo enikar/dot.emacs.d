@@ -3,6 +3,7 @@
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
 ;;; Code:
 
+(require 'use-package)
 (require 'general-interface)
 (require 'programming)
 
