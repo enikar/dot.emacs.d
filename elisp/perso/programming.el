@@ -7,26 +7,28 @@
 ;; (eval-when-compile
 ;;   (require 'use-package))
 
+(require 'use-package)
 (require 'general-interface)
 
 (use-package yasnippet
   :defer 5
   :hook ((prog-mode) . yas-minor-mode)
-  :general (yas-minor-mode-map
-            "C-c & e"   #'yas-expand
-            "C-c & t"   #'yas-describe-tables)
-           (leader-ala-vim
-             "y" '(:ignore t :wk "Yasnippet")
-             "ye" #'yas-expand
-             "yt" #'yas-describe-tables
-             "yn" #'yas-new-snippet
-             "ys" #'yas-insert-snippet
-             "yv" #'yas-visit-snippet-file)
+  :init
+  (general-def yas-minor-mode-map
+    "C-c & e"   #'yas-expand
+    "C-c & t"   #'yas-describe-tables)
+  (leader-ala-vim
+    "y" '(:ignore t :wk "Yasnippet")
+    "ye" #'yas-expand
+    "yt" #'yas-describe-tables
+    "yn" #'yas-new-snippet
+    "ys" #'yas-insert-snippet
+    "yv" #'yas-visit-snippet-file)
   :config (yas-reload-all))
 
 (use-package consult-yasnippet
-  :general (yas-minor-mode-map "C-c & c" #'consult-yasnippet)
-           (leader-ala-vim "yc" #'consult-yasnippet))
+  :init (general-def yas-minor-mode-map "C-c & c" #'consult-yasnippet)
+        (leader-ala-vim "yc" #'consult-yasnippet))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -44,7 +46,7 @@
 
 (use-package highlight-indent-guides
   :diminish (highlight-indent-guides-mode)
-  :init (leader-ala-vim "i" #'highlight-indent-guides-mode))
+  :init (leader-ala-vim "Ti" #'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
