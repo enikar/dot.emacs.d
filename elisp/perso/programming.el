@@ -46,7 +46,7 @@
 
 (use-package highlight-indent-guides
   :diminish (highlight-indent-guides-mode)
-  :init (leader-ala-vim "Ti" #'highlight-indent-guides-mode))
+  :init (leader-ala-vim "ti" #'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
