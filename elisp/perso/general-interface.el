@@ -47,9 +47,14 @@
           ;; unbind all "C-x t" bindings (functions for using emacs tab).
           (general-unbind ctl-x-map "t")
           (general-unbind help-map
+            "RET"
             "g"
             "n"
+            "C-a"
             "C-c"
+            "C-d"
+            "C-e"
+            "C-f"
             "C-t"
             "C-w")
           (prefix-c-xt
@@ -68,13 +73,14 @@
             "M-SPC" #'just-one-space
             ":"     #'eval-expression
             "g"     '(:ignore t :wk "Searching")
-            "gr"    #'rgrep
+            "gR"    #'rgrep
             "x"     '(:ignore t :wk "Xref")
             "xd"    #'xref-find-definitions
             "xr"    #'xref-find-references
             "xs"    #'xref-show-xrefs-function
-            "T"     '(:ingore t :wk "Toggling")
-            "Tw"     #'whitespace-mode)
+            "t"     '(:ingore t :wk "Toggling")
+            "ts"    #'flyspell-mode
+            "tw"    #'whitespace-mode)
 
           (general-def
             "<cancel>"         #'keyboard-quit
@@ -124,15 +130,20 @@
   :diminish (evil-mode)
   :hook (view-mode . evil-emacs-state)
   :config
-    (dolist (mode '(dired-mode
-                    finder-mode
-                    shortdoc-mode
-                    diff-mode
-                    deadgrep-mode
-                    ;;Info-mode
-                    ;;help-mode
-                    calculator-mode))
-      (evil-set-initial-state mode 'emacs))
+    (defvar my/mode-in-emacs-state
+      '(dired-mode
+        finder-mode
+        shortdoc-mode
+        diff-mode
+        ;;Info-mode
+        ;;help-mode
+        calculator-mode)
+      "List of mode that want to be in initial emacs-state.
+To use it: (push 'a-mode my/mode-in-emacs-state)")
+
+    (defun my/set-mode-in-emacs-state ()
+      (dolist (mode my/mode-in-emacs-state)
+        (evil-set-initial-state mode 'emacs)))
 
     (defun evil-ex-search-next-auto-clear-highlights ()
         (interactive)
@@ -189,7 +200,7 @@
 (use-package embrace
   :hook (org-mode-hook . embrace-org-mode-hook)
   :init (general-def "C-,"  #'embrace-commander)
-        (leader-ala-vim "e" #'embrace-commander))
+        (leader-ala-vim "," #'embrace-commander))
 
 (use-package evil-embrace
   :config (evil-embrace-enable-evil-surround-integration))
@@ -281,7 +292,7 @@
 (use-package vertico
   :demand t
   :config (vertico-mode)
-  :custom (vertico-count 25)
+  :custom (vertico-count 15)
   :general (:keymaps 'vertico-map
             :no-autoload t
             "C-'"        #'vertico-quick-exit
@@ -388,7 +399,7 @@
   :init
   (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
   (general-def "C-c b"  #'embark-act)
-  (leader-ala-vim "b" #'embark-act)
+  (leader-ala-vim "RET" #'embark-act)
   (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
   (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
   (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark)))
@@ -432,6 +443,19 @@ targets."
 
 (advice-add #'embark-completing-read-prompter
             :around #'embark-hide-which-key-indicator)
+
+(defun su-find-file (file)
+  "Open FILE as root."
+  (interactive "FOpen file as root: ")
+  (when (file-writable-p file)
+    (user-error "File is user writeable, aborting su"))
+  (find-file (if (file-remote-p file)
+                 (concat "/" (file-remote-p file 'method) ":"
+                         (file-remote-p file 'user) "@" (file-remote-p file 'host)
+                         "|su:root@"
+                         (file-remote-p file 'host) ":" (file-remote-p file 'localname))
+               (concat "/su:root@localhost:" file))))
+(general-def embark-file-map "C-r" #'su-find-file)
 
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
@@ -515,10 +539,10 @@ targets."
 
 (use-package consult-flyspell
   :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
-        (leader-ala-vim "s" #'consult-flyspell-correct-function))
+        (leader-ala-vim "!" #'consult-flyspell-correct-function))
 
 (use-package consult-recoll
-  :init (leader-ala-vim "r" #'consult-recoll))
+  :init (leader-ala-vim "gr" #'consult-recoll))
 
 (use-package desktop
   :init (desktop-save-mode 1)
@@ -712,7 +736,7 @@ targets."
 (use-package undo-tree
   :diminish (undo-tree-mode)
   :custom (evil-undo-system 'undo-tree)
-  :init (leader-ala-vim "u" #'undo-tree-visualize)
+  :init (leader-ala-vim "_" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
 (use-package restart-emacs
@@ -787,7 +811,7 @@ targets."
   (myfold/set-folding-method (intern fold-method)))
 
 (leader-ala-vim
-  "Tf" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
+  "tf" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
 
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
 ;; with it. Vdiff is also very nice.
@@ -827,7 +851,8 @@ targets."
 (use-package ripgrep
   :init (leader-ala-vim "gg" #'ripgrep-regexp))
 (use-package deadgrep
-  :init (leader-ala-vim "gd" #'deadgrep))
+  :init (leader-ala-vim "gd" #'deadgrep)
+  :config (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package ag
   :init (setq ag-highlight-search t)
@@ -872,7 +897,7 @@ targets."
     "ho" #'describe-symbol))
 
 (use-package duplicate-thing
-  :init (leader-ala-vim "d" #'duplicate-thing))
+  :init (leader-ala-vim "*" #'duplicate-thing))
 
 (use-package paren
   :config (show-paren-mode)
@@ -897,6 +922,11 @@ targets."
 
 (use-package vterm
   :init (setq vterm-always-compile-module t))
+
+
+;; (use-package sudo-edit
+;;   :custom (sudo-edit-local-method "su")
+;;   :init (general-def "C-c r" #'sudo-edit))
 
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t

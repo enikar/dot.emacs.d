@@ -22,5 +22,7 @@
             "C-<left>" #'eyebrowse-prev-window-config)
   :config (require 'evil-eyebrowse))
 
+(my/set-mode-in-emacs-state)
+
 (provide 'epilogue)
 ;;; epilogue.el ends here
