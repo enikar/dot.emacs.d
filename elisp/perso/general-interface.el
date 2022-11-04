@@ -100,9 +100,9 @@
   :config (dimmer-mode))
 
 (use-package auto-compile
-  :diminish (auto-compile-mode)
-  :diminish (auto-compile-on-load-mode)
-  :diminish (auto-compile-on-save-mode)
+  :diminish (auto-compile-mode
+             auto-compile-on-load-mode
+             auto-compile-on-save-mode)
   :init
     (auto-compile-on-load-mode)
     (auto-compile-on-save-mode))
@@ -260,6 +260,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :commands (defhydra))
 
 (use-package avy
+  :init (general-def "M-j" #'avy-goto-char-timer)
   :config (avy-setup-default))
 
 ;; Useless because the minor is not activated, as well that changes
@@ -276,6 +277,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "al"  #'avy-goto-line
       "ar"  #'avy-resume
       "as"  #'avy-goto-subword-1
+      "at"  #'avy-goto-char-timer
       "aw"  #'avy-goto-word-0
       "aW"  #'avy-goto-word-1))
 
@@ -287,12 +289,18 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init (ace-link-setup-default)
         (leader-ala-vim "aL" #'ace-link))
 
-;; vertico + consult + embark + marginalia + orderless + marginalia + prescient…
+(use-package ctrlf
+  :custom (ctrlf-default-search-style 'fuzzy)
+          (ctrlf-alternate-search-style 'fuzzy-regexp)
+  :config (ctrlf-mode))
+
+;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package vertico
   :demand t
   :config (vertico-mode)
   :custom (vertico-count 15)
+          (vertico-resize t)
   :general (:keymaps 'vertico-map
             :no-autoload t
             "C-'"        #'vertico-quick-exit
@@ -339,11 +347,11 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
                      (memq :narrow args)
                      (run-at-time 0.05 0.05
                                   #'(lambda ()
-                                    (if (eq last-input-event (elt consult-narrow-key 0))
-                                        (when refresh
-                                          (setq refresh nil)
-                                          (which-key--update))
-                                      (setq refresh t)))))))
+                                      (if (eq last-input-event (elt consult-narrow-key 0))
+                                          (when refresh
+                                            (setq refresh nil)
+                                            (which-key--update))
+                                        (setq refresh t)))))))
     (unwind-protect
         (apply fun args)
       (when timer
@@ -457,9 +465,6 @@ targets."
                (concat "/su:root@localhost:" file))))
 (general-def embark-file-map "C-r" #'su-find-file)
 
-(use-package ctrlf
-  :custom (ctrlf-default-search-style 'fuzzy)
-  :config (ctrlf-mode))
 
 ;; (defun corfu-enable-in-minibuffer ()
 ;;   "Enable Corfu in the minibuffer if `completion-at-point' is bound."
