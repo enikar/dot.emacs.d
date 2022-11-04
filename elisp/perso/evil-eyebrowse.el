@@ -208,6 +208,9 @@ slot to switch to."
 
 (add-hook 'Custom-mode-hook #'my/eyebrowse-customization-buffer-bindings)
 
+(general-def :states '(insert emacs)
+  "M-z" evil-eb-map2)
+
 (provide 'evil-eyebrowse)
 
 ;;; evil-eyebrowse.el ends here
