@@ -261,7 +261,51 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package avy
   :init (general-def "M-j" #'avy-goto-char-timer)
+  :custom (avy-timeout-seconds 1.0)
   :config (avy-setup-default))
+
+;; Addon to avy from:
+;; https://karthinks.com/software/avy-can-do-anything/
+
+(defun avy-action-kill-whole-line (pt)
+  (save-excursion
+    (goto-char pt)
+    (kill-whole-line))
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  t)
+
+(setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
+      (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line)
+
+(defun avy-action-copy-whole-line (pt)
+  (save-excursion
+    (goto-char pt)
+    (cl-destructuring-bind (start . end)
+        (bounds-of-thing-at-point 'line)
+      (copy-region-as-kill start end)))
+  (select-window
+   (cdr
+    (ring-ref avy-ring 0)))
+  t)
+
+(defun avy-action-yank-whole-line (pt)
+  (avy-action-copy-whole-line pt)
+  (save-excursion (yank))
+  t)
+
+(setf (alist-get ?y avy-dispatch-alist) 'avy-action-yank
+      (alist-get ?w avy-dispatch-alist) 'avy-action-copy
+      (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
+      (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line)
+
+(defun avy-action-teleport-whole-line (pt)
+    (avy-action-kill-whole-line pt)
+    (save-excursion (yank)) t)
+
+(setf (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
+      (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line)
 
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
@@ -271,16 +315,15 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
       "aa"  #'evil-avy-mode
-      "ac"  #'avy-goto-char
-      "aC"  #'avy-goto-char-2
-      "ai"  #'avy-isearch
+      ;;"ac"  #'avy-goto-char
+      ;;"aC"  #'avy-goto-char-2
+      "aj"  #'avy-goto-char-timer
       "al"  #'avy-goto-line
       "ar"  #'avy-resume
-      "as"  #'avy-goto-subword-1
-      "at"  #'avy-goto-char-timer
-      "aw"  #'avy-goto-word-0
-      "aW"  #'avy-goto-word-1))
-
+      ;;"as"  #'avy-goto-subword-1
+      ;;"aw"  #'avy-goto-word-0
+      ;;"aW"  #'avy-goto-word-1))
+      ))
 (use-package ace-window
   :init (general-def "M-o" #'ace-window)
         (leader-ala-vim "ao" #'ace-window))
@@ -292,6 +335,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
           (ctrlf-alternate-search-style 'fuzzy-regexp)
+  ;;:init (general-def ctrlf-minibuffer-mode-map "M-j" #'avy-isearch) ; doesn't work
   :config (ctrlf-mode))
 
 ;; vertico + consult + embark + marginalia + orderless + prescient…
@@ -331,9 +375,11 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-x r l"  #'consult-bookmark
           "C-x C-f"  #'find-file
           "C-h a"    #'consult-apropos
-          "C-c m"    #'consult-imenu)
-        (prefix-c-xt "r" #'consult-recent-file)
-
+          "C-c m"    #'consult-imenu
+          "M-y"      #'consult-yank-pop)
+        (prefix-c-xt    "r"  #'consult-recent-file)
+        (leader-ala-vim "/"  #'consult-line
+                        "gc" #'consult-ripgrep)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
@@ -361,7 +407,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package marginalia
   :init (marginalia-mode)
   :general (:keymaps 'minibuffer-local-map
-                     "M-a"  #'marginalia-cycle))
+                     "M-m"  #'marginalia-cycle))
 
 (use-package orderless
   :init (setq completion-styles '(substring orderless basic)
@@ -379,7 +425,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
   (leader-ala-vim
     "gf" #'affe-find
-    "gc" #'affe-grep)
+    "gG" #'affe-grep)
   :custom (affe-count 30)
   :config ;; Manual preview key for `affe-grep'
   (consult-customize affe-grep :preview-key (kbd "M-.")))
@@ -464,6 +510,21 @@ targets."
                          (file-remote-p file 'host) ":" (file-remote-p file 'localname))
                (concat "/su:root@localhost:" file))))
 (general-def embark-file-map "C-r" #'su-find-file)
+
+(defun avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)
+
+(setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)
+
+
+(use-package avy-embark-collect
+  :commands (avy-embark-collect-act avy-embark-collect-choose))
 
 
 ;; (defun corfu-enable-in-minibuffer ()
@@ -750,9 +811,6 @@ targets."
           "qq" #'save-buffers-kill-terminal
           "qr" #'restart-emacs))
 
-;; (use-package browse-kill-ring
-;;   :general (:states 'insert "M-y" #'browse-kill-ring))
-
 ;;;; Folding. There are several possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
@@ -873,6 +931,17 @@ targets."
 (use-package consult-ag
   :init (leader-ala-vim "gac" #'consult-ag))
 
+(use-package visual-regexp
+  :init (leader-ala-vim "?" #'vr/replace)
+        (general-def "C-c r" #'vr/replace))
+
+(use-package dumb-jump
+  ;;:demand t
+  :hook (xref-backend-functions . dumb-jump-xref-activate)
+  :custom (dumb-jump-prefer-searcher 'rg)
+  :init (general-def "C-c j" #'dumb-jump-go)
+        (leader-ala-vim "xj" #'dumb-jump-go))
+
 (defun my/helpful-help-bindings ()
   (general-def
     :keymaps 'helpful-mode-map
@@ -889,7 +958,6 @@ targets."
                      "f" #'helpful-callable
                      "k" #'helpful-key
                      "v" #'helpful-variable)
-           ;; (:keymaps '(helpful-mode-map override) "q" #'quit-window)
   :init
   (leader-ala-vim
     "h"  '(:ignore t :wk "Help")
@@ -900,6 +968,42 @@ targets."
     "hc" #'helpful-command
     "hd" #'shortdoc-display-group
     "ho" #'describe-symbol))
+
+(defun avy-action-helpful (pt)
+  (save-excursion
+    (goto-char pt)
+    (helpful-at-point))
+  (select-window
+   (cdr (ring-ref avy-ring 0)))
+  t)
+
+(setf (alist-get ?H avy-dispatch-alist) #'avy-action-helpful)
+
+(defun dictionary-search-dwim (&optional arg)
+  "Search for definition of word at point. If region is active,
+search for contents of region instead. If called with a prefix
+argument, query for word to search."
+  (interactive "P")
+  (if arg
+      (dictionary-search nil)
+    (if (use-region-p)
+        (dictionary-search (buffer-substring-no-properties
+                            (region-beginning)
+                            (region-end)))
+      (if (thing-at-point 'word)
+          (dictionary-lookup-definition)
+        (dictionary-search-dwim '(4))))))
+
+(defun avy-action-lookup-dictionnary (pt)
+  (save-excursion
+    (goto-char pt)
+    (dictionary-search-dwim))
+  (select-window
+   (cdr (ring-ref avy-ring 0)))
+  t)
+
+(setf (alist-get ?= avy-dispatch-alist) #'avy-action-lookup-dictionnary)
+
 
 (use-package duplicate-thing
   :init (leader-ala-vim "*" #'duplicate-thing))
@@ -954,6 +1058,7 @@ targets."
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
+      view-read-only t
       nobreak-char-display t
       nobreak-char-ascii-display nil
       compilation-scroll-output 'first-error)
@@ -961,6 +1066,11 @@ targets."
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 (minibuffer-depth-indicate-mode)
+;; TODO a hook for the function read-only-mode.
+;; Since I put this mode in view-mode and I set view-mode to emacs state.
+;; when I quit read-only-mode the buffer stays in emacs-state…
+;; What I would like, is to restore the previous state of the buffer…
+;; or perhaps decide what state applies based on the major mode.
 
 (setq-default tab-width 4
               indent-tabs-mode nil
