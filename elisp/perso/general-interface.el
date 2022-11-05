@@ -83,13 +83,14 @@
             "tw"    #'whitespace-mode)
 
           (general-def
-            "<cancel>"         #'keyboard-quit
-            "<XF86Calculator>" #'calc
-            "M-RET"            #'hippie-expand
-            "<f9>"             #'compile
-            "<f11>"            #'previous-error
-            "<f12>"            #'next-error
-            "M-s m"            #'multi-occur))
+            "<cancel>"             #'keyboard-quit
+            "<XF86Calculator>"     #'calc
+            "M-RET"                #'hippie-expand
+            "<f9>"                 #'compile
+            "<f11>"                #'previous-error
+            "<f12>"                #'next-error
+            "M-s m"                #'multi-occur
+            [remap eval-last-sexp] #'pp-eval-last-sexp))
 
 (use-package diminish
   :commands (diminish))
@@ -332,6 +333,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init (ace-link-setup-default)
         (leader-ala-vim "aL" #'ace-link))
 
+;; avy-isearch is not compatible with ctrlf because they don't use
+;; the same variable.
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
           (ctrlf-alternate-search-style 'fuzzy-regexp)
@@ -1042,11 +1045,15 @@ argument, query for word to search."
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       scroll-step 1
+      sentence-end-double-space nil
       confirm-kill-processes nil
+      history-delete-duplicates t
+      kill-do-not-save-duplicates t
       native-comp-async-report-warnings-errors 'silent
       initial-scratch-message nil
       ring-bell-function 'ignore
       visible-bell nil
+      split-width-threshold 140
       truncate-string-ellipsis "…"
       use-short-answers t
       enable-recursive-minibuffers t
@@ -1058,6 +1065,7 @@ argument, query for word to search."
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
+      completions-detailed t
       view-read-only t
       nobreak-char-display t
       nobreak-char-ascii-display nil
@@ -1065,6 +1073,7 @@ argument, query for word to search."
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 (minibuffer-depth-indicate-mode)
 ;; TODO a hook for the function read-only-mode.
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
@@ -1074,7 +1083,7 @@ argument, query for word to search."
 
 (setq-default tab-width 4
               indent-tabs-mode nil
-              tab-always-indent 'completion
+              tab-always-indent 'complete
               tab-first-completion 'word-or-paren-or-punct
               indicate-empty-lines t)
 

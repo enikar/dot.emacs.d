@@ -32,7 +32,6 @@
  '(highlight-parentheses-colors
    '("SpringGreen3" "Orange" "IndianRed1" "IndianRed3" "IndianRed4") nil nil "Customized with use-package highlight-parentheses")
  '(highlight-parentheses-delay 0.2 nil nil "Customized with use-package highlight-parentheses")
- '(history-delete-duplicates t)
  '(ibuffer-default-sorting-mode 'major-mode)
  '(ibuffer-expert t)
  '(ibuffer-mode-hook '(ibuffer-auto-mode))

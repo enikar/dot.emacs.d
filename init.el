@@ -12,7 +12,7 @@
       abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
       save-abbrevs 'silently
       recentf-max-saved-itmes 30
-      completions-detailed t)
+      use-package-enable-imenu-support t)
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)
