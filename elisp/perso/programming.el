@@ -237,7 +237,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; ocaml
 (use-package tuareg
   :mode ("\\.ml\\'" . tuareg-mode)
-  :config (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+  :config (require 'opam-user-setup "~/.emacs.d/var/opam-user-setup.el"))
 
 (use-package merlin
   :after (tuareg)
@@ -303,7 +303,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package geiser-racket)
 
 ;; anaconda + python.el is better than elpy !
-(use-package anaconda-mode)
+(use-package anaconda-mode
+  :custom (anaconda-mode-installation-directory
+           (my/put-this-in-var "anaconda-mode")))
 
 (my/add-hooks 'python-mode-hook
               #'flycheck-mode

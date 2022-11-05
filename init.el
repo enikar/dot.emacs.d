@@ -8,23 +8,30 @@
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
 
+(defvar-local my/emacs-var-dir
+  (expand-file-name "var" user-emacs-directory))
+
+(defun my/put-this-in-var (name)
+  (expand-file-name name my/emacs-var-dir))
+
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
-      abbrev-file-name (expand-file-name "~/.emacs.d/abbrev_defs")
+      abbrev-file-name (my/put-this-in-var "abbrev_defs")
       save-abbrevs 'silently
+      auto-save-list-file-prefix (my/put-this-in-var "auto-save-list/.saves-")
+      desktop-path (list (my/put-this-in-var ""))
+      bookmark-default-file (my/put-this-in-var "bookmarks")
+      recentf-save-file (my/put-this-in-var "recentf")
       recentf-max-saved-itmes 30
-      use-package-enable-imenu-support t)
+      save-place-file (my/put-this-in-var "places"))
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)
 
-(defvar-local my/bookmarks-file-name
-  (expand-file-name "~/.emacs.d/bookmarks"))
-
 (defun my/recentf-exclude (f)
   "Predicate to exlude filename from the recent file name list"
-    ;; (or (string-equal f my/bookmarks-file-name)
+    ;; (or (string-equal f bookmark-default-file)
     ;;     (string-equal (file-name-directory f) persp-save-dir)))
-  (string-equal f my/bookmarks-file-name))
+  (string-equal f bookmark-default-file))
 
 (setq recentf-exclude  `(,#'my/recentf-exclude))
 

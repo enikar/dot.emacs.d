@@ -4,6 +4,9 @@
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
 ;;; Code:
 
+(setq package-native-compile t
+      use-package-enable-imenu-support t)
+
 ;; (eval-when-compile
 ;;   (require 'use-package))
 (require 'use-package)
@@ -11,7 +14,6 @@
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
-(setq package-native-compile t)
 
 (defun my/add-hooks (mode-hook &rest hooks)
   "Add hooks in the list `hooks' to `mode-hook'"
@@ -91,6 +93,127 @@
             "<f12>"                #'next-error
             "M-s m"                #'multi-occur
             [remap eval-last-sexp] #'pp-eval-last-sexp))
+
+;;;; Global settings
+(setq save-interprogram-paste-before-kill t
+      kill-do-not-save-duplicates t
+      comint-scroll-show-maximum-output t
+      comint-scroll-to-bottom-on-input t
+      scroll-step 1
+      sentence-end-double-space nil
+      confirm-kill-processes nil
+      history-delete-duplicates t
+      kill-do-not-save-duplicates t
+      native-comp-async-report-warnings-errors 'silent
+      initial-scratch-message nil
+      ring-bell-function 'ignore
+      visible-bell nil
+      split-width-threshold 140
+      truncate-string-ellipsis "…"
+      use-short-answers t
+      enable-recursive-minibuffers t
+      require-final-newline t
+      executable-prefix-env t
+      dired-dwim-target t
+      dired-kill-when-opening-new-dired-buffer t
+      dired-switches-in-mode-line 'as-is
+      next-error-message-highlight t
+      help-enable-symbol-autoload t
+      describe-bindings-outline t
+      completions-detailed t
+      view-read-only t
+      tramp-persistency-file-name (my/put-this-in-var "tramp")
+      project-list-file (my/put-this-in-var "project")
+      eshell-directory-name (my/put-this-in-var "eshell")
+      request-storage-directory (my/put-this-in-var "request")
+      shared-game-score-directory (my/put-this-in-var "games")
+      nobreak-char-display t
+      nobreak-char-ascii-display nil
+      compilation-scroll-output 'first-error)
+
+(add-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+(minibuffer-depth-indicate-mode)
+;; TODO a function for read-only-mode-hook.
+;; Since I put this mode in view-mode and I set view-mode to emacs state.
+;; when I quit read-only-mode the buffer stays in emacs-state…
+;; What I would like, is to restore the previous state of the buffer…
+;; or perhaps decide what state applies based on the major mode.
+
+(setq-default tab-width 4
+              indent-tabs-mode nil
+              tab-always-indent 'complete
+              tab-first-completion 'word-or-paren-or-punct
+              indicate-empty-lines t)
+
+;; (set-input-meta-mode 'encoded) ; for terminal
+
+(require 'hl-line)
+(my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
+(prefix-c-xt "h" #'hl-line-mode)
+(global-so-long-mode)
+
+;;;; better dired mode
+(autoload #'dired-omit-mode "dired-x")
+(with-eval-after-load 'dired
+  (setq dired-x-hands-off-my-keys nil)
+  (require 'dired-x))
+(defun my/set-dired-omit-mode()
+  (dired-omit-mode 1))
+
+(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
+(setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
+                                   auto-mode-alist))
+
+;; To show only directories in dired
+(fset 'dired-only-show-directories
+      "*/tk")
+
+(general-def
+ :keymaps 'dired-mode-map
+ ;;"^" #'dired-up-directory-same-buffer
+ "C-x C-k D" #'dired-only-show-directories)
+
+;;;; for Info-mode, with this method we can't bind "SPC"
+;; So, as we want to use SPC (next-page is also bound to C-f), we use
+;; 'local of general-def :keymaps keyword, evil-local-set-key is used
+;; by general in this case. The binding is local to the *buffer* not for every
+;; buffers with the same mode. It's why Info-mode-hook is used.
+
+;; Priorities of map :
+;; general-override-mode-map > general-override-local-mode-map > global-map
+(defun leader-ala-vim-info-mode ()
+  (general-def
+    :keymaps 'local
+    :states '(normal motion visual operator emacs)
+    "SPC" leader-ala-vim-map))
+(add-hook 'Info-mode-hook #'leader-ala-vim-info-mode)
+
+;;;; global auto-revert-mode borrows from spacemacs
+;; Auto refresh
+(global-auto-revert-mode 1)
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
+(push 'Buffer-menu-mode global-auto-revert-ignore-modes)
+
+(use-package transient
+  :init (defvar-local transient-directory-cache
+          (my/put-this-in-var "transient"))
+        (apply #'custom-set-variables
+               (mapcar
+                (lambda(pair)
+                  (list (car pair)
+                        (expand-file-name (cdr pair) transient-directory-cache)))
+                '((transient-levels-file . "levels.el")
+                  (transient-values-file . "values.el")
+                  (transient-history-file . "history.el")))))
+
+(use-package tramp
+  :custom (tramp-auto-save-directory (my/put-this-in-var "autosave"))
+          (tramp-backup-directory-alist `(("." . ,(my/put-this-in-var "backup"))))
+          (tramp-default-method "ssh"))
 
 (use-package diminish
   :commands (diminish))
@@ -769,7 +892,8 @@ targets."
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
 
 (use-package emojify
-  :diminish (emojify))
+  :diminish (emojify)
+  :custom (emojify-emojis-dir  (my/put-this-in-var "emojis")))
   ;:hook (after-init . global-emojify-mode))
 
 (use-package iedit
@@ -805,8 +929,12 @@ targets."
 (use-package undo-tree
   :diminish (undo-tree-mode)
   :custom (evil-undo-system 'undo-tree)
+          (undo-tree-enable-undo-in-region t)
+          (undo-tree-history-directory-alist
+           `(("." . ,(my/put-this-in-var "undo-tree/"))))
   :init (leader-ala-vim "_" #'undo-tree-visualize)
         (global-undo-tree-mode))
+
 
 (use-package restart-emacs
   :init (leader-ala-vim
@@ -1019,6 +1147,7 @@ argument, query for word to search."
   :commands (treemacs)
   :custom (treemacs-width 40)
           (treemacs-indentation 1)
+          (treemacs-persist-file (my/put-this-in-var "treemacs-persist"))
   :init (prefix-c-xt "t" #'treemacs)
   :config (require 'treemacs-all-the-icons)
           (require 'treemacs-evil)
@@ -1032,120 +1161,12 @@ argument, query for word to search."
   :diminish (hl-todo-mode)
   :hook ((prog-mode) . hl-todo-mode))
 
+(use-package svg-lib
+  :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
+
 (use-package vterm
   :init (setq vterm-always-compile-module t))
 
-
-;; (use-package sudo-edit
-;;   :custom (sudo-edit-local-method "su")
-;;   :init (general-def "C-c r" #'sudo-edit))
-
-(setq save-interprogram-paste-before-kill t
-      kill-do-not-save-duplicates t
-      comint-scroll-show-maximum-output t
-      comint-scroll-to-bottom-on-input t
-      scroll-step 1
-      sentence-end-double-space nil
-      confirm-kill-processes nil
-      history-delete-duplicates t
-      kill-do-not-save-duplicates t
-      native-comp-async-report-warnings-errors 'silent
-      initial-scratch-message nil
-      ring-bell-function 'ignore
-      visible-bell nil
-      split-width-threshold 140
-      truncate-string-ellipsis "…"
-      use-short-answers t
-      enable-recursive-minibuffers t
-      require-final-newline t
-      executable-prefix-env t
-      dired-dwim-target t
-      dired-kill-when-opening-new-dired-buffer t
-      dired-switches-in-mode-line 'as-is
-      next-error-message-highlight t
-      help-enable-symbol-autoload t
-      describe-bindings-outline t
-      completions-detailed t
-      view-read-only t
-      nobreak-char-display t
-      nobreak-char-ascii-display nil
-      compilation-scroll-output 'first-error)
-
-(add-hook 'text-mode-hook #'turn-on-auto-fill)
-(add-hook 'before-save-hook #'delete-trailing-whitespace)
-(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
-(minibuffer-depth-indicate-mode)
-;; TODO a hook for the function read-only-mode.
-;; Since I put this mode in view-mode and I set view-mode to emacs state.
-;; when I quit read-only-mode the buffer stays in emacs-state…
-;; What I would like, is to restore the previous state of the buffer…
-;; or perhaps decide what state applies based on the major mode.
-
-(setq-default tab-width 4
-              indent-tabs-mode nil
-              tab-always-indent 'complete
-              tab-first-completion 'word-or-paren-or-punct
-              indicate-empty-lines t)
-
-;; (set-input-meta-mode 'encoded)
-
-(require 'hl-line)
-(my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
-(prefix-c-xt "h" #'hl-line-mode)
-(global-so-long-mode)
-
-;;;; better dired mode
-(autoload #'dired-omit-mode "dired-x")
-(with-eval-after-load 'dired
-  (setq dired-x-hands-off-my-keys nil)
-  (require 'dired-x))
-(defun my/set-dired-omit-mode()
-  (dired-omit-mode 1))
-
-(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
-(setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
-                                   auto-mode-alist))
-
-;; (defun dired-up-directory-same-buffer ()
-;;   "Go up in the same buffer."
-;;   (interactive)
-;;   (find-alternate-file ".."))
-
-;; To show only directories in dired
-(fset 'dired-only-show-directories
-      "*/tk")
-
-(general-def
- :keymaps 'dired-mode-map
- ;;"^" #'dired-up-directory-same-buffer
- "C-x C-k D" #'dired-only-show-directories)
-
-
-;;;; for Info-mode, with this method we can't bind "SPC"
-;; (with-eval-after-load 'info
-;;   (define-key Info-mode-map (kbd "M-SPC") leader-ala-vim-map))
-
-;; So, as we want to use SPC (next-page is also bound to C-f), we use
-;; 'local of general-def :keymaps keyword, evil-local-set-key is used
-;; by general in this case. The binding is local to the *buffer* not for every
-;; buffers with the same mode. It's why Info-mode-hook is used.
-
-;; Priorities of map :
-;; general-override-mode-map > general-override-local-mode-map > global-map
-(defun leader-ala-vim-info-mode ()
-  (general-def
-    :keymaps 'local
-    :states '(normal motion visual operator emacs)
-    "SPC" leader-ala-vim-map))
-(add-hook 'Info-mode-hook #'leader-ala-vim-info-mode)
-
-;;;; global auto-revert-mode borrows from spacemacs
-;; Auto refresh
-(global-auto-revert-mode 1)
-;; Also auto refresh dired, but be quiet about it
-(setq global-auto-revert-non-file-buffers t
-      auto-revert-verbose nil)
-(push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)

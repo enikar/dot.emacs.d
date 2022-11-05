@@ -8,11 +8,10 @@
 (require 'programming)
 
 (use-package persistent-scratch
-  :init (progn
-          (persistent-scratch-autosave-mode t)
-          (ignore-errors (persistent-scratch-restore)))
+  :init (persistent-scratch-autosave-mode t)
+        (ignore-errors (persistent-scratch-restore))
 
-  :custom (persistent-scratch-save-file "~/.emacs.d/.cache/persistent-scratch")
+  :custom (persistent-scratch-save-file (my/put-this-in-var "persistent-scratch"))
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
 
 (use-package eyebrowse
