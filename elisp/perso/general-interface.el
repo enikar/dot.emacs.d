@@ -961,29 +961,28 @@ targets."
 ;; Hideshow is built in emacs, so it has my preference.
 ;; the :load-path of use-package doesn't work. I wonder why.
 (push (expand-file-name "origami.d/" "~/.emacs.d/elisp") load-path)
-(use-package origami
-  :commands (origami-mode)
-  :init (leader-ala-vim
-          "o" '(:ignore t :wk "Origami")
-          "oo" #'origami-open-node
-          "oO" #'origami-open-node-recursively
-          "os" #'origami-show-node
-          "oS" #'origami-show-only-node
-          "oc" #'origami-close-node
-          "oC" #'origami-close-node-recursively
-          "oa" #'origami-open-all-nodes
-          "oA" #'origami-close-all-nodes
-          "ot" #'origami-toggle-node
-          "oT" #'origami-toggle-node-recursively
-          "oH" #'origami-toggle-all-nodes
-          "o<" #'origami-previous-fold
-          "o>" #'origami-next-fold
-          "of" #'origami-forward-fold
-          "oF" #'origami-forward-fold-same-level
-          "oB" #'origami-backward-fold-same-level
-          "ou" #'origami-undo
-          "or" #'origami-redo
-          "oR" #'origami-reset))
+(autoload #'origami-mode "origami")
+(leader-ala-vim
+  "o" '(:ignore t :wk "Origami")
+  "oo" #'origami-open-node
+  "oO" #'origami-open-node-recursively
+  "os" #'origami-show-node
+  "oS" #'origami-show-only-node
+  "oc" #'origami-close-node
+  "oC" #'origami-close-node-recursively
+  "oa" #'origami-open-all-nodes
+  "oA" #'origami-close-all-nodes
+  "ot" #'origami-toggle-node
+  "oT" #'origami-toggle-node-recursively
+  "oH" #'origami-toggle-all-nodes
+  "o<" #'origami-previous-fold
+  "o>" #'origami-next-fold
+  "of" #'origami-forward-fold
+  "oF" #'origami-forward-fold-same-level
+  "oB" #'origami-backward-fold-same-level
+  "ou" #'origami-undo
+  "or" #'origami-redo
+  "oR" #'origami-reset)
 
 ;; Manual definition of folds ala vim..
 (use-package evil-vimish-fold)
