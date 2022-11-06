@@ -83,10 +83,10 @@
         (widen)))))
 
 (prefix-c-xw
-  "t" #'trim-buffer
-  "r" #'trim-region)
+  "T" #'trim-buffer
+  "t" #'trim-region)
 
-(defun no-break-to-space ()
+(defun no-break-to-space-in-buffer ()
   "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."
   (interactive)
   (save-window-excursion
@@ -102,8 +102,12 @@
     (save-window-excursion
       (save-mark-and-excursion
         (narrow-to-region (mark) (point))
-        (no-break-to-space)
+        (no-break-to-space-in-buffer)
         (widen)))))
+
+(prefix-c-xw
+ "n" #'no-break-to-space-in-region
+ "N" #'no-break-to-space-in-buffer)
 
 ;; A trick to toggle between two background color
 (defvar-local my/current-background
@@ -117,10 +121,13 @@
       (custom-set-faces (setq my/current-background '(default ((t (:background "gray17" :foreground "white smoke"))))))
     (custom-set-faces (setq my/current-background '(default ((t (:background "gray15" :foreground "white smoke"))))))))
 
+(leader-ala-vim "tb" #'my/toggle-background)
+
 (defun my/set-personnal-font ()
   "Restore my favorite font setting."
   (interactive)
-  (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1"))
+  ;;(set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+  (set-frame-font "Inconsolata 18"))
 
 ;; Two functions borrow from Mickey Petersen:
 ;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
@@ -141,6 +148,34 @@
    (car (occur-read-primary-args))))
 
 (general-def "M-s M-m" #'multi-occur-in-this-mode)
+
+;; From https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/
+(defun font-available-p (font-name)
+  (find-font (font-spec :name font-name)))
+;; Alternative defintion:
+;; (defun font-available-p (font-name)
+;;   (member font-name (font-family-list)))
+
+(defvar my/favorite-fonts
+  '("Inconsolata 18"
+    "Go Mono Medium 15"
+    "Liberation Mono Medium 15"
+    "Fira Code Medium 16"
+    "DejaVu Sans Mono  Medium 16"
+    "Hack Medium 15"
+    "Menlo Medium 15"
+    "Source Code Pro Medium 15"))
+
+(defun choose-default-font (font)
+  (interactive
+   (let ((candidate
+          (completing-read
+           "Default frame font: "
+           my/favorite-fonts)))
+     `(,candidate)))
+  (set-frame-font font t))
+
+(leader-ala-vim "tF" #'choose-default-font)
 
 (provide 'personal-commands)
 ;;; personal-commands.el ends here

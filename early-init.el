@@ -37,7 +37,8 @@
         (menu-bar-lines 0)
         (tool-bar-lines 0)
         (vertical-scroll-bars)
-        (font . "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")))
+        ;; (font . "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")))
+        (font . "Inconsolata 18")))
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
