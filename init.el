@@ -18,11 +18,10 @@
       abbrev-file-name (my/put-this-in-var "abbrev_defs")
       save-abbrevs 'silently
       auto-save-list-file-prefix (my/put-this-in-var "auto-save-list/.saves-")
-      desktop-path (list (my/put-this-in-var ""))
       bookmark-default-file (my/put-this-in-var "bookmarks")
       recentf-save-file (my/put-this-in-var "recentf")
       recentf-max-saved-itmes 30
-      save-place-file (my/put-this-in-var "places"))
+      save-place-file (my/put-this-in-var "saveplace"))
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (push "~/.emacs.d/elisp/perso" load-path)

@@ -14,6 +14,8 @@
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
 
+(require 'cl-lib)
+(require 'dash)
 
 (defun my/add-hooks (mode-hook &rest hooks)
   "Add hooks in the list `hooks' to `mode-hook'"
@@ -26,84 +28,87 @@
     (add-hook mode hook)))
 
 ;;;; general to bind keys in a convenient way.
-(use-package general
-  :config ;;(general-evil-setup)
-          ;;(general-auto-unbind-keys)
-          (general-create-definer prefix-c-xw :prefix "C-x w")
-          (general-create-definer prefix-c-xt :prefix "C-x t")
-          (general-unbind :states '(normal viusal motion operator) "SPC")
-          (general-create-definer leader-ala-vim
-            :states '(normal visual motion operator insert emacs)
-            :prefix "SPC"
-            :non-normal-prefix "M-SPC"
-            ;;:prefix-command 'leader-ala-vim-command
-            :prefix-map 'leader-ala-vim-map)
+(require 'general)
+;;(general-evil-setup)
+;;(general-auto-unbind-keys)
+(general-create-definer prefix-c-xw :prefix "C-x w")
+(general-create-definer prefix-c-xt :prefix "C-x t")
+(general-unbind :states '(normal viusal motion operator) "SPC")
+(general-create-definer leader-ala-vim
+  :states '(normal visual motion operator insert emacs)
+  :prefix "SPC"
+  :non-normal-prefix "M-SPC"
+  ;;:prefix-command 'leader-ala-vim-command
+  :prefix-map 'leader-ala-vim-map)
 
-          (prefix-c-xw
-            "f" #'find-file-at-point ;; gf
-            "h" #'hexl-find-file
-            "i" #'insert-file       ;; :r
-            "w" #'write-region      ;; visual, then :w
-            "v" #'view-file)
+(prefix-c-xw
+  "f" #'find-file-at-point ;; gf
+  "h" #'hexl-find-file
+  "i" #'insert-file       ;; :r
+  "w" #'write-region      ;; visual, then :w
+  "v" #'view-file)
 
-          ;; unbind all "C-x t" bindings (functions for using emacs tab).
-          (general-unbind ctl-x-map "t")
-          (general-unbind help-map
-            "RET"
-            "g"
-            "n"
-            "C-a"
-            "C-c"
-            "C-d"
-            "C-e"
-            "C-f"
-            "C-t"
-            "C-w")
-          (prefix-c-xt
-            "a" #'font-lock-fontify-buffer
-            "b" #'font-lock-fontify-block
-            "c" #'comment-dwim      ;; SPC cr
-            "e" #'recentf-edit-list
-            "i" #'indent-region
-            "l" #'font-lock-mode
-            "m" #'man-follow        ;; But evil-lookup bind to K is better
-            "p" #'pop-tag-mark)
+;; unbind all "C-x t" bindings (functions for using emacs tab).
+(general-unbind ctl-x-map "t")
+(general-unbind help-map
+  "RET"
+  "g"
+  "n"
+  "C-a"
+  "C-c"
+  "C-d"
+  "C-e"
+  "C-f"
+  "C-t"
+  "C-w")
+(prefix-c-xt
+  "a" #'font-lock-fontify-buffer
+  "b" #'font-lock-fontify-block
+  "c" #'comment-dwim      ;; SPC cr
+  "e" #'recentf-edit-list
+  "i" #'indent-region
+  "l" #'font-lock-mode
+  "m" #'man-follow        ;; But evil-lookup bind to K is better
+  "p" #'pop-tag-mark)
 
-          (leader-ala-vim
-            ""      '(nil :wk "leader-ala-vim menu")
-            "SPC"   #'execute-extended-command
-            "M-SPC" #'just-one-space
-            ":"     #'eval-expression
-            "g"     '(:ignore t :wk "Searching")
-            "gR"    #'rgrep
-            "x"     '(:ignore t :wk "Xref")
-            "xd"    #'xref-find-definitions
-            "xr"    #'xref-find-references
-            "xs"    #'xref-show-xrefs-function
-            "t"     '(:ingore t :wk "Toggling")
-            "ts"    #'flyspell-mode
-            "tw"    #'whitespace-mode)
+(leader-ala-vim
+  ""      '(nil :wk "leader-ala-vim menu")
+  "SPC"   #'execute-extended-command
+  "M-SPC" #'just-one-space
+  ":"     #'eval-expression
+  "g"     '(:ignore t :wk "Searching")
+  "gR"    #'rgrep
+  "x"     '(:ignore t :wk "Xref")
+  "xd"    #'xref-find-definitions
+  "xr"    #'xref-find-references
+  "xs"    #'xref-show-xrefs-function
+  "t"     '(:ingore t :wk "Toggling")
+  "ts"    #'flyspell-mode
+  "tw"    #'whitespace-mode)
 
-          (general-def
-            "<cancel>"             #'keyboard-quit
-            "<XF86Calculator>"     #'calc
-            "M-RET"                #'hippie-expand
-            "<f9>"                 #'compile
-            "<f11>"                #'previous-error
-            "<f12>"                #'next-error
-            "M-s m"                #'multi-occur
-            [remap eval-last-sexp] #'pp-eval-last-sexp))
+(general-def
+  "<cancel>"             #'keyboard-quit
+  "<XF86Calculator>"     #'calc
+  "M-RET"                #'hippie-expand
+  "<f9>"                 #'compile
+  "<f11>"                #'previous-error
+  "<f12>"                #'next-error
+  "M-s m"                #'multi-occur
+  [remap eval-last-sexp] #'pp-eval-last-sexp)
 
 ;;;; Global settings
+(defvar-local my/tvd
+  (my/put-this-in-var "tramp"))
+
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
+      compilation-scroll-output 'first-error
       scroll-step 1
       sentence-end-double-space nil
       confirm-kill-processes nil
       history-delete-duplicates t
-      kill-do-not-save-duplicates t
       native-comp-async-report-warnings-errors 'silent
       initial-scratch-message nil
       ring-bell-function 'ignore
@@ -112,6 +117,7 @@
       truncate-string-ellipsis "…"
       use-short-answers t
       enable-recursive-minibuffers t
+      history-length 250
       require-final-newline t
       executable-prefix-env t
       dired-dwim-target t
@@ -122,14 +128,22 @@
       describe-bindings-outline t
       completions-detailed t
       view-read-only t
-      tramp-persistency-file-name (my/put-this-in-var "tramp")
+      nobreak-char-display t
+      nobreak-char-ascii-display nil
+;;;; desktop variables
+      desktop-base-file-name "desktop-save"
+      desktop-base-lock-name "desktop-save.lock"
+      desktop-dirname (my/put-this-in-var "")
+      desktop-path `(,(my/put-this-in-var ""))
+;;;; Tramp
+      tramp-default-method "ssh"
+      tramp-auto-save-directory (expand-file-name "autosave" my/tvd)
+      tramp-backup-directory-alist `(("." . ,(expand-file-name "backup" my/tvd)))
+      tramp-persistency-file-name (expand-file-name "connection-history" my/tvd)
       project-list-file (my/put-this-in-var "project")
       eshell-directory-name (my/put-this-in-var "eshell")
       request-storage-directory (my/put-this-in-var "request")
-      shared-game-score-directory (my/put-this-in-var "games")
-      nobreak-char-display t
-      nobreak-char-ascii-display nil
-      compilation-scroll-output 'first-error)
+      shared-game-score-directory (my/put-this-in-var "games"))
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
@@ -146,6 +160,89 @@
               tab-always-indent 'complete
               tab-first-completion 'word-or-paren-or-punct
               indicate-empty-lines t)
+
+;;;; Desktop
+(desktop-save-mode 1)
+(setq desktop-globals-to-save
+      (append
+       '(consult--buffer-history
+         consult--apropos-history
+         ctrlf-search-history
+         Info-isearch-initial-history
+         Info-search-history
+         Man-topic-history
+         bookmark-history
+         buffer-name-history
+         calc-alg-entry-history
+         command-history
+         compile-history
+         cscope-prompt-minibuffer-history
+         evil-ex-history
+         evil-ex-search-history
+         evil-markers-alist
+         evil-search-backward-history
+         evil-search-forward-history
+         evil-jumps-history
+         evil-lion--user-regex-history
+         eww-prompt-history
+         extended-command-history
+         face-name-history
+         flycheck-read-checker-history
+         geiser-doc--history
+         goto-line-history
+         grep-files-history
+         grep-regexp-history
+         hi-lock-face-history
+         hi-lock-regexp-history
+         info-lookup-history
+         kill-ring
+         kmacro-ring
+         magit-git-command-history
+         magit-revision-history
+         minibuffer-history
+         occur-collect-regexp-history
+         query-replace-history
+         read-char-history
+         read-expression-history
+         realgud:byebug-minibuffer-history
+         realgud:perldb-minibuffer-history
+         realgud:pry-minibuffer-history
+         regexp-history
+         set-variable-value-history
+         shell-command-history
+         slime-connect-host-history
+         slime-connect-port-history
+         slime-inferior-lisp-program-history
+         slime-minibuffer-history
+         slime-repl-shortcut-history
+         table-capture-columns-history
+         table-capture-justify-history
+         table-capture-min-cell-width-history
+         table-cell-height-history
+         table-cell-span-direction-history
+         table-cell-split-contents-to-history
+         table-cell-split-orientation-history
+         table-cell-width-history
+         table-col-delim-regexp-history
+         table-columns-history
+         table-insert-row-column-history
+         table-justify-history
+         table-row-delim-regexp-history
+         table-rows-history
+         table-sequence-count-history
+         table-sequence-increment-history
+         table-sequence-interval-history
+         table-sequence-justify-history
+         table-sequence-string-history
+         table-source-caption-history
+         table-source-language-history
+         table-target-history
+         tmm--history
+         transient-history
+         xref--history
+         xref--read-identifier-history
+         )
+       desktop-globals-to-save))
 
 ;; (set-input-meta-mode 'encoded) ; for terminal
 
@@ -198,22 +295,16 @@
       auto-revert-verbose nil)
 (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
-(use-package transient
-  :init (defvar-local transient-directory-cache
-          (my/put-this-in-var "transient"))
-        (apply #'custom-set-variables
-               (mapcar
-                (lambda(pair)
-                  (list (car pair)
-                        (expand-file-name (cdr pair) transient-directory-cache)))
-                '((transient-levels-file . "levels.el")
-                  (transient-values-file . "values.el")
-                  (transient-history-file . "history.el")))))
-
-(use-package tramp
-  :custom (tramp-auto-save-directory (my/put-this-in-var "autosave"))
-          (tramp-backup-directory-alist `(("." . ,(my/put-this-in-var "backup"))))
-          (tramp-default-method "ssh"))
+;;;; Transient
+(defvar-local transient-directory-cache
+  (my/put-this-in-var "transient"))
+(apply #'custom-set-variables
+       (--map
+          (list (car it)
+                (expand-file-name (cdr it) transient-directory-cache))
+        '((transient-levels-file . "levels.el")
+          (transient-values-file . "values.el")
+          (transient-history-file . "history.el"))))
 
 (use-package diminish
   :commands (diminish))
@@ -736,89 +827,6 @@ targets."
 (use-package consult-recoll
   :init (leader-ala-vim "gr" #'consult-recoll))
 
-(use-package desktop
-  :init (desktop-save-mode 1)
-        (setq history-length 250)
-        (setq desktop-globals-to-save
-              (append
-               '(consult--buffer-history
-                 consult--apropos-history
-                 ctrlf-search-history
-                 Info-isearch-initial-history
-                 Info-search-history
-                 Man-topic-history
-                 bookmark-history
-                 buffer-name-history
-                 calc-alg-entry-history
-                 command-history
-                 compile-history
-                 cscope-prompt-minibuffer-history
-                 evil-ex-history
-                 evil-ex-search-history
-                 evil-markers-alist
-                 evil-search-backward-history
-                 evil-search-forward-history
-                 evil-lion--user-regex-history
-                 eww-prompt-history
-                 extended-command-history
-                 face-name-history
-                 flycheck-read-checker-history
-                 geiser-doc--history
-                 goto-line-history
-                 grep-files-history
-                 grep-regexp-history
-                 hi-lock-face-history
-                 hi-lock-regexp-history
-                 info-lookup-history
-                 kill-ring
-                 kmacro-ring
-                 magit-git-command-history
-                 magit-revision-history
-                 minibuffer-history
-                 occur-collect-regexp-history
-                 query-replace-history
-                 read-char-history
-                 read-expression-history
-                 realgud:byebug-minibuffer-history
-                 realgud:perldb-minibuffer-history
-                 realgud:pry-minibuffer-history
-                 regexp-history
-                 set-variable-value-history
-                 shell-command-history
-                 slime-connect-host-history
-                 slime-connect-port-history
-                 slime-inferior-lisp-program-history
-                 slime-minibuffer-history
-                 slime-repl-shortcut-history
-                 table-capture-columns-history
-                 table-capture-justify-history
-                 table-capture-min-cell-width-history
-                 table-cell-height-history
-                 table-cell-span-direction-history
-                 table-cell-split-contents-to-history
-                 table-cell-split-orientation-history
-                 table-cell-width-history
-                 table-col-delim-regexp-history
-                 table-columns-history
-                 table-insert-row-column-history
-                 table-justify-history
-                 table-row-delim-regexp-history
-                 table-rows-history
-                 table-sequence-count-history
-                 table-sequence-increment-history
-                 table-sequence-interval-history
-                 table-sequence-justify-history
-                 table-sequence-string-history
-                 table-source-caption-history
-                 table-source-language-history
-                 table-target-history
-                 tmm--history
-                 transient-history
-                 xref--history
-                 xref--read-identifier-history
-                 )
-               desktop-globals-to-save)))
-
 ;; Install an advice when setup the doom modeline.
 ;; Hence, I can redefine the modeline used with
 ;; paradox.
@@ -981,7 +989,6 @@ targets."
 (use-package evil-vimish-fold)
 
 ;; Choose a folding method
-(require 'cl-lib)
 (defun myfold/set-folding-method (fold-method)
   "Set folding method to `fold-method'."
   (let ((inhibit-message t))
