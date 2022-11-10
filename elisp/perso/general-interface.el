@@ -1,4 +1,4 @@
-;;; general-interface.el --- loads and configures pacakges for general interface. -*- lexical-binding: t; -*-
+;;; general-interface.el --- loads and configures packages for general interface. -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
@@ -68,7 +68,7 @@
   "e" #'recentf-edit-list
   "i" #'indent-region
   "l" #'font-lock-mode
-  "m" #'man-follow        ;; But evil-lookup bind to K is better
+  "m" #'man-follow        ;; But evil-lookup bound to K is better
   "p" #'pop-tag-mark)
 
 (leader-ala-vim
@@ -97,11 +97,13 @@
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
 ;;;; Global settings
+;; Tramp Var Directory
 (defvar-local my/tvd
   (my/put-this-in-var "tramp"))
 
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
+      select-enable-clipboard nil
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       compilation-scroll-output 'first-error
@@ -117,7 +119,7 @@
       truncate-string-ellipsis "…"
       use-short-answers t
       enable-recursive-minibuffers t
-      history-length 250
+      history-length 100
       require-final-newline t
       executable-prefix-env t
       dired-dwim-target t
@@ -130,11 +132,13 @@
       view-read-only t
       nobreak-char-display t
       nobreak-char-ascii-display nil
+      apropos-do-all t
+      calendar-week-start-day 1
 ;;;; desktop variables
-      desktop-base-file-name "desktop-save"
-      desktop-base-lock-name "desktop-save.lock"
+      desktop-base-file-name "emacs-desktop.el"
+      desktop-base-lock-name "emacs-desktop.lock"
       desktop-dirname (my/put-this-in-var "")
-      desktop-path `(,(my/put-this-in-var ""))
+      desktop-path `("." ,(my/put-this-in-var ""))
 ;;;; Tramp
       tramp-default-method "ssh"
       tramp-auto-save-directory (expand-file-name "autosave" my/tvd)
@@ -153,7 +157,7 @@
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
 ;; when I quit read-only-mode the buffer stays in emacs-state…
 ;; What I would like, is to restore the previous state of the buffer…
-;; or perhaps decide what state applies based on the major mode.
+;; or perhaps decide what state apply based on the major mode.
 
 (setq-default tab-width 4
               indent-tabs-mode nil
@@ -165,82 +169,55 @@
 (desktop-save-mode 1)
 (setq desktop-globals-to-save
       (append
-       '(consult--buffer-history
-         consult--apropos-history
-         ctrlf-search-history
-         Info-isearch-initial-history
-         Info-search-history
-         Man-topic-history
-         bookmark-history
-         buffer-name-history
-         calc-alg-entry-history
-         command-history
-         compile-history
-         cscope-prompt-minibuffer-history
-         evil-ex-history
-         evil-ex-search-history
-         evil-markers-alist
-         evil-search-backward-history
-         evil-search-forward-history
-         evil-jumps-history
-         evil-lion--user-regex-history
-         eww-prompt-history
-         extended-command-history
-         face-name-history
-         flycheck-read-checker-history
-         geiser-doc--history
-         goto-line-history
-         grep-files-history
-         grep-regexp-history
-         hi-lock-face-history
-         hi-lock-regexp-history
-         info-lookup-history
-         kill-ring
-         kmacro-ring
-         magit-git-command-history
-         magit-revision-history
-         minibuffer-history
-         occur-collect-regexp-history
-         query-replace-history
-         read-char-history
-         read-expression-history
-         realgud:byebug-minibuffer-history
-         realgud:perldb-minibuffer-history
-         realgud:pry-minibuffer-history
-         regexp-history
-         set-variable-value-history
-         shell-command-history
-         slime-connect-host-history
-         slime-connect-port-history
-         slime-inferior-lisp-program-history
-         slime-minibuffer-history
-         slime-repl-shortcut-history
-         table-capture-columns-history
-         table-capture-justify-history
-         table-capture-min-cell-width-history
-         table-cell-height-history
-         table-cell-span-direction-history
-         table-cell-split-contents-to-history
-         table-cell-split-orientation-history
-         table-cell-width-history
-         table-col-delim-regexp-history
-         table-columns-history
-         table-insert-row-column-history
-         table-justify-history
-         table-row-delim-regexp-history
-         table-rows-history
-         table-sequence-count-history
-         table-sequence-increment-history
-         table-sequence-interval-history
-         table-sequence-justify-history
-         table-sequence-string-history
-         table-source-caption-history
-         table-source-language-history
-         table-target-history
-         tmm--history
-         transient-history
-         xref--history
-         xref--read-identifier-history
+       '((consult--buffer-history . 20)
+         (consult--apropos-history . 20)
+         (ctrlf-search-history . 20)
+         (Info-isearch-initial-history . 20)
+         (Info-search-history . 20)
+         (Man-topic-history . 20)
+         (bookmark-history . 20)
+         (buffer-name-history . 20)
+         (calc-alg-entry-history . 20)
+         (command-history . 20)
+         (compile-history . 20)
+         (cscope-prompt-minibuffer-history . 20)
+         (evil-ex-history . 20)
+         (evil-ex-search-history . 20)
+         (evil-markers-alist . 20)
+         (evil-search-backward-history . 20)
+         (evil-search-forward-history . 20)
+         (evil-jumps-history . 20)
+         (eww-prompt-history . 20)
+         (extended-command-history . 20)
+         (geiser-doc--history . 20)
+         (grep-files-history . 20)
+         (grep-regexp-history . 20)
+         (hi-lock-face-history . 20)
+         (hi-lock-regexp-history . 20)
+         (info-lookup-history . 20)
+         (kill-ring 20)
+         (kmacro-ring . 20)
+         (magit-git-command-history . 20)
+         (magit-revision-history . 20)
+         (minibuffer-history . 20)
+         (occur-collect-regexp-history . 20)
+         (query-replace-history . 20)
+         (read-char-history . 20)
+         (read-expression-history . 20)
+         (realgud:byebug-minibuffer-history . 20)
+         (realgud:perldb-minibuffer-history . 20)
+         (realgud:pry-minibuffer-history . 20)
+         (regexp-history . 20)
+         (set-variable-value-history . 20)
+         (shell-command-history . 20)
+         (slime-connect-host-history . 20)
+         (slime-connect-port-history . 20)
+         (slime-inferior-lisp-program-history . 20)
+         (slime-minibuffer-history . 20)
+         (slime-repl-shortcut-history . 20)
+         (tmm--history . 20)
+         (xref--history . 20)
+         (xref--read-identifier-history . 20)
          )
        desktop-globals-to-save))
 
@@ -248,8 +225,9 @@
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
-(prefix-c-xt "h" #'hl-line-mode)
+(leader-ala-vim "tH" #'hl-line-mode)
 (global-so-long-mode)
+(delete-selection-mode t)
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
@@ -295,7 +273,7 @@
       auto-revert-verbose nil)
 (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
-;;;; Transient
+;;;; Transient settings
 (defvar-local transient-directory-cache
   (my/put-this-in-var "transient"))
 (apply #'custom-set-variables
@@ -350,10 +328,11 @@
         finder-mode
         shortdoc-mode
         diff-mode
+        calendar-mode
         ;;Info-mode
         ;;help-mode
         calculator-mode)
-      "List of mode that want to be in initial emacs-state.
+      "List of mode that we want to be in initial emacs-state.
 To use it: (push 'a-mode my/mode-in-emacs-state)")
 
     (defun my/set-mode-in-emacs-state ()
@@ -593,7 +572,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-x C-f"  #'find-file
           "C-h a"    #'consult-apropos
           "C-c m"    #'consult-imenu
-          "M-y"      #'consult-yank-pop)
+          "M-y"      #'consult-yank-pop
+          [remap repeat-complex-command] #'consult-complex-command)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim "/"  #'consult-line
                         "gc" #'consult-ripgrep)
@@ -674,7 +654,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
   (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
   (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark)))
-
+  (general-def :keymaps 'help-map "B" #'embark-bindings)
 ;; Use which key to show the embark's actions.
 ;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
 (defun embark-which-key-indicator ()
@@ -1075,9 +1055,9 @@ targets."
 (use-package dumb-jump
   ;;:demand t
   :hook (xref-backend-functions . dumb-jump-xref-activate)
-  :custom (dumb-jump-prefer-searcher 'rg)
-  :init (general-def "C-c j" #'dumb-jump-go)
-        (leader-ala-vim "xj" #'dumb-jump-go))
+  :custom (dumb-jump-prefer-searcher 'rg))
+  ;; :init (general-def "C-c j" #'dumb-jump-go)
+  ;;       (leader-ala-vim "xj" #'dumb-jump-go))
 
 (defun my/helpful-help-bindings ()
   (general-def
