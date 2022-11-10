@@ -12,7 +12,8 @@
       (set-variable 'truncate-lines nil)
     (set-variable 'truncate-lines t)))
 
-(prefix-c-xw "s" #'toggle-hscroll-mode)
+;;(prefix-c-xw "s" #'toggle-hscroll-mode)
+(leader-ala-vim "th" #'toggle-hscroll-mode)
 
 (defvar-local tab8-old-tab-width 0)
 (defun tab8 ()
@@ -44,7 +45,7 @@
       (message "Now indent-tabs-mode is on"))
   (setq indent-tabs-mode (not indent-tabs-mode)))
 
-(prefix-c-xw "g" #'toggle-indent-tabs-mode)
+(leader-ala-vim "tg" #'toggle-indent-tabs-mode)
 
 (defun tabify-buffer ()
   "tabify a buffer"
@@ -151,6 +152,7 @@
 
 ;; From https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/
 (defun font-available-p (font-name)
+  "Check if a font is available"
   (find-font (font-spec :name font-name)))
 ;; Alternative defintion:
 ;; (defun font-available-p (font-name)
@@ -161,12 +163,15 @@
     "Go Mono Medium 15"
     "Liberation Mono Medium 15"
     "Fira Code Medium 16"
-    "DejaVu Sans Mono  Medium 16"
+    "DejaVu Sans Mono Medium 16"
     "Hack Medium 15"
     "Menlo Medium 15"
+    "Anonymous Pro Medium 17"
     "Source Code Pro Medium 15"))
 
 (defun choose-default-font (font)
+  "Choose a font interactively using the minibuffer among those
+   in `my/favorite-fonts'."
   (interactive
    (let ((candidate
           (completing-read
