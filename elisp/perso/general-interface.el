@@ -15,7 +15,7 @@
 ;; (setq use-package-always-ensure t)
 
 (require 'cl-lib)
-(require 'dash)
+(use-package dash)
 
 (defun my/add-hooks (mode-hook &rest hooks)
   "Add hooks in the list `hooks' to `mode-hook'"
@@ -61,7 +61,8 @@
   "C-f"
   "C-o"
   "C-t"
-  "C-w")
+  "C-w"
+  "C-\\")
 (prefix-c-xt
   "a" #'font-lock-fontify-buffer
   "b" #'font-lock-fontify-block
@@ -75,17 +76,20 @@
 (leader-ala-vim
   ""      '(nil :wk "leader-ala-vim menu")
   "SPC"   #'execute-extended-command
-  "M-SPC" #'just-one-space
+  "M-SPC" #'cycle-spacing
   ":"     #'eval-expression
   "g"     '(:ignore t :wk "Searching")
   "gR"    #'rgrep
+  "q"     '(:ignore t :wk "Quitting")
+  "qq"    #'save-buffers-kill-terminal
+  "qr"    #'restart-emacs
+  "t"     '(:ingore t :wk "Toggling")
+  "ts"    #'flyspell-mode
+  "tw"    #'whitespace-mode
   "x"     '(:ignore t :wk "Xref")
   "xd"    #'xref-find-definitions
   "xr"    #'xref-find-references
-  "xs"    #'xref-show-xrefs-function
-  "t"     '(:ingore t :wk "Toggling")
-  "ts"    #'flyspell-mode
-  "tw"    #'whitespace-mode)
+  "xs"    #'xref-show-xrefs-function)
 
 (general-def
   "<cancel>"             #'keyboard-quit
@@ -221,6 +225,7 @@
          (xref--read-identifier-history . 20)
          )
        desktop-globals-to-save))
+
 
 ;; (set-input-meta-mode 'encoded) ; for terminal
 
@@ -438,10 +443,28 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package which-key
   :custom (which-key-sort-order 'which-key-key-order-alpha)
-          (which-key-idle-delay 0.5)
+          (which-key-idle-delay 0.6)
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
-  :init (general-unbind help-map "C-h"))
+  :init (general-unbind help-map "C-h")
+        (general-unbind  esc-map "C-h")
+  :config (which-key-add-key-based-replacements
+            "C-x r" "Reg+Rect+Bmk"
+            "C-x n" "Narrowing"
+            "C-x a" "Abbrevs"
+            "C-x RET" "Coding Syst."
+            "C-x 8" "Insert UTF8"
+            "C-x 4" "Other window"
+            "C-x 5" "Other frame"
+            "C-x p" "Project"
+            "C-x x" "Buffer various"
+            "C-x X" "Edebug"
+            "C-x C-a" "Edebug"
+            "M-s" "Searching"
+            "M-s h" "Highlight"
+            "M-g" "Goto…"
+            "M-z" "Evil eyebrowse"
+            ))
 
 (use-package goto-chg
   :general ("M-s M-s"  #'goto-last-change)
@@ -709,6 +732,8 @@ targets."
                (concat "/su:root@localhost:" file))))
 (general-def embark-file-map "C-r" #'su-find-file)
 
+(use-package embark-consult)
+
 (defun avy-action-embark (pt)
   (unwind-protect
       (save-excursion
@@ -925,13 +950,12 @@ targets."
         (global-undo-tree-mode))
 
 
-(use-package restart-emacs
-  :init (leader-ala-vim
-          "q" '(:ignore t :wk "Quitting")
-          "qq" #'save-buffers-kill-terminal
-          "qr" #'restart-emacs))
-
-;;;; Folding. There are several possibilities.
+;; (use-package restart-emacs
+;;   :init (leader-ala-vim
+;;           "q" '(:ignore t :wk "Quitting")
+;;           "qq" #'save-buffers-kill-terminal
+;;           "qr" #'restart-emacs))
+;; Folding. There are several possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
 ;; - origami: M-x origami-mode
@@ -1023,8 +1047,8 @@ targets."
           "mm" #'magit
           "md" #'magit-file-dispatch))
 
-(use-package libgit)
-(use-package magit-libgit)
+;; (use-package libgit)
+;; (use-package magit-libgit)
 
 (use-package consult-ls-git
   :init (leader-ala-vim "mf" #'consult-ls-git))
