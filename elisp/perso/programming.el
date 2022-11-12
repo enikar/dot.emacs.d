@@ -279,7 +279,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   (slime-setup))
 
 ;;;; scheme
-(use-package 'flycheck-guile
+(use-package flycheck-guile
   :defer t)
 
 (use-package geiser
