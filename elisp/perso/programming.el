@@ -24,7 +24,9 @@
     "yn" #'yas-new-snippet
     "ys" #'yas-insert-snippet
     "yv" #'yas-visit-snippet-file)
-  :config (yas-reload-all))
+  :config
+  (which-key-add-key-based-replacements "C-c &" "Yasnippets")
+  (yas-reload-all))
 
 (use-package consult-yasnippet
   :init (general-def yas-minor-mode-map "C-c & c" #'consult-yasnippet)
@@ -78,7 +80,9 @@ If the error list is visible, hide it.  Otherwise, show it."
           :no-autload t
           "f" '(:ignore t :wk "Flycheck")
           "ff" #'flycheck-mode)
-        (prefix-c-xt :no-autoload t "f" #'flycheck-mode))
+        (prefix-c-xt :no-autoload t "f" #'flycheck-mode)
+  :config (which-key-add-key-based-replacements
+           "C-c !" "Flycheck"))
 
 (use-package consult-flycheck
   :after (flycheck consult)
@@ -178,6 +182,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; ruby
 ;; TODO: de nouveau essayer realgud-byebug.
 ;; Il ne faut pas utiliser :realgud:byebug mais M-x realgud:byebug
+(use-package evil-ruby-text-objects
+  :commands (evil-ruby-text-objects-mode))
 
 (defun set-tw-sw-to-two()
   "Set tab-width and shift-width to 2"
@@ -223,10 +229,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package yard-mode
   :diminish (yard-mode)
   :hook (ruby-mode . yard-mode))
-
-;; (use-package evil-ruby-text-objects
-;;   :after (evil))
-;;   ;;:hook (ruby-mode . evil-ruby-text-objects-mode))
 
 ;;;; Crystal
 (use-package crystal-mode
@@ -279,6 +281,9 @@ If the error list is visible, hide it.  Otherwise, show it."
   (slime-setup))
 
 ;;;; scheme
+(use-package 'flycheck-guile
+  :defer t)
+
 (use-package geiser
   :defer t
   :custom (geiser-default-implementation 'guile)
@@ -291,19 +296,25 @@ If the error list is visible, hide it.  Otherwise, show it."
   :config
   (progn
     (setq geiser-active-implementations '(guile))
-    (require 'flycheck-guile)))
+    (require 'flycheck-guile)
+    (require 'geiser-guile)))
 
-(use-package geiser-guile)
+(use-package geiser-guile
+  :defer t)
 
 (use-package racket-mode
   :mode "\\.rkt\\'"
   :hook (racket-mode . racktet-xp-mode)
-  :config (require 'racket-xp))
+  :config (require 'racket-xp)
+          (require 'geiser-racket))
 
-(use-package geiser-racket)
+(use-package geiser-racket
+  :defer t)
 
+;;;; python
 ;; anaconda + python.el is better than elpy !
 (use-package anaconda-mode
+  :commands (anaconda-mode anaconda-eldoc-mode)
   :custom (anaconda-mode-installation-directory
            (my/put-this-in-var "anaconda-mode")))
 
@@ -322,9 +333,11 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; perl6 aka raku
 ;; flycheck-raku is now available on melpa
-(use-package flycheck-raku)
+(use-package flycheck-raku
+  :defer t)
 (use-package raku-mode
-  :hook (raku-mode . flycheck-mode))
+  :hook (raku-mode . flycheck-mode)
+  :config (require 'flycheck-raku))
 
 ;;;; rust
 ;; rustic provide all functionnalities
@@ -350,7 +363,8 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.json\\'")
 (use-package jq-format)
 
-(use-package typescript-mode)
+(use-package typescript-mode
+  :mode "\\.ts\\'")
 
 ;;;; nim. Nim-mode depends on flycheck-nimsuggest
 ;; Activating nimsuggest-mode activate flycheck-mode using
@@ -372,9 +386,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package latexdiff
   :defer t)
 
-(defun my/set-tab-with-to-8 ()
+(defun my/set-tab-width-to-8 ()
   (setq tab-width 8))
-(add-hook 'shell-mode-hook #'my/set-tab-with-to-8)
+(add-hook 'shell-mode-hook #'my/set-tab-width-to-8)
 
 ;; auctex is very boring. They don't respect convention for
 ;; autoloading. Loading auctex.el slow down the emacs startup
