@@ -441,7 +441,23 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           (which-key-idle-delay 0.5)
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
-  :init (general-unbind help-map "C-h"))
+  :init (general-unbind help-map "C-h")
+        (general-unbind esc-map "C-h")
+  :config (which-key-add-key-based-replacements
+            "C-x r" "Reg+Rect+Bmk"
+            "C-x n" "Narrowing"
+            "C-x a" "Abbrevs"
+            "C-x RET" "Coding Syst."
+            "C-x 8" "Insert UTF8"
+            "C-x 4" "Other window"
+            "C-x 5" "Other frame"
+            "C-x p" "Project"
+            "C-x x" "Buffer various"
+            "C-x X" "Edebug"
+            "C-x C-a" "Edebug"
+            "M-s" "Searching"
+            "M-s h" "Highlight"
+            "M-g" "Goto…"))
 
 (use-package goto-chg
   :general ("M-s M-s"  #'goto-last-change)
