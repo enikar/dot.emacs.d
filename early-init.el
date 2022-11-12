@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t -*-
+;;;; startup hooks
 ;; Increases Garbage Collection During Startup
 ;;(defvar startup/gc-cons-threshold gc-cons-threshold)
 (setq gc-cons-threshold most-positive-fixnum)
@@ -13,7 +14,9 @@
                         (time-subtract after-init-time before-init-time))
                        gcs-done)))
 
+;;;; Packages stuff
 (setq package-user-dir "~/.emacs.d/elpa")
+(setq load-prefer-newer t)
 (setq package-archives
     '(("melpa" . "https://melpa.org/packages/")
       ("elpa"   . "https://elpa.gnu.org/packages/")
@@ -28,9 +31,7 @@
 ;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
 ;; none for the moment.
 
-(setq load-prefer-newer t)
-
-
+;;;; Settings for Xorg. Ignore settings from .Xresources and .Xdefault
 (advice-add #'x-apply-session-resources :override #'ignore)
 (setq default-frame-alist
       '((top . 0)
@@ -49,7 +50,7 @@
 
 ;;;; Dissociate (TAB, C-i), (ESC, C-[) and (RET, C-m).
 
-;; We win 3 key chords when unsing a graphical display.
+;; We win 3 key chords when using a graphical display.
 ;; We can bind them with `(define-key [C-i] #'command-to-be-bound)' or
 ;; `(define-key (kbd "<C-i>") #'command-to-be-bound)' for example.
 ;; Notice [C-i] and (Kbd "<C-i>") identify the same key code while
