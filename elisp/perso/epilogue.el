@@ -22,7 +22,8 @@
   :general ("C-<right>" #'eyebrowse-next-window-config
             "C-<left>" #'eyebrowse-prev-window-config)
   :config (which-key-add-key-based-replacements
-            "C-c C-w" "Eyebrowse")
+            "C-c C-w" "Eyebrowse"
+            "M-z" "Evil eyebrowse")
           (require 'evil-eyebrowse))
 
 (my/set-mode-in-emacs-state)

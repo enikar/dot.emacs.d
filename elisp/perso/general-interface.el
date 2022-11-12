@@ -462,9 +462,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             "C-x C-a" "Edebug"
             "M-s" "Searching"
             "M-s h" "Highlight"
-            "M-g" "Goto…"
-            "M-z" "Evil eyebrowse"
-            ))
+            "M-g" "Goto…"))
 
 (use-package goto-chg
   :general ("M-s M-s"  #'goto-last-change)
