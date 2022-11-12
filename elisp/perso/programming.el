@@ -10,8 +10,11 @@
 (require 'use-package)
 (require 'general-interface)
 
+(use-package yasnippet-snippets
+  :defer t)
+
 (use-package yasnippet
-  :defer 5
+  :defer t
   :hook ((prog-mode) . yas-minor-mode)
   :init
   (general-def yas-minor-mode-map
@@ -24,9 +27,9 @@
     "yn" #'yas-new-snippet
     "ys" #'yas-insert-snippet
     "yv" #'yas-visit-snippet-file)
-  :config
-  (which-key-add-key-based-replacements "C-c &" "Yasnippets")
-  (yas-reload-all))
+  :config (yas-reload-all)
+  (which-key-add-key-based-replacements
+    "C-c &" "Yasnippets"))
 
 (use-package consult-yasnippet
   :init (general-def yas-minor-mode-map "C-c & c" #'consult-yasnippet)
@@ -48,7 +51,10 @@
 
 (use-package highlight-indent-guides
   :diminish (highlight-indent-guides-mode)
-  :init (leader-ala-vim "ti" #'highlight-indent-guides-mode))
+  :init (leader-ala-vim "ti" #'highlight-indent-guides-mode)
+        (setq highlight-indent-guides-auto-odd-face-perc 30
+              highlight-indent-guides-auto-even-face-perc 60
+              highlight-indent-guides-auto-character-face-perc 80))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
@@ -171,13 +177,8 @@ If the error list is visible, hide it.  Otherwise, show it."
   :defer t
   :after (yaml-mode))
 
-(use-package hasky-extensions
-  :after (haskell-mode)
-  :general (:keymaps 'haskell-mode-map "C-c l"  #'hasky-extensions))
-
-(use-package hasky-stack
-  :defer t
-  :after (haskell-mode))
+(push (expand-file-name "elisp/hasky-extensions" user-emacs-directory) load-path)
+(general-def :keymaps 'haskell-mode-map "C-c l" #'hasky-extensions)
 
 ;;;; ruby
 ;; TODO: de nouveau essayer realgud-byebug.
