@@ -59,6 +59,7 @@
   "C-d"
   "C-e"
   "C-f"
+  "C-o"
   "C-t"
   "C-w")
 (prefix-c-xt
@@ -195,7 +196,7 @@
          (hi-lock-face-history . 20)
          (hi-lock-regexp-history . 20)
          (info-lookup-history . 20)
-         (kill-ring 20)
+         (kill-ring . 20)
          (kmacro-ring . 20)
          (magit-git-command-history . 20)
          (magit-revision-history . 20)
@@ -1074,6 +1075,7 @@ targets."
                      "C" #'helpful-command
                      "f" #'helpful-callable
                      "k" #'helpful-key
+                     "o" #'helpful-symbol
                      "v" #'helpful-variable)
   :init
   (leader-ala-vim
