@@ -21,7 +21,9 @@
   :custom (eyebrowse-mode-line-style 'always)
   :general ("C-<right>" #'eyebrowse-next-window-config
             "C-<left>" #'eyebrowse-prev-window-config)
-  :config (require 'evil-eyebrowse))
+  :config
+  (which-key-add-key-based-replacements "C-c C-w" "EyeBrowse")
+  (require 'evil-eyebrowse))
 
 (my/set-mode-in-emacs-state)
 
