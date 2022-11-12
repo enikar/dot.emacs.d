@@ -10,5 +10,6 @@ elisp/origami.d/
 elisp/hasky-cabal/
 elisp/hasky-extensions/
 var/
+snippets/
 .gitignore
 .persistent-scratch
