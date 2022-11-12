@@ -27,5 +27,8 @@
   (package-reinstall pkg)
   (require pkg))
 
+(defun my/package-installed-p (pkg)
+  (not (null (member pkg (mapcar #'car package-alist)))))
+
 (provide 'misc)
 ;;; misc.el ends here
