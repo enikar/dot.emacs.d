@@ -1,4 +1,4 @@
-;;; epilogue.el --- Load feature that needs to loaded at the end. -*- lexical-binding:t -*-
+;;; epilogue.el --- Load feature that needs to loaded at the end. -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
 ;;; Code:

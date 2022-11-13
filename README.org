@@ -1,17 +1,23 @@
 * Introduction
-  These are my settings for emacs 28.
-** Important
-  Not all files are mine. The files in directories:
-    elisp/gforth/
-    elisp/hasky-cabal/
-    elisp/latex-help/
-  aren't mine. Instead, They belong to others projects. The directory
-  hasky-cabal/ is a github clone. The others come from debian packages. There
-  are distributed with their respective license, see these projects for more
-  details.
+  These are my settings for emacs 29.
 
-  All other files are mine. I use GPL v3 license.
-** Use emacs 28
+** Important
+   This is not a starter kit. Worst, these settings cannot be bootstrap.
+
+   I use external package I download with git clone. They are Origami (from
+   https://github.com/elp-revive/origami.el) and Hasky-extensions (from
+   https://github.com/hasky-mode/hasky-extensions). Hasky-extensions is
+   abandonned but it matches my use.
+
+   I also use gforth.el from the debian package gforth and ltx-help.el
+   (latex-help) from the debian package texlive-lang-english.
+
+   As I compile emacs from the source to have also links to C code in helpful,
+   I don't use the debian system for emacsen, although I should do.
+
+   All files are under GPL v3 License.
+
+** Use emacs 29
   Some settings are in early-init.el. Emacs before version 27 doesn't
   read this file.
 
@@ -71,7 +77,6 @@
    - iedit
    - helpful
    - undo-tree
-   - browse-kill-ring
    - magit
    - paradox
    - hl-todo
@@ -98,9 +103,7 @@
    - dante
    - attrap
    - haskell-snippets
-   - hasky-cabal
    - hasky-extensions
-   - hasky-stack
 
 *** Ruby
    - inf-ruby
@@ -146,5 +149,3 @@
   - json-mode
   - latex-extra
   - nim-mode
-  - cider (clojure)
-  - go-mode
