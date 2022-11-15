@@ -51,64 +51,62 @@
   "tabify a buffer"
   (interactive)
   (save-window-excursion
-    (save-excursion
+    (save-mark-and-excursion
       (tabify (point-min) (point-max)))))
 
 (defun untabify-buffer ()
   "untabify a buffer"
   (interactive)
   (save-window-excursion
-    (save-excursion
+    (save-mark-and-excursion
       (untabify (point-min) (point-max)))))
 
+(defun my--trim-buffer ()
+  "Remove trailing white spaces at the end of lines for a complete buffer.
+   Internal use only"
+  (goto-char (point-min))
+  ;; (while (re-search-forward "[\t ]+$" nil t)
+  (while (re-search-forward "\\s-+$" nil t)
+    (replace-match "" t t)))
 
-(defun trim-buffer ()
-  "Remove trailing white spaces at the end of lines for a complete buffer."
+(defun trim-region-or-buffer ()
+  "Remove trailing white spaces in a region if active else in the whole
+   buffer."
   (interactive)
   (save-window-excursion
     (save-mark-and-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "[\t ]+$" nil t)
-        (replace-match "" t t)))))
-
-
-(defun trim-region ()
-  "Remove trailing white spaces at the end of lines for a region  between
-   point and mark."
-  (interactive)
-  (save-restriction
-    (save-window-excursion
-      (save-mark-and-excursion
-        (narrow-to-region (mark) (point))
-        (trim-buffer)
-        (widen)))))
+      (if (region-active-p)
+          (save-restriction
+            (narrow-to-region (mark) (point))
+            (my--trim-buffer)
+            (widen))
+        (my--trim-buffer)))))
 
 (prefix-c-xw
-  "T" #'trim-buffer
-  "t" #'trim-region)
+  "t" #'trim-region-or-buffer)
 
-(defun no-break-to-space-in-buffer ()
-  "Convert NON-BREAKING SPACE to simple SPACE in a whole buffer."
+(defun my--no-break-to-space-in-buffer ()
+  "Convert NON-BREAKING SPACE to simple SPACE in the whole buffer.
+   Internal use only."
+  (goto-char (point-min))
+  (while (re-search-forward (rx ?\240) nil t)
+    (replace-match " " t t)))
+
+(defun no-break-to-space-in-region-or-buffer ()
+  "Convert NON-BREAKING SPACE to simple SPACE in a region if active
+   else in the whole buffer."
   (interactive)
   (save-window-excursion
     (save-mark-and-excursion
-      (goto-char (point-min))
-      (while (re-search-forward (rx ?\240) nil t)
-        (replace-match " " t t)))))
-
-(defun no-break-to-space-in-region ()
-  "Convert NON-BREAKING SPACE to simple SPACE in a region."
-  (interactive)
-  (save-restriction
-    (save-window-excursion
-      (save-mark-and-excursion
-        (narrow-to-region (mark) (point))
-        (no-break-to-space-in-buffer)
-        (widen)))))
+      (if (region-active-p)
+          (save-restriction
+            (narrow-to-region (mark) (point))
+            (my--no-break-to-space-in-buffer)
+            (widen))
+        (my--no-break-to-space-in-buffer)))))
 
 (prefix-c-xw
- "n" #'no-break-to-space-in-region
- "N" #'no-break-to-space-in-buffer)
+ "n" #'no-break-to-space-in-region-or-buffer)
 
 ;; A trick to toggle between two background color
 (defvar-local my/current-background
@@ -123,12 +121,6 @@
     (custom-set-faces (setq my/current-background '(default ((t (:background "gray15" :foreground "white smoke"))))))))
 
 (leader-ala-vim "tb" #'my/toggle-background)
-
-(defun my/set-personnal-font ()
-  "Restore my favorite font setting."
-  (interactive)
-  ;;(set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-  (set-frame-font "Inconsolata 18"))
 
 ;; Two functions borrow from Mickey Petersen:
 ;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
@@ -150,6 +142,13 @@
 
 (general-def "M-s M-m" #'multi-occur-in-this-mode)
 
+(defun my/set-personnal-font (arg)
+  "Restore my favorite font setting. With prefix argument try to keep
+  the frame size"
+  (interactive "P")
+  ;;(set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+  (set-frame-font "Inconsolata 18" arg))
+
 ;; From https://emacsredux.com/blog/2021/12/22/check-if-a-font-is-available-with-emacs-lisp/
 (defun font-available-p (font-name)
   "Check if a font is available"
@@ -160,13 +159,13 @@
 
 (defvar my/favorite-fonts
   '("Inconsolata 18"
-    "Go Mono Medium 15"
-    "Liberation Mono Medium 15"
+    "Go Mono 15"
+    "Liberation Mono 15"
     "Fira Code Medium 16"
-    "DejaVu Sans Mono Medium 16"
-    "Hack Medium 15"
-    "Menlo Medium 15"
-    "Anonymous Pro Medium 17"
+    "DejaVu Sans Mono 16"
+    "Hack 15"
+    "Menlo 15"
+    "Anonymous Pro 17"
     "Source Code Pro Medium 15"))
 
 (defun choose-default-font (font)
@@ -177,8 +176,10 @@
           (completing-read
            "Default frame font: "
            my/favorite-fonts)))
-     `(,candidate)))
-  (set-frame-font font t))
+     (list candidate)))
+  (if (font-available-p font)
+      (set-frame-font font t)
+    (message "Can't find font: %S" font)))
 
 (leader-ala-vim "tF" #'choose-default-font)
 
