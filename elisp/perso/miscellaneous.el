@@ -1,4 +1,4 @@
-;;; misc.el --- Miscellaneous routines. -*- lexical-binding: t -*-
+;;; miscellaneous.el --- Miscellaneous routines. -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;;; Code:
@@ -30,5 +30,14 @@
 (defun my/package-installed-p (pkg)
   (not (null (member pkg (mapcar #'car package-alist)))))
 
-(provide 'misc)
+;; From: https://irreal.org/blog/?p=2226
+(defmacro with-region-or-buffer (args &rest body)
+  "Execute BODY with BEG and END bound to the beginning and end of the
+current region if one exists or the current buffer if not."
+  (declare (indent 1))
+  `(let ((,(car args) (if (use-region-p) (region-beginning) (point-min)))
+         (,(cadr args) (if (use-region-p) (region-end) (point-max))))
+     ,@body))
+
+(provide 'miscellaneous)
 ;;; misc.el ends here
