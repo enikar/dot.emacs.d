@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
-;; Time-stamp: <2022-11-16 19:20:02 enikar>
+;; Time-stamp: <2022-11-16 19:57:37 enikar>
 
 ;;; Code:
 
@@ -310,8 +310,9 @@
              auto-compile-on-load-mode
              auto-compile-on-save-mode)
   :init
-    (auto-compile-on-load-mode)
-    (auto-compile-on-save-mode))
+  (my/add-hooks 'emacs-lisp-mode-hook
+    #'auto-compile-on-load-mode
+    #'auto-compile-on-save-mode))
 
 (use-package paradox
   :custom (paradox-automatically-star nil)
