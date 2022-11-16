@@ -29,7 +29,7 @@
 (defun tab8-undo ()
   "revert tab-width to its previous value"
   (interactive)
-  (if (or (not (boundp 'tab8-old-tab-width)) (null tab8-old-tab-width))
+  (if (or (not (boundp 'tab8-old-tab-width)) (= 0 tab8-old-tab-width))
       (message "No information for tab8-undo")
        (save-window-excursion
            (progn
@@ -69,15 +69,15 @@
   (while (re-search-forward "\\s-+$" nil t)
     (replace-match "" t t)))
 
-(defun trim-region-or-buffer ()
+(defun trim-region-or-buffer (&optional begin end)
   "Remove trailing white spaces in a region if active else in the whole
    buffer."
-  (interactive)
+  (interactive "r")
   (save-window-excursion
     (save-mark-and-excursion
-      (if (region-active-p)
+      (if (use-region-p)
           (save-restriction
-            (narrow-to-region (mark) (point))
+            (narrow-to-region begin end)
             (my--trim-buffer)
             (widen))
         (my--trim-buffer)))))
@@ -92,15 +92,15 @@
   (while (re-search-forward (rx ?\240) nil t)
     (replace-match " " t t)))
 
-(defun no-break-to-space-in-region-or-buffer ()
+(defun no-break-to-space-in-region-or-buffer (&optional begin end)
   "Convert NON-BREAKING SPACE to simple SPACE in a region if active
    else in the whole buffer."
-  (interactive)
+  (interactive "r")
   (save-window-excursion
     (save-mark-and-excursion
-      (if (region-active-p)
+      (if (use-region-p)
           (save-restriction
-            (narrow-to-region (mark) (point))
+            (narrow-to-region begin end)
             (my--no-break-to-space-in-buffer)
             (widen))
         (my--no-break-to-space-in-buffer)))))
