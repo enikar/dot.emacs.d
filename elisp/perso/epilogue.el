@@ -9,9 +9,15 @@
 (require 'personal-commands)
 (require 'dash)
 
+(defun scratch-lexical-binding ()
+  (with-current-buffer "*scratch*"
+    (setq lexical-binding t)))
+
 (use-package persistent-scratch
   :init (persistent-scratch-autosave-mode t)
         (ignore-errors (persistent-scratch-restore))
+
+  :hook (after-init . scratch-lexical-binding)
 
   :custom (persistent-scratch-save-file (my/put-this-in-var "persistent-scratch"))
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
