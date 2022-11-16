@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t -*-
+;; Time-stamp: <2022-11-16 19:28:32 enikar>
 ;;;; startup hooks
 ;; Increases Garbage Collection During Startup
 ;;(defvar startup/gc-cons-threshold gc-cons-threshold)
