@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
-;; Time-stamp: <2022-11-16 19:57:37 enikar>
+;; Time-stamp: <2022-11-16 21:00:06 enikar>
 
 ;;; Code:
 
@@ -156,6 +156,7 @@
       tramp-auto-save-directory (expand-file-name "autosave" my/tvd)
       tramp-backup-directory-alist `(("." . ,(expand-file-name "backup" my/tvd)))
       tramp-persistency-file-name (expand-file-name "connection-history" my/tvd)
+      auto-save-list-file-prefix (my/put-this-in-var "auto-save-list/.saves-")
       project-list-file (my/put-this-in-var "project")
       eshell-directory-name (my/put-this-in-var "eshell")
       request-storage-directory (my/put-this-in-var "request")
