@@ -96,35 +96,35 @@ slot to switch to."
 ;; Finaly, I built a keymap. It's simpler.
 (defvar evil-eb-map
   (let ((prefix-map (make-sparse-keymap)))
-    (define-key prefix-map (kbd "\"") #'evil-eb--switch-to-window-config)
-    (define-key prefix-map (kbd "0") #'eyebrowse-switch-to-window-config-0)
-    (define-key prefix-map (kbd "1") #'eyebrowse-switch-to-window-config-1)
-    (define-key prefix-map (kbd "2") #'eyebrowse-switch-to-window-config-2)
-    (define-key prefix-map (kbd "3") #'eyebrowse-switch-to-window-config-3)
-    (define-key prefix-map (kbd "4") #'eyebrowse-switch-to-window-config-4)
-    (define-key prefix-map (kbd "5") #'eyebrowse-switch-to-window-config-5)
-    (define-key prefix-map (kbd "6") #'eyebrowse-switch-to-window-config-6)
-    (define-key prefix-map (kbd "7") #'eyebrowse-switch-to-window-config-7)
-    (define-key prefix-map (kbd "8") #'eyebrowse-switch-to-window-config-8)
-    (define-key prefix-map (kbd "9") #'eyebrowse-switch-to-window-config-9)
-    (define-key prefix-map (kbd "C") #'eyebrowse-create-window-config)
-    (define-key prefix-map (kbd "P") #'eyebrowse-prev-window-config)
-    (define-key prefix-map (kbd "N") #'eyebrowse-next-window-config)
-    (define-key prefix-map (kbd "Q") #'eyebrowse-close-window-config)
-    (define-key prefix-map (kbd "A") #'eyebrowse-last-window-config)
+    (keymap-set prefix-map "\"" #'evil-eb--switch-to-window-config)
+    (keymap-set prefix-map "0" #'eyebrowse-switch-to-window-config-0)
+    (keymap-set prefix-map "1" #'eyebrowse-switch-to-window-config-1)
+    (keymap-set prefix-map "2" #'eyebrowse-switch-to-window-config-2)
+    (keymap-set prefix-map "3" #'eyebrowse-switch-to-window-config-3)
+    (keymap-set prefix-map "4" #'eyebrowse-switch-to-window-config-4)
+    (keymap-set prefix-map "5" #'eyebrowse-switch-to-window-config-5)
+    (keymap-set prefix-map "6" #'eyebrowse-switch-to-window-config-6)
+    (keymap-set prefix-map "7" #'eyebrowse-switch-to-window-config-7)
+    (keymap-set prefix-map "8" #'eyebrowse-switch-to-window-config-8)
+    (keymap-set prefix-map "9" #'eyebrowse-switch-to-window-config-9)
+    (keymap-set prefix-map "C" #'eyebrowse-create-window-config)
+    (keymap-set prefix-map "P" #'eyebrowse-prev-window-config)
+    (keymap-set prefix-map "N" #'eyebrowse-next-window-config)
+    (keymap-set prefix-map "Q" #'eyebrowse-close-window-config)
+    (keymap-set prefix-map "A" #'eyebrowse-last-window-config)
     prefix-map)
   "Inital keymap for `evil-eyebrowse'.")
 
 (defun evil-eb-update-map (map)
   "Function to define all bindings for `map'"
-  (define-key map (kbd "Z") evil-eb-map))
+  (keymap-set map "Z" evil-eb-map))
 
 
 (defun evil-eb-add-vim-compat (map)
   "Add gT and gt to switch to previous and next
    slot respectively."
-  (define-key map "gT" #'eyebrowse-prev-window-config)
-  (define-key map "gt" #'eyebrowse-next-window-config))
+  (keymap-set map "g T" #'eyebrowse-prev-window-config)
+  (keymap-set map "g t" #'eyebrowse-next-window-config))
 
 (evil-eb-update-map evil-normal-state-map)
 (evil-eb-add-vim-compat evil-normal-state-map)
@@ -172,8 +172,8 @@ slot to switch to."
       (progn
         (evil-eb-update-map package-menu-mode-map)
         (evil-eb-add-vim-compat package-menu-mode-map)
-        (define-key package-menu-mode-map (kbd "$") #'end-of-line)
-        (define-key package-menu-mode-map (kbd "^") #'beginning-of-line))))
+        (keymap-set package-menu-mode-map "$" #'end-of-line)
+        (keymap-set package-menu-mode-map "^" #'beginning-of-line))))
 
 (add-hook 'package-menu-mode-hook #'evil-eb-package-menu-bindings)
 
@@ -182,29 +182,29 @@ slot to switch to."
 ;; for special mode where emacs state is more handy.
 (defvar evil-eb-map2
   (let ((prefix-map (make-sparse-keymap)))
-    (define-key prefix-map (kbd "M-\"") #'evil-eb--switch-to-window-config)
-    (define-key prefix-map (kbd "0") #'eyebrowse-switch-to-window-config-0)
-    (define-key prefix-map (kbd "1") #'eyebrowse-switch-to-window-config-1)
-    (define-key prefix-map (kbd "2") #'eyebrowse-switch-to-window-config-2)
-    (define-key prefix-map (kbd "3") #'eyebrowse-switch-to-window-config-3)
-    (define-key prefix-map (kbd "4") #'eyebrowse-switch-to-window-config-4)
-    (define-key prefix-map (kbd "5") #'eyebrowse-switch-to-window-config-5)
-    (define-key prefix-map (kbd "6") #'eyebrowse-switch-to-window-config-6)
-    (define-key prefix-map (kbd "7") #'eyebrowse-switch-to-window-config-7)
-    (define-key prefix-map (kbd "8") #'eyebrowse-switch-to-window-config-8)
-    (define-key prefix-map (kbd "9") #'eyebrowse-switch-to-window-config-9)
-    (define-key prefix-map (kbd "M-c") #'eyebrowse-create-window-config)
-    (define-key prefix-map (kbd "M-p") #'eyebrowse-prev-window-config)
-    (define-key prefix-map (kbd "M-n") #'eyebrowse-next-window-config)
-    (define-key prefix-map (kbd "M-q") #'eyebrowse-close-window-config)
-    (define-key prefix-map (kbd "M-a") #'eyebrowse-last-window-config)
-    (define-key prefix-map (kbd "Z")   #'zap-to-char) ; keep a binding to zap-to-char
+    (keymap-set prefix-map "M-\"" #'evil-eb--switch-to-window-config)
+    (keymap-set prefix-map "0" #'eyebrowse-switch-to-window-config-0)
+    (keymap-set prefix-map "1" #'eyebrowse-switch-to-window-config-1)
+    (keymap-set prefix-map "2" #'eyebrowse-switch-to-window-config-2)
+    (keymap-set prefix-map "3" #'eyebrowse-switch-to-window-config-3)
+    (keymap-set prefix-map "4" #'eyebrowse-switch-to-window-config-4)
+    (keymap-set prefix-map "5" #'eyebrowse-switch-to-window-config-5)
+    (keymap-set prefix-map "6" #'eyebrowse-switch-to-window-config-6)
+    (keymap-set prefix-map "7" #'eyebrowse-switch-to-window-config-7)
+    (keymap-set prefix-map "8" #'eyebrowse-switch-to-window-config-8)
+    (keymap-set prefix-map "9" #'eyebrowse-switch-to-window-config-9)
+    (keymap-set prefix-map "M-c" #'eyebrowse-create-window-config)
+    (keymap-set prefix-map "M-p" #'eyebrowse-prev-window-config)
+    (keymap-set prefix-map "M-n" #'eyebrowse-next-window-config)
+    (keymap-set prefix-map "M-q" #'eyebrowse-close-window-config)
+    (keymap-set prefix-map "M-a" #'eyebrowse-last-window-config)
+    (keymap-set prefix-map "Z"   #'zap-to-char) ; keep a binding to zap-to-char
     prefix-map)
   "Inital keymap for `Eyebrowse' for special buffers that need emacs state.")
 
 (defun my/eyebrowse-customization-buffer-bindings ()
   (if (boundp 'custom-mode-map)
-      (define-key custom-mode-map (kbd "M-z") evil-eb-map2)))
+      (keymap-set custom-mode-map "M-z" evil-eb-map2)))
 
 (add-hook 'Custom-mode-hook #'my/eyebrowse-customization-buffer-bindings)
 
