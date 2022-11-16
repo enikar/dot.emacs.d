@@ -330,14 +330,14 @@
   :hook (view-mode . evil-emacs-state)
   :config
     (defvar my/mode-in-emacs-state
-      '(dired-mode
+      '(calculator-mode
+        calendar-mode
+        diff-mode
+        dired-mode
         finder-mode
         shortdoc-mode
-        diff-mode
-        calendar-mode
-        ;;Info-mode
-        ;;help-mode
-        calculator-mode)
+        ;;view-mode ; doesn't work for this mode…
+        )
       "List of mode that we want to be in initial emacs-state.
 To use it: (push 'a-mode my/mode-in-emacs-state)")
 
