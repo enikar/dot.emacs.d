@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;; use-package to init and set configuration when appropriate else load-path
 ;; auto-mode-alist, autoloads and hooks are used.
+
+;; Time-stamp: <2022-11-16 19:23:03 enikar>
+
 ;;; Code:
 
 ;; (eval-when-compile

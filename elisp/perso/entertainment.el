@@ -1,3 +1,4 @@
+;; Time-stamp: <2022-11-16 19:24:46 enikar>
 ;; From: https://nullprogram.com/blog/2012/09/14/
 
 (require 'cl-lib)

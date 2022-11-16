@@ -1,6 +1,7 @@
 ;;; epilogue.el --- Load feature that needs to loaded at the end. -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
+;; Time-stamp: <2022-11-16 19:22:00 enikar>
 ;;; Code:
 
 (require 'use-package)

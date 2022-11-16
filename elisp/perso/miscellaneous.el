@@ -1,6 +1,6 @@
 ;;; miscellaneous.el --- Miscellaneous routines. -*- lexical-binding: t -*-
 ;;; Commentary:
-
+;; Time-stamp: <2022-11-16 19:22:26 enikar>
 ;;; Code:
 
 ;; pkg-info is abandoned, damage!

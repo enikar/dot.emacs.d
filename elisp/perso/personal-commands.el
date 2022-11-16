@@ -1,6 +1,6 @@
 ;;; personal-commands.el --- commands I use sometimes -*- lexical-binding: t; -*-
 ;;; Commentary:
-;;
+;; Time-stamp: <2022-11-16 19:21:23 enikar>
 ;;; Code:
 (require 'general-interface)
 

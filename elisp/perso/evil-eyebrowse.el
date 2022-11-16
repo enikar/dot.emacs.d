@@ -3,12 +3,13 @@
 ;; Author: enikar <enikar at chezlefab.net>
 
 ;; Version: 0.1
+;; Time-stamp: <2022-11-16 19:24:08 enikar>
 
 ;; This file is NOT part of GNU Emacs.
 
 ;;; License:
 
-;; This file is part of Evil.
+;; This file is not a part of Evil.
 ;;
 ;; Evil-eyebrowse is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

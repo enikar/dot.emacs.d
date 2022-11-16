@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
+;; Time-stamp: <2022-11-16 19:20:02 enikar>
+
 ;;; Code:
 
 (setq package-native-compile t
@@ -106,6 +108,8 @@
 (defvar-local my/tvd
   (my/put-this-in-var "tramp"))
 
+(add-hook 'before-save-hook 'time-stamp)
+
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
       select-enable-clipboard nil
@@ -139,6 +143,9 @@
       nobreak-char-ascii-display nil
       apropos-do-all t
       calendar-week-start-day 1
+      time-stamp-active t
+      time-stamp-line-limit 10
+      time-stamp-format "%04y-%02m-%02d %02H:%02M:%02S (%u)"
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
