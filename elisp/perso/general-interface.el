@@ -636,6 +636,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package prescient
   :config (prescient-persist-mode))
 
+(use-package vertico-prescient
+  :after (vertico)
+  :config (vertico-prescient-mode))
+
 (use-package affe
   :init ;; use orderless as the affe regexp compiler
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
@@ -780,6 +784,10 @@ targets."
   ;; :hook (minibuffer-setup-hook . corfu-enable-in-minibuffer)
   :init
   (global-corfu-mode))
+
+(use-package corfu-prescient
+  :after (corfu)
+  :config (corfu-prescient-mode))
 
 (use-package kind-icon
   :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
