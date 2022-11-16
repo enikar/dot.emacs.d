@@ -31,6 +31,11 @@
   (not (null (member pkg (mapcar #'car package-alist)))))
 
 ;; From: https://irreal.org/blog/?p=2226
+;; usage: (defun foo (blablah)
+;;         (with-region-or-buffer (begin end)
+;;            (the remainder of things to do in a region or the buffer)))
+;; That miss save-excursion things. So that moves the point.
+
 (defmacro with-region-or-buffer (args &rest body)
   "Execute BODY with BEG and END bound to the beginning and end of the
 current region if one exists or the current buffer if not."
