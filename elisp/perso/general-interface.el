@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
-;; Time-stamp: <2022-11-16 21:00:06 enikar>
+;; Time-stamp: <2022-11-17 18:14:36 (enikar)>
 
 ;;; Code:
 
@@ -108,7 +108,7 @@
 (defvar-local my/tvd
   (my/put-this-in-var "tramp"))
 
-(add-hook 'before-save-hook 'time-stamp)
+(add-hook 'before-save-hook #'time-stamp)
 
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
@@ -145,7 +145,7 @@
       calendar-week-start-day 1
       time-stamp-active t
       time-stamp-line-limit 10
-      time-stamp-format "%04y-%02m-%02d %02H:%02M:%02S (%u)"
+      time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -302,9 +302,9 @@
   :commands (diminish))
 
 (use-package dimmer
+  :hook (after-init . dimmer-mode)
   :custom (dimmer-fraction 0.16)
-          (dimmer-adjustment-mode :foreground)
-  :config (dimmer-mode))
+          (dimmer-adjustment-mode :foreground))
 
 (use-package auto-compile
   :diminish (auto-compile-mode
@@ -316,11 +316,37 @@
     #'auto-compile-on-save-mode))
 
 (use-package paradox
+  :defer t
+  :commands (paradox-list-packages paradox-upgrade-packages)
   :custom (paradox-automatically-star nil)
           (paradox-execute-asynchronously t)
-          (paradox-github-token t)
+          (paradox-github-token t))
           ;; (paradox-lines-per-entry 2)
-  :commands (paradox-list-packages))
+
+(defvar my/mode-in-emacs-state
+  '(calculator-mode
+    calendar-mode
+    diff-mode
+    dired-mode
+    finder-mode
+    shortdoc-mode
+    ;;view-mode ; doesn't work for this mode…
+    )
+  "List of mode that we want to be in initial emacs-state.
+To use it: (push 'a-mode my/mode-in-emacs-state)")
+
+(defun my/set-mode-in-emacs-state ()
+  (dolist (mode my/mode-in-emacs-state)
+    (evil-set-initial-state mode 'emacs)))
+
+(defun evil-ex-search-next-auto-clear-highlights ()
+  (interactive)
+  (evil-ex-search-next)
+  (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
+(defun evil-ex-search-previous-auto-clear-highlights ()
+  (interactive)
+  (evil-ex-search-previous)
+  (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
 
 ;;(setq evil-want-keybinding nil)
 (use-package evil
@@ -338,31 +364,6 @@
   :diminish (evil-mode)
   :hook (view-mode . evil-emacs-state)
   :config
-    (defvar my/mode-in-emacs-state
-      '(calculator-mode
-        calendar-mode
-        diff-mode
-        dired-mode
-        finder-mode
-        shortdoc-mode
-        ;;view-mode ; doesn't work for this mode…
-        )
-      "List of mode that we want to be in initial emacs-state.
-To use it: (push 'a-mode my/mode-in-emacs-state)")
-
-    (defun my/set-mode-in-emacs-state ()
-      (dolist (mode my/mode-in-emacs-state)
-        (evil-set-initial-state mode 'emacs)))
-
-    (defun evil-ex-search-next-auto-clear-highlights ()
-        (interactive)
-        (evil-ex-search-next)
-        (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
-    (defun evil-ex-search-previous-auto-clear-highlights ()
-        (interactive)
-        (evil-ex-search-previous)
-        (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
-
     (general-def
         :keymaps 'evil-motion-state-map
         "C-a" #'evil-jump-forward ; instead of C-i
@@ -392,30 +393,30 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "g"))    ; remove the prefix is sufficient
 
 (use-package evil-quickscope
-  :after evil
-  :diminish (evil-quickscope-mode)
-  :config (global-evil-quickscope-mode 1))
+  :hook (evil-mode . global-evil-quickscope-mode)
+  :diminish (evil-quickscope-mode))
 
 (use-package evil-lion
-  :after (evil)
-  :diminish (evil-lion-mode)
-  :config (evil-lion-mode))
+  :hook (evil-mode . evil-lion-mode)
+  :diminish (evil-lion-mode))
 
 (use-package evil-surround
-  :after (evil)
-  :diminish (evil-surround-mode)
-  :config (global-evil-surround-mode 1))
+  :hook (evil-mode . global-evil-surround-mode)
+  :diminish (evil-surround-mode))
 
 (use-package embrace
+  :defer t
   :hook (org-mode-hook . embrace-org-mode-hook)
   :init (general-def "C-,"  #'embrace-commander)
-        (leader-ala-vim "," #'embrace-commander))
+        (leader-ala-vim "," #'embrace-commander)
+  :config (require 'evil-embrace))
 
 (use-package evil-embrace
+  :defer t
   :config (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-goggles
-  :hook (after-init . evil-goggles-mode)
+  :hook (evil-mode . evil-goggles-mode)
   :diminish (evil-goggles-mode)
   :custom
   (evil-goggles-pulse 'display-graphic-p)
@@ -425,7 +426,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package evil-string-inflection)
 
 (use-package evil-matchit
-  :init (global-evil-matchit-mode 1))
+  :hook (evil-mode . global-evil-matchit-mode))
 
 (use-package evil-nerd-commenter
   :init
@@ -434,18 +435,20 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     ";"  #'evilnc-comment-operator
     "c" '(:ignore t :wk "Comments")
     "cc" #'evilnc-copy-and-comment-lines
-    "cj" #'evilnc-quick-comment-or-uncomment-to-the-line
-    "cl" #'evilnc-comment-or-uncomment-lines
+    "cd" #'comment-dwim
+    "ci" #'evilnc-comment-or-uncomment-lines
+    "cl" #'evilnc-quick-comment-or-uncomment-to-the-line
     "cp" #'evilnc-comment-or-uncomment-paragraphs
-    "cr" #'comment-dwim
+    "cr" #'comment-or-uncomment-region
     "cv" #'evilnc-toggle-invert-comment-line-by-line))
 
 (use-package nocomments-mode
+  :defer t
   :init (leader-ala-vim "cn" #'nocomments-mode))
 
 (use-package evil-visualstar
-  :custom (evil-visualstar/persistent t)
-  :init (global-evil-visualstar-mode t))
+  :hook (evil-mode . global-evil-visualstar-mode)
+  :custom (evil-visualstar/persistent t))
 
 (use-package evil-org
   :hook (org-mode . evil-org-mode))
@@ -484,11 +487,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package hydra
   :commands (defhydra))
 
-(use-package avy
-  :init (general-def "M-j" #'avy-goto-char-timer)
-  :custom (avy-timeout-seconds 1.0)
-  :config (avy-setup-default))
-
 ;; Addon to avy from:
 ;; https://karthinks.com/software/avy-can-do-anything/
 
@@ -501,8 +499,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     (ring-ref avy-ring 0)))
   t)
 
-(setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
-      (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line)
 
 (defun avy-action-copy-whole-line (pt)
   (save-excursion
@@ -520,17 +516,26 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (save-excursion (yank))
   t)
 
-(setf (alist-get ?y avy-dispatch-alist) 'avy-action-yank
-      (alist-get ?w avy-dispatch-alist) 'avy-action-copy
-      (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
-      (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line)
 
 (defun avy-action-teleport-whole-line (pt)
     (avy-action-kill-whole-line pt)
     (save-excursion (yank)) t)
 
-(setf (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
-      (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line)
+
+(use-package avy
+  :init (general-def "M-j" #'avy-goto-char-timer)
+  :custom (avy-timeout-seconds 1.0)
+  :config (avy-setup-default)
+
+  (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
+        (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+        (alist-get ?y avy-dispatch-alist) 'avy-action-yank
+        (alist-get ?w avy-dispatch-alist) 'avy-action-copy
+        (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
+        (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line
+        (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
+        (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line)
+  )
 
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
@@ -558,7 +563,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         (leader-ala-vim "aL" #'ace-link))
 
 ;; avy-isearch is not compatible with ctrlf because they don't use
-;; the same variable.
+;; the same variable. TODO: write a command avy-ctrlf draw from
+;; avy-isearch.
 (use-package ctrlf
   :custom (ctrlf-default-search-style 'fuzzy)
           (ctrlf-alternate-search-style 'fuzzy-regexp)
@@ -646,8 +652,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :config (prescient-persist-mode))
 
 (use-package vertico-prescient
-  :after (vertico)
-  :config (vertico-prescient-mode))
+  :hook (vertico-mode . vertico-prescient-mode))
 
 (use-package affe
   :init ;; use orderless as the affe regexp compiler
@@ -744,17 +749,6 @@ targets."
 (general-def embark-file-map "C-r" #'su-find-file)
 
 (use-package embark-consult)
-
-(defun avy-action-embark (pt)
-  (unwind-protect
-      (save-excursion
-        (goto-char pt)
-        (embark-act))
-    (select-window
-     (cdr (ring-ref avy-ring 0))))
-  t)
-
-(setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)
 
 
 (use-package avy-embark-collect
@@ -964,12 +958,6 @@ targets."
   :init (leader-ala-vim "_" #'undo-tree-visualize)
         (global-undo-tree-mode))
 
-
-;; (use-package restart-emacs
-;;   :init (leader-ala-vim
-;;           "q" '(:ignore t :wk "Quitting")
-;;           "qq" #'save-buffers-kill-terminal
-;;           "qr" #'restart-emacs))
 ;; Folding. There are several possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
@@ -1005,7 +993,8 @@ targets."
   "oR" #'origami-reset)
 
 ;; Manual definition of folds ala vim..
-(use-package evil-vimish-fold)
+(use-package evil-vimish-fold
+  :commands (evil-vimish-fold-mode))
 
 ;; Choose a folding method
 (defun myfold/set-folding-method (fold-method)
@@ -1036,6 +1025,7 @@ targets."
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
 ;; with it. Vdiff is also very nice.
 (use-package vdiff
+  :defer t
   :init (leader-ala-vim
           "v" '(:ignore t :wk "Vdiff")
           "vv" #'vdiff-hydra/body
@@ -1056,6 +1046,7 @@ targets."
   :init (openwith-mode t))
 
 (use-package magit
+  :defer t
   :init (general-def "C-c g" #'magit-file-dispatch)
         (leader-ala-vim
           "m" '(:ignore t :wk "Magit")
@@ -1066,15 +1057,19 @@ targets."
 ;; (use-package magit-libgit)
 
 (use-package consult-ls-git
+  :defer t
   :init (leader-ala-vim "mf" #'consult-ls-git))
 
 (use-package ripgrep
+  :defer t
   :init (leader-ala-vim "gg" #'ripgrep-regexp))
 (use-package deadgrep
+  :defer t
   :init (leader-ala-vim "gd" #'deadgrep)
   :config (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package ag
+  :defer t
   :init (setq ag-highlight-search t)
   (leader-ala-vim
     "ga"  '(:ignore t :wk "Ag")
@@ -1086,9 +1081,11 @@ targets."
     "gaR" #'ag-project-regexp))
 
 (use-package consult-ag
+  :defer t
   :init (leader-ala-vim "gac" #'consult-ag))
 
 (use-package visual-regexp
+  :defer t
   :init (leader-ala-vim "?" #'vr/replace)
         (general-def "C-c r" #'vr/replace))
 
@@ -1109,6 +1106,7 @@ targets."
     "s" #'help-view-source))
 
 (use-package helpful
+  :defer t
   :hook (helpful-mode . my/helpful-help-bindings)
   :general (:keymaps 'help-map
                      "C" #'helpful-command
@@ -1127,6 +1125,17 @@ targets."
     "hd" #'shortdoc-display-group
     "ho" #'describe-symbol))
 
+
+;;;; additionnal actions for avy
+(defun avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)
+
 (defun avy-action-helpful (pt)
   (save-excursion
     (goto-char pt)
@@ -1134,8 +1143,6 @@ targets."
   (select-window
    (cdr (ring-ref avy-ring 0)))
   t)
-
-(setf (alist-get ?H avy-dispatch-alist) #'avy-action-helpful)
 
 (defun dictionary-search-dwim (&optional arg)
   "Search for definition of word at point. If region is active,
@@ -1160,10 +1167,14 @@ argument, query for word to search."
    (cdr (ring-ref avy-ring 0)))
   t)
 
-(setf (alist-get ?= avy-dispatch-alist) #'avy-action-lookup-dictionnary)
+(with-eval-after-load 'avy
+  (setf (alist-get ?. avy-dispatch-alist) #'avy-action-embark)
+  (setf (alist-get ?H avy-dispatch-alist) #'avy-action-helpful)
+  (setf (alist-get ?= avy-dispatch-alist) #'avy-action-lookup-dictionnary))
 
 
 (use-package duplicate-thing
+  :defer t
   :init (leader-ala-vim "*" #'duplicate-thing))
 
 (use-package paren
@@ -1181,8 +1192,9 @@ argument, query for word to search."
           (require 'treemacs-magit))
 
 (use-package fill-column-indicator
+  :defer t
   ;;:commands (fci-mode)     ;; managed by general.el
- :init (prefix-c-xt "C-f" #'fci-mode))
+  :init (prefix-c-xt "C-f" #'fci-mode))
 
 (use-package hl-todo
   :diminish (hl-todo-mode)
@@ -1192,6 +1204,7 @@ argument, query for word to search."
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
 
 (use-package vterm
+  :commands (vterm)
   :init (setq vterm-always-compile-module t))
 
 
