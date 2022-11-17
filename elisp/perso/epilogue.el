@@ -1,7 +1,7 @@
 ;;; epilogue.el --- Load feature that needs to loaded at the end. -*- lexical-binding: t -*-
 ;;; Commentary:
 ;; keep persistent-scratch and eyebrowse at the end of the loading.
-;; Time-stamp: <2022-11-16 19:22:00 enikar>
+;; Time-stamp: <2022-11-17 16:44:24 (enikar)>
 ;;; Code:
 
 (require 'use-package)
@@ -44,9 +44,10 @@
 ;; More functionnal way. We can also use cl-some, but for simple task
 ;; dash is more efficient, although it is not built into emacs. In any
 ;; event cl-some or -some are more efficient than cl-loop.
-(let ((font (-some #'font-available-p my/favorite-fonts)))
-  (if font
-      (set-frame-font font t)))
+;; (save-window-excursion
+;;   (let ((font (-some #'font-available-p my/favorite-fonts)))
+;;     (if font
+;;         (set-frame-font font t))))
 
 (provide 'epilogue)
 ;;; epilogue.el ends here
