@@ -1,6 +1,6 @@
 ;;; miscellaneous.el --- Miscellaneous routines. -*- lexical-binding: t -*-
 ;;; Commentary:
-;; Time-stamp: <2022-11-16 19:22:26 enikar>
+;; Time-stamp: <2022-11-17 19:47:14 (enikar)>
 ;;; Code:
 
 ;; pkg-info is abandoned, damage!
@@ -43,6 +43,26 @@ current region if one exists or the current buffer if not."
   `(let ((,(car args) (if (use-region-p) (region-beginning) (point-min)))
          (,(cadr args) (if (use-region-p) (region-end) (point-max))))
      ,@body))
+
+;; Select a font automatically from a preslected list of fonts at startup
+;; (require 'cl-lib)
+;; (require 'personal-commands)
+;; (cl-loop
+;;  for font in my/favorite-fonts
+;;  if (font-available-p font)
+;;  do (set-frame-font font t)
+;;     (cl-return))
+
+;; More functionnal way. We can also use cl-some, but for simple task
+;; dash is more efficient, although it is not built into emacs. In any
+;; event cl-some or -some are more efficient than cl-loop.
+;; (require 'dash)
+;; (require 'personal-commands)
+;; (save-window-excursion
+;;   (let ((font (-some #'font-available-p my/favorite-fonts)))
+;;     (if font
+;;         (set-frame-font font t))))
+
 
 (provide 'miscellaneous)
 ;;; misc.el ends here
