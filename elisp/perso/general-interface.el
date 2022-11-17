@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
-;; Time-stamp: <2022-11-17 18:14:36 (enikar)>
+;; Time-stamp: <2022-11-17 19:34:16 (enikar)>
 
 ;;; Code:
 
@@ -252,8 +252,9 @@
   (dired-omit-mode 1))
 
 (add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
-(setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
-                                   auto-mode-alist))
+;; (setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
+;;                                    auto-mode-alist))
+(push '("[^/]\\.dired$" . dired-virtual-mode) auto-mode-alist)
 
 ;; To show only directories in dired
 (fset 'dired-only-show-directories
@@ -1066,7 +1067,7 @@ targets."
 (use-package deadgrep
   :defer t
   :init (leader-ala-vim "gd" #'deadgrep)
-  :config (push 'deadgrep-mode my/mode-in-emacs-state))
+        (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package ag
   :defer t
@@ -1181,6 +1182,12 @@ argument, query for word to search."
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
 
+(use-package treemacs-all-the-icons
+  :defer t)
+(use-package treemacs-evil
+  :defer t)
+(use-package treemacs-magit
+  :defer t)
 (use-package treemacs
   :commands (treemacs)
   :custom (treemacs-width 40)
