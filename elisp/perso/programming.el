@@ -9,6 +9,7 @@
 
 (require 'use-package)
 (require 'general-interface)
+(require 'dash)
 
 (use-package yasnippet-snippets
   :defer t)
@@ -50,6 +51,7 @@
                        "IndianRed4")))
 
 (use-package highlight-indent-guides
+  :defer t
   :diminish (highlight-indent-guides-mode)
   :init (leader-ala-vim "ti" #'highlight-indent-guides-mode))
 
@@ -58,7 +60,6 @@
 
 ;;;; syntax checking
 ;; toggle flycheck window (from spacemacs)
-(require 'dash)
 (defun my/toggle-flycheck-error-list ()
   "Toggle flycheck's error list window.
 If the error list is visible, hide it.  Otherwise, show it."
@@ -88,17 +89,20 @@ If the error list is visible, hide it.  Otherwise, show it."
            "C-c !" "Flycheck"))
 
 (use-package consult-flycheck
-  :after (flycheck consult)
+  :defer t
   :init (leader-ala-vim "fc" #'consult-flycheck))
 
 ;;;; language C
-(use-package xcscope
-  :defer t)
+(defun my/setup-xcscope ()
+  (require 'xcsocpe)
+  (cscope-setup))
 
+(add-hook 'c-mode-hook #'my/setup-xcscope)
+
+;;;; haskell
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
 
-;;;; haskell
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
   :hook ((haskell-mode . flycheck-mode)
@@ -140,8 +144,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package dante
   :diminish (dante-mode)
-  :after (haskell-mode)
-  :functions (flycheck-add-next-checker)
+;;  :functions (flycheck-add-next-checker)
   :custom (dante-load-flags '("+c" "-Wall" "-fdiagnostics-color=never" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
          (dante-mode . my/set-flycheck-haskell-checker))
@@ -150,29 +153,30 @@ If the error list is visible, hide it.  Otherwise, show it."
         :states '(normal insert)
         :keymaps 'dante-mode-map
         "M-?" #'xref-find-references
-        "M-." #'xref-find-definitions))
+        "M-." #'xref-find-definitions)
+    (general-def dante-mode-map
+      "C-c :" #'dante-info))
 
 (use-package attrap
-  :after (dante)
   :commands (attrap-attrap)
   :general (:keymaps 'dante-mode-map "M-!" #'attrap-attrap))
 
 (use-package hlint-refactor
-  :hook (haskell-mode . hlint-refactor-mode)
-  :general (:keymaps 'haskell-mode-map
-                     "C-c ," '(:ignore t :wk "Refactor")))
+  :hook (dante-mode . hlint-refactor-mode)
+  :config (which-key-add-key-based-replacements "C-c ," "Refactor"))
 
 ;; (use-package retrie
 ;;   :commands (retrie)
 ;;   :after (haskell-mode))
 
 ;;;; yaml (for stack)
-(use-package yaml-mode
-  :mode "\\.ya?ml\\'")
-
 (use-package flycheck-yamllint
-  :defer t
-  :after (yaml-mode))
+  :defer t)
+
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'"
+  :config (require 'flycheck-yamllint))
+
 
 (push (expand-file-name "elisp/hasky-extensions" user-emacs-directory) load-path)
 (general-def :keymaps 'haskell-mode-map "C-c l" #'hasky-extensions)
@@ -202,7 +206,6 @@ If the error list is visible, hide it.  Otherwise, show it."
              ("pry" . "pry -f")))
 
   :commands (inf-ruby))
-  ;;:hook (ruby-mode . inf-ruby-minor-mode))
 
 ;;;; get documentation from the ri command
 (use-package yari
@@ -210,12 +213,13 @@ If the error list is visible, hide it.  Otherwise, show it."
   :general (:keymaps 'help-map "y" #'yari))
 
 (use-package robe
-  :defer t
+;;  :defer t
   :diminish (robe-mode)
   :hook (ruby-mode . robe-mode))
 
 (use-package ruby-end
-  :defer t
+  ;;:defer t
+  :hook (ruby-mode . ruby-end-mode)
   :diminish (ruby-end-mode))
 
 (use-package realgud-pry
@@ -240,22 +244,17 @@ If the error list is visible, hide it.  Otherwise, show it."
   :config (require 'opam-user-setup "~/.emacs.d/var/opam-user-setup.el"))
 
 (use-package merlin
-  :after (tuareg)
   :custom-face (merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4"))))
   :hook ((tuareg-mode caml-mode) . merlin-mode)
-  :config
-  (progn
-    (setq merlin-command 'opam)))
+  :config (setq merlin-command 'opam))
 
 (use-package flycheck-ocaml
   :hook (tuareg-mode . flycheck-mode)
-  :init
-  (progn
-    (setq merlin-error-after-save nil)
-    (flycheck-ocaml-setup)))
+  :init (setq merlin-error-after-save nil)
+  :config (flycheck-ocaml-setup))
 
 (use-package dune
-  :commands (dune-mode))
+  :mode ("dune" . dune-mode))
 
 (use-package ocp-indent
   :hook ((tuareg-mode . ocp-setup-indent)
@@ -282,6 +281,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package flycheck-guile
   :defer t)
 
+(use-package geiser-guile
+  :defer t)
+
 (use-package geiser
   :defer t
   :custom (geiser-default-implementation 'guile)
@@ -297,8 +299,6 @@ If the error list is visible, hide it.  Otherwise, show it."
     (require 'flycheck-guile)
     (require 'geiser-guile)))
 
-(use-package geiser-guile
-  :defer t)
 
 (use-package racket-mode
   :mode "\\.rkt\\'"

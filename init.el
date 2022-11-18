@@ -17,7 +17,6 @@
 (setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
       abbrev-file-name (my/put-this-in-var "abbrev_defs")
       save-abbrevs 'silently
-      auto-save-list-file-prefix (my/put-this-in-var "auto-save-list/.saves-")
       bookmark-default-file (my/put-this-in-var "bookmarks")
       recentf-save-file (my/put-this-in-var "recentf")
       recentf-max-saved-itmes 30
