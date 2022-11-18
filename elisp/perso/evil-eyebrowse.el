@@ -1,16 +1,15 @@
 ;; evil-eyebrowse --- Ease the use of eyebrowse in evil -*- lexical-binding: t; -*-
 
-;; Author: enikar <enikar at chezlefab.net>
+;; Author: enikar <enikar at gresille.org>
 
 ;; Version: 0.1
-;; Time-stamp: <2022-11-16 19:24:08 enikar>
 
 ;; This file is NOT part of GNU Emacs.
 
+;; This file is NOT part of Evil.
+
 ;;; License:
 
-;; This file is not a part of Evil.
-;;
 ;; Evil-eyebrowse is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -132,7 +131,8 @@ slot to switch to."
 
 ;; Modify key bindings for specific modes
 (with-eval-after-load 'flycheck
-  (evil-eb-update-map flycheck-error-list-mode-map))
+  (if (boundp 'flycheck-error-list-mode-map)
+      (evil-eb-update-map flycheck-error-list-mode-map)))
 
 (declare-function 'dired-do-compress "dired-aux")
 (with-eval-after-load 'dired
