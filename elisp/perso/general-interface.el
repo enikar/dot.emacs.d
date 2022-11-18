@@ -136,9 +136,9 @@
       nobreak-char-ascii-display nil
       apropos-do-all t
       calendar-week-start-day 1
-      time-stamp-active t
-      time-stamp-line-limit 10
-      time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
+      ;; time-stamp-active t
+      ;; time-stamp-line-limit 10
+      ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -157,6 +157,7 @@
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
+;; (add-hook 'before-save-hook #'time-stamp)
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 (minibuffer-depth-indicate-mode)
 ;; TODO a function for read-only-mode-hook.
@@ -171,62 +172,6 @@
               tab-first-completion 'word-or-paren-or-punct
               indicate-empty-lines t
               fill-column 72)
-
-;;;; Desktop
-(desktop-save-mode 1)
-(setq desktop-globals-to-save
-      (append
-       '((consult--buffer-history . 20)
-         (consult--apropos-history . 20)
-         (ctrlf-search-history . 20)
-         (Info-isearch-initial-history . 20)
-         (Info-search-history . 20)
-         (Man-topic-history . 20)
-         (bookmark-history . 20)
-         (buffer-name-history . 20)
-         (calc-alg-entry-history . 20)
-         (command-history . 20)
-         (compile-history . 20)
-         (cscope-prompt-minibuffer-history . 20)
-         (evil-ex-history . 20)
-         (evil-ex-search-history . 20)
-         (evil-markers-alist . 20)
-         (evil-search-backward-history . 20)
-         (evil-search-forward-history . 20)
-         (evil-jumps-history . 20)
-         (eww-prompt-history . 20)
-         (extended-command-history . 20)
-         (geiser-doc--history . 20)
-         (grep-files-history . 20)
-         (grep-regexp-history . 20)
-         (hi-lock-face-history . 20)
-         (hi-lock-regexp-history . 20)
-         (info-lookup-history . 20)
-         (kill-ring . 20)
-         (kmacro-ring . 20)
-         (magit-git-command-history . 20)
-         (magit-revision-history . 20)
-         (minibuffer-history . 20)
-         (occur-collect-regexp-history . 20)
-         (query-replace-history . 20)
-         (read-char-history . 20)
-         (read-expression-history . 20)
-         (realgud:byebug-minibuffer-history . 20)
-         (realgud:perldb-minibuffer-history . 20)
-         (realgud:pry-minibuffer-history . 20)
-         (regexp-history . 20)
-         (set-variable-value-history . 20)
-         (shell-command-history . 20)
-         (slime-connect-host-history . 20)
-         (slime-connect-port-history . 20)
-         (slime-inferior-lisp-program-history . 20)
-         (slime-minibuffer-history . 20)
-         (slime-repl-shortcut-history . 20)
-         (tmm--history . 20)
-         (xref--history . 20)
-         (xref--read-identifier-history . 20)
-         )
-       desktop-globals-to-save))
 
 ;; (set-input-meta-mode 'encoded) ; for terminal
 

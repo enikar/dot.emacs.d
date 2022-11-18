@@ -212,6 +212,10 @@ If the error list is visible, hide it.  Otherwise, show it."
   :commands (yari)
   :general (:keymaps 'help-map "y" #'yari))
 
+;; The process to get robe working is difficult.
+;; The pry process cannot be launch automatically (for some
+;; reasons I don't understand). So I have to launch pry manually.
+;; And then I can finally M-x robe-start, and it hopefully works.
 (use-package robe
 ;;  :defer t
   :diminish (robe-mode)
