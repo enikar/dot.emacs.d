@@ -1,4 +1,4 @@
-;;; misc.el --- Miscellaneous routines. -*- lexical-binding: t -*-
+;;; miscellaneous.el --- Miscellaneous routines. -*- lexical-binding: t -*-
 ;;; Commentary:
 
 ;;; Code:
@@ -27,5 +27,5 @@
   (package-reinstall pkg)
   (require pkg))
 
-(provide 'misc)
+(provide 'miscellaneous)
 ;;; misc.el ends here
