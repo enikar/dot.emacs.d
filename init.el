@@ -1,5 +1,4 @@
 ;;; init.el --- emacs start up initialization file
-;; Time-stamp: <2022-11-16 20:59:32 enikar>
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message "enikar")
 
