@@ -3,8 +3,6 @@
 ;; use-package to init and set configuration when appropriate else load-path
 ;; auto-mode-alist, autoloads and hooks are used.
 
-;; Time-stamp: <2022-11-17 20:04:45 (enikar)>
-
 ;;; Code:
 
 ;; (eval-when-compile
@@ -218,6 +216,10 @@ If the error list is visible, hide it.  Otherwise, show it."
   :commands (yari)
   :general (:keymaps 'help-map "y" #'yari))
 
+;; The process to get robe working is difficult.
+;; The pry process cannot be launch automatically (for some
+;; reasons I don't understand). So I have to launch pry manually.
+;; And then I can finally M-x robe-start, and it hopefully works.
 (use-package robe
 ;;  :defer t
   :diminish (robe-mode)
