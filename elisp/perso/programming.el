@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;; use-package to init and set configuration when appropriate else load-path
 ;; auto-mode-alist, autoloads and hooks are used.
+
 ;;; Code:
 
 ;; (eval-when-compile
@@ -155,7 +156,12 @@ If the error list is visible, hide it.  Otherwise, show it."
         "M-?" #'xref-find-references
         "M-." #'xref-find-definitions)
     (general-def dante-mode-map
-      "C-c :" #'dante-info))
+      "C-c :" #'dante-info)
+    (general-unbind 'dante-mode-map
+      "C-b"
+      "C-l"
+      "C-t"
+      "C-v"))
 
 (use-package attrap
   :commands (attrap-attrap)

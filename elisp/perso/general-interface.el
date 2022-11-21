@@ -2,6 +2,7 @@
 ;;; Commentary:
 ;;  use-package is used when apropriate, else set load-path
 ;;  auto-mode-alist, autoloads and hooks using the bare emacs way.
+
 ;;; Code:
 
 (setq package-native-compile t
@@ -52,6 +53,7 @@
 (general-unbind ctl-x-map "t")
 (general-unbind help-map
   "RET"
+  "h"
   "g"
   "n"
   "C-a"
@@ -96,6 +98,7 @@
   "<f11>"                #'previous-error
   "<f12>"                #'next-error
   "M-s m"                #'multi-occur
+  "C-x r e"              #'edit-bookmarks
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
 ;;;; Global settings
@@ -397,7 +400,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
   :init (general-unbind help-map "C-h")
-        (general-unbind esc-map "C-h")
+        (general-unbind  esc-map "C-h")
   :config (which-key-add-key-based-replacements
             "C-x r" "Reg+Rect+Bmk"
             "C-x n" "Narrowing"
@@ -415,12 +418,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             "M-g" "Goto…"))
 
 (use-package goto-chg
-  :general ("M-s M-s"  #'goto-last-change)
-           ("M-s M-r"  #'goto-last-change-reverse))
+  :general ("M-g M-g"  #'goto-last-change)
+           ("M-g M-h"  #'goto-last-change-reverse))
 
 (use-package expand-region
   :init (general-def "C-="  #'er/expand-region)
-        (leader-ala-vim "=" #'er/expand-region))
+        (leader-ala-vim "$" #'er/expand-region))
 
 (use-package hydra
   :commands (defhydra))
@@ -743,6 +746,7 @@ targets."
       (call-interactively #'dabbrev-completion)))
 
 (use-package dabbrev
+  :defer t
   :general
   ("M-³"   #'dabbrev-completion-all-buffers
    "s-³"   #'dabbrev-completion-all-buffers
@@ -755,12 +759,14 @@ targets."
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (use-package cape
+  :defer t
   :init (push #'cape-dabbrev completion-at-point-functions)
         (push #'cape-file completion-at-point-functions)
   :general ("M-²"  #'cape-dabbrev
             "s-²"  #'cape-dabbrev))
 
 (use-package symbol-overlay
+  :defer t
   :init (leader-ala-vim
              "j"  '(:ignore t :wk "Symbol overlay")
              "jc" `(,#'symbol-overlay-remove-all :wk "clear overlay")
@@ -774,10 +780,12 @@ targets."
              ;; "jr" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
 
 (use-package consult-flyspell
+  :defer t
   :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
-        (leader-ala-vim "!" #'consult-flyspell-correct-function))
+        (leader-ala-vim "=" #'consult-flyspell-correct-function))
 
 (use-package consult-recoll
+  :defer t
   :init (leader-ala-vim "gr" #'consult-recoll))
 
 ;; Install an advice when setup the doom modeline.
@@ -846,18 +854,20 @@ targets."
   :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package all-the-icons-ibuffer
-  :init (all-the-icons-ibuffer-mode 1))
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
 (use-package all-the-icons-completion
-  :init (all-the-icons-completion-mode 1)
+  :config (all-the-icons-completion-mode 1)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
 
 (use-package emojify
+  :defer t
   :diminish (emojify)
   :custom (emojify-emojis-dir  (my/put-this-in-var "emojis")))
   ;:hook (after-init . global-emojify-mode))
 
 (use-package iedit
+  :defer t
   :general ("C-;"  #'iedit-mode))
 
 (use-package evil-multiedit
@@ -1028,15 +1038,17 @@ targets."
 
 (use-package visual-regexp
   :defer t
-  :init (leader-ala-vim "?" #'vr/replace)
-        (general-def "C-c r" #'vr/replace))
+  :init (leader-ala-vim "?" #'vr/query-replace
+                        "!" #'vr/replace)
+        (general-def "C-c r" #'vr/replace
+                     "C-c q" #'vr/query-replace))
 
 (use-package dumb-jump
-  ;;:demand t
+  :commands (xref-find-definitions
+             xref-find-references
+             xref-show-xrefs-function)
   :hook (xref-backend-functions . dumb-jump-xref-activate)
   :custom (dumb-jump-prefer-searcher 'rg))
-  ;; :init (general-def "C-c j" #'dumb-jump-go)
-  ;;       (leader-ala-vim "xj" #'dumb-jump-go))
 
 (defun my/helpful-help-bindings ()
   (general-def
