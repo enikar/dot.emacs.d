@@ -107,37 +107,28 @@ If the error list is visible, hide it.  Otherwise, show it."
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
 
+(defun my/haskell-mode-hooks ()
+  (flycheck-mode)
+  (haskell-indentation-mode)
+  (imenu-add-menubar-index)
+  (general-unbind
+    :keymaps 'haskell-mode-map
+    :prefix "C-c"
+    "TAB"
+    "C-b"
+    "C-l"
+    "C-t"))
+
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
-  :hook ((haskell-mode . flycheck-mode)
-         (haskell-mode . haskell-indentation-mode)
-         (haskell-mode . imenu-add-menubar-index))
-  :config
-  (progn
-    (add-hook 'ghci-script-mode-hook #'my/no-auto-fill)
+  :hook ((haskell-mode . my/haskell-mode-hooks)
+         (ghci-script-mode . my/no-auto-fill))
+  :init
     (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
-          haskell-process-suggest-restart nil)))
-
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :hook (haskell-mode . lsp)
-;;   :commands lsp)
-
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode)
-
-;; (use-package lsp-haskell
-;;   :ensure t
-;;   :config
-;;     (setq lsp-haskell-process-path-hie "ghcide")
-;;     (setq lsp-haskell-process-args-hie '())
-;; ;; Comment/uncomment this line to see interactions between lsp client/server.
-;; ;;(setq lsp-log-io t)
-;;  )
+          haskell-process-suggest-restart nil))
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
@@ -149,7 +140,16 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package dante
   :diminish (dante-mode)
 ;;  :functions (flycheck-add-next-checker)
-  :custom (dante-load-flags '("+c" "-Wall" "-fdiagnostics-color=never" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
+  :custom (dante-load-flags '("+c"
+                              "-Wall"
+                              "-fdiagnostics-color=never"
+                              "-ferror-spans"
+                              "-fdefer-typed-holes"
+                              "-fdefer-type-errors"
+                              "-Wwarn=missing-home-modules"
+                              "-fno-diagnostics-show-caret"
+                              "--make"
+                              "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
          (dante-mode . my/set-flycheck-haskell-checker))
   :config
@@ -159,12 +159,7 @@ If the error list is visible, hide it.  Otherwise, show it."
         "M-?" #'xref-find-references
         "M-." #'xref-find-definitions)
     (general-def dante-mode-map
-      "C-c :" #'dante-info)
-    (general-unbind 'dante-mode-map
-      "C-b"
-      "C-l"
-      "C-t"
-      "C-v"))
+      "C-c :" #'dante-info))
 
 (use-package attrap
   :commands (attrap-attrap)
