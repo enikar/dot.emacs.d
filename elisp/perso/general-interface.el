@@ -115,7 +115,11 @@
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       compilation-scroll-output 'first-error
+      compilation-auto-jump-to-first-error 'first-known
       scroll-step 1
+      scroll-margin 0
+      scroll-conservatively 1000
+      scroll-preserve-screen-position 1
       sentence-end-double-space nil
       confirm-kill-processes nil
       history-delete-duplicates t
@@ -762,10 +766,35 @@ targets."
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
+;; cape-dabbrev
+;; cape-file
+;; cape-history
+;; cape-keyword
+;; cape-symbol
+;; cape-abbrev
+;; cape-ispell
+;; cape-dict
+;; cape-line
+
+(defun my/cape-prog-mode ()
+  (push #'cape-keyword completion-at-point-functions))
+
+(defun my/cape-elisp-mode ()
+  (push #'cape-symbol completion-at-point-functions))
+
+(defun my/cape-text-mode ()
+  (add-to-list 'completion-at-point-functions #'cape-dict))
+
 (use-package cape
-  :defer t
-  :init (push #'cape-dabbrev completion-at-point-functions)
-        (push #'cape-file completion-at-point-functions)
+  ;;:defer t
+  :init (setq-default completion-at-point-functions
+                      (append
+                       (list #'cape-dabbrev
+                             #'cape-file)
+                       completion-at-point-functions))
+  :hook ((prog-mode . my/cape-prog-mode)
+         (text-mode . my/cape-text-mode)
+         (emacs-lisp-mode . my/cape-elisp-mode))
   :general ("M-²"  #'cape-dabbrev
             "s-²"  #'cape-dabbrev))
 
@@ -791,6 +820,9 @@ targets."
 (use-package consult-recoll
   :defer t
   :init (leader-ala-vim "gr" #'consult-recoll))
+
+(use-package sml-modeline
+  :config (sml-modeline-mode))
 
 ;; Install an advice when setup the doom modeline.
 ;; Hence, I can redefine the modeline used with
@@ -1164,8 +1196,9 @@ argument, query for word to search."
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
 
 (use-package vterm
-  :commands (vterm)
-  :init (setq vterm-always-compile-module t))
+  :defer t
+  :init (setq vterm-always-compile-module t)
+        (general-def "C-c v" #'vterm))
 
 
 ;;;; diminish some minor modes
