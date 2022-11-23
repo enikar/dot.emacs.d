@@ -101,6 +101,8 @@
  '(secondary-selection ((t (:background "#333366" :foreground "#f6f3e8"))))
  '(show-paren-match ((t (:background "dark blue"))))
  '(show-paren-mismatch ((t (:background "red" :foreground "white" :weight bold))))
+ '(sml-modeline-end-face ((t (:background "RosyBrown4"))))
+ '(sml-modeline-vis-face ((t (:background "IndianRed4"))))
  '(th-sentence-hl-face ((t (:weight bold))))
  '(which-func ((t (:foreground "gold"))))
  '(widget-field ((t (:box (:line-width 2 :color "grey75" :style pressed-button)))))
