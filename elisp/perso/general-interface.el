@@ -747,18 +747,20 @@ targets."
            '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.7 :scale 1.0))
   :config (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
-(defun dabbrev-completion-all-buffers ()
-      "dabbrev-completion in *all* buffers"
-    (interactive)
-    (let ((current-prefix-arg '(16))) ; c-u c-u
-      (call-interactively #'dabbrev-completion)))
+;; (defun dabbrev-completion-all-buffers ()
+;;       "dabbrev-completion in *all* buffers"
+;;     (interactive)
+;;     (let ((current-prefix-arg '(16))) ; c-u c-u
+;;       (call-interactively #'dabbrev-completion)))
 
+;; Since I use cape, I can replace #'dabbrev-completion-all-buffers
+;; #'cape-dabbrev. As well I don't use it…
 (use-package dabbrev
   :defer t
   :general
-  ("M-³"   #'dabbrev-completion-all-buffers
-   "s-³"   #'dabbrev-completion-all-buffers
-   "M-&"   #'dabbrev-completion-all-buffers
+  (;; "M-³"   #'dabbrev-completion-all-buffers
+   ;; "s-³"   #'dabbrev-completion-all-buffers
+   ;; "M-&"   #'dabbrev-completion-all-buffers
    ;; Swap M-/ and C-M-/
    "M-/"   #'dabbrev-completion
    "C-M-/" #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
@@ -766,6 +768,8 @@ targets."
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
+;;;; Fonctions for completion-at-point-functions hook provide
+;;   by the cape package.
 ;; cape-dabbrev
 ;; cape-file
 ;; cape-history
@@ -777,26 +781,25 @@ targets."
 ;; cape-line
 
 (defun my/cape-prog-mode ()
-  (push #'cape-keyword completion-at-point-functions))
+  (add-hook 'completion-at-point-functions #'cape-keyword nil 'local))
 
 (defun my/cape-elisp-mode ()
-  (push #'cape-symbol completion-at-point-functions))
+  (add-hook 'completion-at-point-functions #'cape-symbol nil 'local))
 
 (defun my/cape-text-mode ()
-  (add-to-list 'completion-at-point-functions #'cape-dict))
+  (add-hook 'completion-at-point-functions #'cape-dict nil 'local))
 
 (use-package cape
-  ;;:defer t
-  :init (setq-default completion-at-point-functions
-                      (append
-                       (list #'cape-dabbrev
-                             #'cape-file)
-                       completion-at-point-functions))
   :hook ((prog-mode . my/cape-prog-mode)
          (text-mode . my/cape-text-mode)
          (emacs-lisp-mode . my/cape-elisp-mode))
+
   :general ("M-²"  #'cape-dabbrev
-            "s-²"  #'cape-dabbrev))
+            "s-²"  #'cape-dabbrev)
+
+  :init (my/add-hooks 'completion-at-point-functions
+                       #'cape-file
+                       #'cape-dabbrev))
 
 (use-package symbol-overlay
   :defer t
