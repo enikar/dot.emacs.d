@@ -39,7 +39,8 @@
 
 ;;;; Load desktop
 (desktop-save-mode 1)
-(setq desktop-globals-to-save
+(setq desktop-load-locked-desktop 'check-pid
+      desktop-globals-to-save
       (append
        '((consult--buffer-history . 20)
          (consult--apropos-history . 20)

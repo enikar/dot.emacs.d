@@ -94,47 +94,39 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init (leader-ala-vim "fc" #'consult-flycheck))
 
 ;;;; language C
-(defun my/setup-xcscope ()
-  (require 'xcsocpe)
-  (cscope-setup))
+(use-package xcscope
+  :hook (c-mode . cscope-setup))
 
-(add-hook 'c-mode-hook #'my/setup-xcscope)
+(use-package disaster
+  :defer t
+  :init (general-def c-mode-map "C-c D" #'disaster))
 
 ;;;; haskell
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
 
+(defun my/haskell-mode-hooks ()
+  (flycheck-mode)
+  (haskell-indentation-mode)
+  (imenu-add-menubar-index)
+  (general-unbind
+    :keymaps 'haskell-mode-map
+    :prefix "C-c"
+    "TAB"
+    "C-b"
+    "C-l"
+    "C-t"))
+
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
-  :hook ((haskell-mode . flycheck-mode)
-         (haskell-mode . haskell-indentation-mode)
-         (haskell-mode . imenu-add-menubar-index))
-  :config
-  (progn
-    (add-hook 'ghci-script-mode-hook #'my/no-auto-fill)
+  :hook ((haskell-mode . my/haskell-mode-hooks)
+         (ghci-script-mode . my/no-auto-fill))
+  :init
     (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
-          haskell-process-suggest-restart nil)))
-
-;; (use-package lsp-mode
-;;   :ensure t
-;;   :hook (haskell-mode . lsp)
-;;   :commands lsp)
-
-;; (use-package lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode)
-
-;; (use-package lsp-haskell
-;;   :ensure t
-;;   :config
-;;     (setq lsp-haskell-process-path-hie "ghcide")
-;;     (setq lsp-haskell-process-args-hie '())
-;; ;; Comment/uncomment this line to see interactions between lsp client/server.
-;; ;;(setq lsp-log-io t)
-;;  )
+          haskell-process-suggest-restart nil))
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
@@ -146,7 +138,16 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package dante
   :diminish (dante-mode)
 ;;  :functions (flycheck-add-next-checker)
-  :custom (dante-load-flags '("+c" "-Wall" "-fdiagnostics-color=never" "-ferror-spans" "-fdefer-typed-holes" "-fdefer-type-errors" "-Wwarn=missing-home-modules" "-fno-diagnostics-show-caret" "--make" "-ignore-dot-ghci"))
+  :custom (dante-load-flags '("+c"
+                              "-Wall"
+                              "-fdiagnostics-color=never"
+                              "-ferror-spans"
+                              "-fdefer-typed-holes"
+                              "-fdefer-type-errors"
+                              "-Wwarn=missing-home-modules"
+                              "-fno-diagnostics-show-caret"
+                              "--make"
+                              "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
          (dante-mode . my/set-flycheck-haskell-checker))
   :config
@@ -156,12 +157,7 @@ If the error list is visible, hide it.  Otherwise, show it."
         "M-?" #'xref-find-references
         "M-." #'xref-find-definitions)
     (general-def dante-mode-map
-      "C-c :" #'dante-info)
-    (general-unbind 'dante-mode-map
-      "C-b"
-      "C-l"
-      "C-t"
-      "C-v"))
+      "C-c :" #'dante-info))
 
 (use-package attrap
   :commands (attrap-attrap)
@@ -193,15 +189,16 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package evil-ruby-text-objects
   :commands (evil-ruby-text-objects-mode))
 
-(defun set-tw-sw-to-two()
-  "Set tab-width and shift-width to 2"
+(defun my/ruby-settings ()
+  "Set tab-width and shift-width to 2. Don't insert encoding magic comment."
   (setq tab-width 2
-        evil-shift-width 2))
+        evil-shift-width 2
+        ruby-insert-encoding-magic-comment nil))
 
 (my/add-hooks 'ruby-mode-hook
               #'flycheck-mode
               #'evil-ruby-text-objects-mode
-              #'set-tw-sw-to-two)
+              #'my/ruby-settings)
 
 (use-package inf-ruby
   :custom (inf-ruby-default-implementation "pry")

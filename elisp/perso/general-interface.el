@@ -109,10 +109,16 @@
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
       select-enable-clipboard nil
+      ;; select-enable-primary t
+      ;; mouse-drag-copy-region t
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       compilation-scroll-output 'first-error
+      compilation-auto-jump-to-first-error 'first-known
       scroll-step 1
+      scroll-margin 0
+      scroll-conservatively 10000
+      scroll-preserve-screen-position 1
       sentence-end-double-space nil
       confirm-kill-processes nil
       history-delete-duplicates t
@@ -325,8 +331,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
      :states 'normal
      :keymaps 'global
      "Q"     #'evil-fill-and-move
-     "C-w e" #'find-file-other-window
-     "C-w b" #'consult-buffer-other-window)
+     "C-w e" #'find-file-other-window)
     (general-unbind evil-window-map
       "C-h"    ; use by which-key
       ;; "gt"  ; bindings to emacs tab functions
@@ -481,7 +486,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
 (use-package evil-avy
-  :after (avy)
   :init
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
@@ -546,12 +550,17 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
   :init (general-def
           "C-x b"    #'consult-buffer
+          "C-x 4 b"  #'consult-buffer-other-window
           "C-x r l"  #'consult-bookmark
           "C-x C-f"  #'find-file
           "C-h a"    #'consult-apropos
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
           [remap repeat-complex-command] #'consult-complex-command)
+        (general-def
+          :states  'normal
+          :keymaps 'global
+          "C-w b"  #'consult-buffer-other-window)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim "/"  #'consult-line
                         "gc" #'consult-ripgrep)
@@ -730,7 +739,6 @@ targets."
   (global-corfu-mode))
 
 (use-package corfu-prescient
-  :after (corfu)
   :config (corfu-prescient-mode))
 
 (use-package kind-icon
@@ -739,18 +747,20 @@ targets."
            '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.7 :scale 1.0))
   :config (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
-(defun dabbrev-completion-all-buffers ()
-      "dabbrev-completion in *all* buffers"
-    (interactive)
-    (let ((current-prefix-arg '(16))) ; c-u c-u
-      (call-interactively #'dabbrev-completion)))
+;; (defun dabbrev-completion-all-buffers ()
+;;       "dabbrev-completion in *all* buffers"
+;;     (interactive)
+;;     (let ((current-prefix-arg '(16))) ; c-u c-u
+;;       (call-interactively #'dabbrev-completion)))
 
+;; Since I use cape, I can replace #'dabbrev-completion-all-buffers
+;; #'cape-dabbrev. As well I don't use it…
 (use-package dabbrev
   :defer t
   :general
-  ("M-³"   #'dabbrev-completion-all-buffers
-   "s-³"   #'dabbrev-completion-all-buffers
-   "M-&"   #'dabbrev-completion-all-buffers
+  (;; "M-³"   #'dabbrev-completion-all-buffers
+   ;; "s-³"   #'dabbrev-completion-all-buffers
+   ;; "M-&"   #'dabbrev-completion-all-buffers
    ;; Swap M-/ and C-M-/
    "M-/"   #'dabbrev-completion
    "C-M-/" #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
@@ -758,12 +768,38 @@ targets."
   :custom
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
+;;;; Fonctions for completion-at-point-functions hook provide
+;;   by the cape package.
+;; cape-dabbrev
+;; cape-file
+;; cape-history
+;; cape-keyword
+;; cape-symbol
+;; cape-abbrev
+;; cape-ispell
+;; cape-dict
+;; cape-line
+
+(defun my/cape-prog-mode ()
+  (add-hook 'completion-at-point-functions #'cape-keyword nil 'local))
+
+(defun my/cape-elisp-mode ()
+  (add-hook 'completion-at-point-functions #'cape-symbol nil 'local))
+
+(defun my/cape-text-mode ()
+  (add-hook 'completion-at-point-functions #'cape-dict nil 'local))
+
 (use-package cape
-  :defer t
-  :init (push #'cape-dabbrev completion-at-point-functions)
-        (push #'cape-file completion-at-point-functions)
+  :hook ((prog-mode . my/cape-prog-mode)
+         (text-mode . my/cape-text-mode)
+         (emacs-lisp-mode . my/cape-elisp-mode))
+
   :general ("M-²"  #'cape-dabbrev
-            "s-²"  #'cape-dabbrev))
+            "s-²"  #'cape-dabbrev)
+
+  :init (my/add-hooks 'completion-at-point-functions
+                       #'cape-file
+                       #'cape-dabbrev))
 
 (use-package symbol-overlay
   :defer t
@@ -787,6 +823,9 @@ targets."
 (use-package consult-recoll
   :defer t
   :init (leader-ala-vim "gr" #'consult-recoll))
+
+(use-package sml-modeline
+  :config (sml-modeline-mode))
 
 ;; Install an advice when setup the doom modeline.
 ;; Hence, I can redefine the modeline used with
@@ -843,7 +882,6 @@ targets."
   (doom-modeline-mode))
 
 (use-package evil-anzu
-  :after (evil)
   :diminish (anzu-mode)
   :config
   (require 'anzu)
@@ -994,10 +1032,10 @@ targets."
 (use-package openwith
   :custom (openwith-confirm-invocation t)
           (openwith-associations
-            '(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
-              ("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
-              ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
-              ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
+            ;;'(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
+           '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
+             ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
+             ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
   :init (openwith-mode t))
 
 (use-package magit
@@ -1164,8 +1202,10 @@ argument, query for word to search."
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
 
 (use-package vterm
-  :commands (vterm)
-  :init (setq vterm-always-compile-module t))
+  :defer t
+  :init (setq vterm-always-compile-module t)
+        (general-def "C-c v" #'vterm)
+        (push 'vterm-mode my/mode-in-emacs-state))
 
 
 ;;;; diminish some minor modes

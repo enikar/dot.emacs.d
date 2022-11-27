@@ -19,7 +19,7 @@
 (defun tab8 ()
   "set tab-width to 8"
   (interactive)
-  (if (= 0 tab8-old-tab-width)
+  (if (zerop tab8-old-tab-width)
       (save-window-excursion
           (progn
             (setq tab8-old-tab-width tab-width)
@@ -144,7 +144,7 @@
 
 (defun my/set-personnal-font (arg)
   "Restore my favorite font setting. With prefix argument try to keep
-  the frame size"
+  the frame size (in pixels)."
   (interactive "P")
   ;;(set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
   (set-frame-font "Inconsolata 18" arg))
