@@ -64,5 +64,17 @@ current region if one exists or the current buffer if not."
 ;;         (set-frame-font font t))))
 
 
+;;;; A macro to mesure the running time of a block of code.
+;; From: https://nullprogram.com/blog/2009/05/28/
+
+(defmacro measure-time (&rest body)
+  "Measure and return the running time of the code block."
+  (declare (indent defun))
+  (let ((start (make-symbol "start")))
+    `(let ((,start (float-time)))
+       ,@body
+       (- (float-time) ,start))))
+
+
 (provide 'miscellaneous)
 ;;; misc.el ends here
