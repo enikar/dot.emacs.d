@@ -97,11 +97,12 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init (leader-ala-vim "fc" #'consult-flycheck))
 
 ;;;; language C
-(defun my/setup-xcscope ()
-  (require 'xcsocpe)
-  (cscope-setup))
+(use-package xcscope
+  :hook (c-mode . cscope-setup))
 
-(add-hook 'c-mode-hook #'my/setup-xcscope)
+(use-package disaster
+  :defer t
+  :init (general-def c-mode-map "C-c D" #'disaster))
 
 ;;;; haskell
 (defun my/no-auto-fill ()
@@ -191,15 +192,16 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package evil-ruby-text-objects
   :commands (evil-ruby-text-objects-mode))
 
-(defun set-tw-sw-to-two()
-  "Set tab-width and shift-width to 2"
+(defun my/ruby-settings ()
+  "Set tab-width and shift-width to 2. Don't insert encoding magic comment."
   (setq tab-width 2
-        evil-shift-width 2))
+        evil-shift-width 2
+        ruby-insert-encoding-magic-comment nil))
 
 (my/add-hooks 'ruby-mode-hook
               #'flycheck-mode
               #'evil-ruby-text-objects-mode
-              #'set-tw-sw-to-two)
+              #'my/ruby-settings)
 
 (use-package inf-ruby
   :custom (inf-ruby-default-implementation "pry")
