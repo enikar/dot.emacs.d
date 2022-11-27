@@ -112,13 +112,15 @@
 (setq save-interprogram-paste-before-kill t
       kill-do-not-save-duplicates t
       select-enable-clipboard nil
+      ;; select-enable-primary t
+      ;; mouse-drag-copy-region t
       comint-scroll-show-maximum-output t
       comint-scroll-to-bottom-on-input t
       compilation-scroll-output 'first-error
       compilation-auto-jump-to-first-error 'first-known
       scroll-step 1
       scroll-margin 0
-      scroll-conservatively 1000
+      scroll-conservatively 10000
       scroll-preserve-screen-position 1
       sentence-end-double-space nil
       confirm-kill-processes nil
@@ -333,8 +335,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
      :states 'normal
      :keymaps 'global
      "Q"     #'evil-fill-and-move
-     "C-w e" #'find-file-other-window
-     "C-w b" #'consult-buffer-other-window)
+     "C-w e" #'find-file-other-window)
     (general-unbind evil-window-map
       "C-h"    ; use by which-key
       ;; "gt"  ; bindings to emacs tab functions
@@ -489,7 +490,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
 (use-package evil-avy
-  :after (avy)
   :init
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
@@ -554,12 +554,17 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
   :init (general-def
           "C-x b"    #'consult-buffer
+          "C-x 4 b"  #'consult-buffer-other-window
           "C-x r l"  #'consult-bookmark
           "C-x C-f"  #'find-file
           "C-h a"    #'consult-apropos
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
           [remap repeat-complex-command] #'consult-complex-command)
+        (general-def
+          :states  'normal
+          :keymaps 'global
+          "C-w b"  #'consult-buffer-other-window)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim "/"  #'consult-line
                         "gc" #'consult-ripgrep)
@@ -738,7 +743,6 @@ targets."
   (global-corfu-mode))
 
 (use-package corfu-prescient
-  :after (corfu)
   :config (corfu-prescient-mode))
 
 (use-package kind-icon
@@ -882,7 +886,6 @@ targets."
   (doom-modeline-mode))
 
 (use-package evil-anzu
-  :after (evil)
   :diminish (anzu-mode)
   :config
   (require 'anzu)
@@ -1026,10 +1029,10 @@ targets."
 (use-package openwith
   :custom (openwith-confirm-invocation t)
           (openwith-associations
-            '(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
-              ("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
-              ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
-              ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
+            ;;'(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
+           '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
+             ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
+             ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
   :init (openwith-mode t))
 
 (use-package magit
@@ -1201,7 +1204,8 @@ argument, query for word to search."
 (use-package vterm
   :defer t
   :init (setq vterm-always-compile-module t)
-        (general-def "C-c v" #'vterm))
+        (general-def "C-c v" #'vterm)
+        (push 'vterm-mode my/mode-in-emacs-state))
 
 
 ;;;; diminish some minor modes
