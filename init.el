@@ -1,4 +1,4 @@
-;;; init.el --- emacs start up initialization file
+;;; init.el --- emacs start up initialization file -*- lexical-binding: t -*-
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message "enikar")
 
