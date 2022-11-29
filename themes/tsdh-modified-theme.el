@@ -24,7 +24,7 @@
  '(diff-indicator-removed ((t (:inherit diff-indicator-changed))) t)
  '(diff-removed ((t (:inherit diff-changed :background "dark red"))) t)
  '(dired-directory ((t (:foreground "DodgerBlue" :weight bold))))
-'(doom-modeline-evil-emacs-state ((t (:inherit (escape-glyph bold)))))
+ '(doom-modeline-evil-emacs-state ((t (:inherit (escape-glyph bold)))))
  '(doom-modeline-evil-insert-state ((t (:inherit (doom-modeline-info bold)))))
  '(doom-modeline-evil-normal-state ((t (:inherit warning))))
  '(doom-modeline-evil-visual-state ((t (:inherit (all-the-icons-yellow bold)))))

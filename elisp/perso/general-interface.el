@@ -49,8 +49,11 @@
   "w" #'write-region      ;; visual, then :w ; also from embark `W'
   "v" #'view-file)
 
-;; unbind all "C-x t" bindings (functions for using emacs tab).
-(general-unbind ctl-x-map "t")
+(general-unbind ctl-x-map
+  "t"   ; unbind all "C-x t" bindings (functions for using emacs tab).
+  "r g" ; insert-regsiter also bound to C-x r i
+  "r x" ; copy-register also bound to C-x r s
+  )
 (general-unbind help-map
   "RET"
   "h"
@@ -81,14 +84,14 @@
   "M-SPC" #'cycle-spacing
   ":"     #'eval-expression
   "g"     '(:ignore t :wk "Searching")
-  "gR"    #'rgrep
+  "g R"    #'rgrep
   "t"     '(:ingore t :wk "Toggling")
-  "ts"    #'flyspell-mode
-  "tw"    #'whitespace-mode
+  "t s"    #'flyspell-mode
+  "t w"    #'whitespace-mode
   "x"     '(:ignore t :wk "Xref")
-  "xd"    #'xref-find-definitions
-  "xr"    #'xref-find-references
-  "xs"    #'xref-show-xrefs-function)
+  "x d"    #'xref-find-definitions
+  "x r"    #'xref-find-references
+  "x s"    #'xref-show-xrefs-function)
 
 (general-def
   "<cancel>"             #'keyboard-quit
@@ -121,6 +124,10 @@
       scroll-preserve-screen-position 1
       sentence-end-double-space nil
       confirm-kill-processes nil
+      kill-buffer-query-functions
+                   (remq 'process-kill-buffer-query-function
+                          kill-buffer-query-functions)
+      confirm-nonexistent-file-or-buffer nil
       history-delete-duplicates t
       native-comp-async-report-warnings-errors 'silent
       initial-scratch-message nil
@@ -144,6 +151,7 @@
       nobreak-char-display t
       nobreak-char-ascii-display nil
       apropos-do-all t
+      eww-download-directory "~/download/"
       calendar-week-start-day 1
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
@@ -169,6 +177,8 @@
 ;; (add-hook 'before-save-hook #'time-stamp)
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 (minibuffer-depth-indicate-mode)
+(tooltip-mode -1)
+
 ;; TODO a function for read-only-mode-hook.
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
 ;; when I quit read-only-mode the buffer stays in emacs-state…
@@ -262,12 +272,12 @@
     #'auto-compile-on-load-mode
     #'auto-compile-on-save-mode))
 
-(use-package paradox
-  :defer t
-  :commands (paradox-list-packages paradox-upgrade-packages)
-  :custom (paradox-automatically-star nil)
-          (paradox-execute-asynchronously t)
-          (paradox-github-token t))
+;; (use-package paradox
+;;   :defer t
+;;   :commands (paradox-list-packages paradox-upgrade-packages)
+;;   :custom (paradox-automatically-star nil)
+;;           (paradox-execute-asynchronously t)
+;;           (paradox-github-token t))
           ;; (paradox-lines-per-entry 2)
 
 (defvar my/mode-in-emacs-state
@@ -380,13 +390,13 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (leader-ala-vim
     ";"  #'evilnc-comment-operator
     "c" '(:ignore t :wk "Comments")
-    "cc" #'evilnc-copy-and-comment-lines
-    "cd" #'comment-dwim
-    "ci" #'evilnc-comment-or-uncomment-lines
-    "cl" #'evilnc-quick-comment-or-uncomment-to-the-line
-    "cp" #'evilnc-comment-or-uncomment-paragraphs
-    "cr" #'comment-or-uncomment-region
-    "cv" #'evilnc-toggle-invert-comment-line-by-line))
+    "c c" #'evilnc-copy-and-comment-lines
+    "c d" #'comment-dwim
+    "c i" #'evilnc-comment-or-uncomment-lines
+    "c l" #'evilnc-quick-comment-or-uncomment-to-the-line
+    "c p" #'evilnc-comment-or-uncomment-paragraphs
+    "c r" #'comment-or-uncomment-region
+    "c v" #'evilnc-toggle-invert-comment-line-by-line))
 
 (use-package nocomments-mode
   :defer t
@@ -489,23 +499,23 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
-      "aa"  #'evil-avy-mode
-      ;;"ac"  #'avy-goto-char
-      ;;"aC"  #'avy-goto-char-2
-      "aj"  #'avy-goto-char-timer
-      "al"  #'avy-goto-line
-      "ar"  #'avy-resume
-      ;;"as"  #'avy-goto-subword-1
-      ;;"aw"  #'avy-goto-word-0
-      ;;"aW"  #'avy-goto-word-1))
+      "a a"  #'evil-avy-mode
+      ;;"a c"  #'avy-goto-char
+      ;;"a C"  #'avy-goto-char-2
+      "a j"  #'avy-goto-char-timer
+      "a l"  #'avy-goto-line
+      "a r"  #'avy-resume
+      ;;"a s"  #'avy-goto-subword-1
+      ;;"a w"  #'avy-goto-word-0
+      ;;"a W"  #'avy-goto-word-1))
       ))
 (use-package ace-window
   :init (general-def "M-o" #'ace-window)
-        (leader-ala-vim "ao" #'ace-window))
+        (leader-ala-vim "a o" #'ace-window))
 
 (use-package ace-link
   :init (ace-link-setup-default)
-        (leader-ala-vim "aL" #'ace-link))
+        (leader-ala-vim "a L" #'ace-link))
 
 ;; avy-isearch is not compatible with ctrlf because they don't use
 ;; the same variable. TODO: write a command avy-ctrlf draw from
@@ -563,7 +573,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-w b"  #'consult-buffer-other-window)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim "/"  #'consult-line
-                        "gc" #'consult-ripgrep)
+                        "g c" #'consult-ripgrep)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
@@ -611,8 +621,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     (cons input (lambda (str) (orderless--highlight input str))))
   (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
   (leader-ala-vim
-    "gf" #'affe-find
-    "gG" #'affe-grep)
+    "g f" #'affe-find
+    "g G" #'affe-grep)
   :custom (affe-count 30)
   :config ;; Manual preview key for `affe-grep'
   (consult-customize affe-grep :preview-key (kbd "M-.")))
@@ -805,15 +815,15 @@ targets."
   :defer t
   :init (leader-ala-vim
              "j"  '(:ignore t :wk "Symbol overlay")
-             "jc" `(,#'symbol-overlay-remove-all :wk "clear overlay")
-             "jj" #'symbol-overlay-put))
-             ;; "jf" #'symbol-overlay-jump-first
-             ;; "jh" #'symbol-overlay-put
-             ;; "jl" #'symbol-overlay-jump-last
-             ;; "jm" #'symbol-overlay-mode
-             ;; "jn" #'symbol-overlay-jump-next
-             ;; "jp" #'symbol-overlay-jump-prev
-             ;; "jr" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
+             "j c" `(,#'symbol-overlay-remove-all :wk "clear overlay")
+             "j j" #'symbol-overlay-put))
+             ;; "j f" #'symbol-overlay-jump-first
+             ;; "j h" #'symbol-overlay-put
+             ;; "j l" #'symbol-overlay-jump-last
+             ;; "j m" #'symbol-overlay-mode
+             ;; "j n" #'symbol-overlay-jump-next
+             ;; "j p" #'symbol-overlay-jump-prev
+             ;; "j r" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
 
 (use-package consult-flyspell
   :defer t
@@ -822,7 +832,7 @@ targets."
 
 (use-package consult-recoll
   :defer t
-  :init (leader-ala-vim "gr" #'consult-recoll))
+  :init (leader-ala-vim "g r" #'consult-recoll))
 
 (use-package sml-modeline
   :config (sml-modeline-mode))
@@ -864,7 +874,7 @@ targets."
   (defun my/modeline-advice ()
     (progn
       (my/replace-hook
-       'paradox-menu-mode-hook
+       'package-menu-mode-hook
        #'doom-modeline-set-package-modeline
        #'doom-modeline-set-my/package-modeline)
 
@@ -965,25 +975,25 @@ targets."
 (autoload #'origami-mode "origami")
 (leader-ala-vim
   "o" '(:ignore t :wk "Origami")
-  "oo" #'origami-open-node
-  "oO" #'origami-open-node-recursively
-  "os" #'origami-show-node
-  "oS" #'origami-show-only-node
-  "oc" #'origami-close-node
-  "oC" #'origami-close-node-recursively
-  "oa" #'origami-open-all-nodes
-  "oA" #'origami-close-all-nodes
-  "ot" #'origami-toggle-node
-  "oT" #'origami-toggle-node-recursively
-  "oH" #'origami-toggle-all-nodes
-  "o<" #'origami-previous-fold
-  "o>" #'origami-next-fold
-  "of" #'origami-forward-fold
-  "oF" #'origami-forward-fold-same-level
-  "oB" #'origami-backward-fold-same-level
-  "ou" #'origami-undo
-  "or" #'origami-redo
-  "oR" #'origami-reset)
+  "o o" #'origami-open-node
+  "o O" #'origami-open-node-recursively
+  "o s" #'origami-show-node
+  "o S" #'origami-show-only-node
+  "o c" #'origami-close-node
+  "o C" #'origami-close-node-recursively
+  "o a" #'origami-open-all-nodes
+  "o A" #'origami-close-all-nodes
+  "o t" #'origami-toggle-node
+  "o T" #'origami-toggle-node-recursively
+  "o H" #'origami-toggle-all-nodes
+  "o <" #'origami-previous-fold
+  "o >" #'origami-next-fold
+  "o f" #'origami-forward-fold
+  "o F" #'origami-forward-fold-same-level
+  "o B" #'origami-backward-fold-same-level
+  "o u" #'origami-undo
+  "o r" #'origami-redo
+  "o R" #'origami-reset)
 
 ;; Manual definition of folds ala vim..
 (use-package evil-vimish-fold
@@ -1021,13 +1031,13 @@ targets."
   :defer t
   :init (leader-ala-vim
           "v" '(:ignore t :wk "Vdiff")
-          "vv" #'vdiff-hydra/body
-          "vf" #'vdiff-files
-          "vF" #'vdiff-files3
-          "vb" #'vdiff-buffers
-          "vB" #'vdiff-buffers3
-          "vc" #'vdiff-current-file
-          "vm" #'vdiff-merge-conflict))
+          "v v" #'vdiff-hydra/body
+          "v f" #'vdiff-files
+          "v F" #'vdiff-files3
+          "v b" #'vdiff-buffers
+          "v B" #'vdiff-buffers3
+          "v c" #'vdiff-current-file
+          "v m" #'vdiff-merge-conflict))
 
 (use-package openwith
   :custom (openwith-confirm-invocation t)
@@ -1039,40 +1049,46 @@ targets."
   :init (openwith-mode t))
 
 (use-package magit
-  :defer t
+  :commands (magit magit-file-dispatch)
   :init (general-def "C-c g" #'magit-file-dispatch)
         (leader-ala-vim
           "m" '(:ignore t :wk "Magit")
-          "mm" #'magit
-          "md" #'magit-file-dispatch))
+          "m m" #'magit
+          "m d" #'magit-file-dispatch))
+
+(use-package magit-delta
+  :commands (magit-delta-mode))
+
+;; (use-package libgit)
+;; (use-package magit-libgit)
 
 (use-package consult-ls-git
   :defer t
-  :init (leader-ala-vim "mf" #'consult-ls-git))
+  :init (leader-ala-vim "m f" #'consult-ls-git))
 
 (use-package ripgrep
   :defer t
-  :init (leader-ala-vim "gg" #'ripgrep-regexp))
+  :init (leader-ala-vim "g g" #'ripgrep-regexp))
 (use-package deadgrep
   :defer t
-  :init (leader-ala-vim "gd" #'deadgrep)
+  :init (leader-ala-vim "g d" #'deadgrep)
         (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package ag
   :defer t
   :init (setq ag-highlight-search t)
   (leader-ala-vim
-    "ga"  '(:ignore t :wk "Ag")
-    "gaa" #'ag
-    "gaf" #'ag-files
-    "gar" #'ag-regexp
-    "gap" #'ag-project
-    "gaF" #'ag-project-files
-    "gaR" #'ag-project-regexp))
+    "g a"  '(:ignore t :wk "Ag")
+    "g a a" #'ag
+    "g a f" #'ag-files
+    "g a r" #'ag-regexp
+    "g a p" #'ag-project
+    "g a F" #'ag-project-files
+    "g a R" #'ag-project-regexp))
 
 (use-package consult-ag
   :defer t
-  :init (leader-ala-vim "gac" #'consult-ag))
+  :init (leader-ala-vim "g a c" #'consult-ag))
 
 (use-package visual-regexp
   :defer t
@@ -1109,13 +1125,13 @@ targets."
   :init
   (leader-ala-vim
     "h"  '(:ignore t :wk "Help")
-    "hk" #'helpful-key
-    "hf" #'helpful-callable
-    "hv" #'helpful-variable
-    "hp" #'helpful-at-point
-    "hc" #'helpful-command
-    "hd" #'shortdoc-display-group
-    "ho" #'describe-symbol))
+    "h k" #'helpful-key
+    "h f" #'helpful-callable
+    "h v" #'helpful-variable
+    "h p" #'helpful-at-point
+    "h c" #'helpful-command
+    "h d" #'shortdoc-display-group
+    "h o" #'describe-symbol))
 
 
 ;;;; additionnal actions for avy
@@ -1206,7 +1222,6 @@ argument, query for word to search."
   :init (setq vterm-always-compile-module t)
         (general-def "C-c v" #'vterm)
         (push 'vterm-mode my/mode-in-emacs-state))
-
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)

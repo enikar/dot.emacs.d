@@ -24,18 +24,18 @@
     "C-c & t"   #'yas-describe-tables)
   (leader-ala-vim
     "y" '(:ignore t :wk "Yasnippet")
-    "ye" #'yas-expand
-    "yt" #'yas-describe-tables
-    "yn" #'yas-new-snippet
-    "ys" #'yas-insert-snippet
-    "yv" #'yas-visit-snippet-file)
+    "y e" #'yas-expand
+    "y t" #'yas-describe-tables
+    "y n" #'yas-new-snippet
+    "y s" #'yas-insert-snippet
+    "y v" #'yas-visit-snippet-file)
   :config (yas-reload-all)
   (which-key-add-key-based-replacements
     "C-c &" "Yasnippets"))
 
 (use-package consult-yasnippet
   :init (general-def yas-minor-mode-map "C-c & c" #'consult-yasnippet)
-        (leader-ala-vim "yc" #'consult-yasnippet))
+        (leader-ala-vim "y c" #'consult-yasnippet))
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -54,7 +54,7 @@
 (use-package highlight-indent-guides
   :defer t
   :diminish (highlight-indent-guides-mode)
-  :init (leader-ala-vim "ti" #'highlight-indent-guides-mode))
+  :init (leader-ala-vim "t i" #'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
@@ -84,14 +84,14 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init (leader-ala-vim
           :no-autload t
           "f" '(:ignore t :wk "Flycheck")
-          "ff" #'flycheck-mode)
+          "f f" #'flycheck-mode)
         (prefix-c-xt :no-autoload t "f" #'flycheck-mode)
   :config (which-key-add-key-based-replacements
            "C-c !" "Flycheck"))
 
 (use-package consult-flycheck
   :defer t
-  :init (leader-ala-vim "fc" #'consult-flycheck))
+  :init (leader-ala-vim "f c" #'consult-flycheck))
 
 ;;;; language C
 (use-package xcscope
