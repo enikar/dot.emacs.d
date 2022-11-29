@@ -13,7 +13,7 @@
     (set-variable 'truncate-lines t)))
 
 ;;(prefix-c-xw "s" #'toggle-hscroll-mode)
-(leader-ala-vim "th" #'toggle-hscroll-mode)
+(leader-ala-vim "t h" #'toggle-hscroll-mode)
 
 (defvar-local tab8-old-tab-width 0)
 (defun tab8 ()
@@ -45,7 +45,7 @@
       (message "Now indent-tabs-mode is on"))
   (setq indent-tabs-mode (not indent-tabs-mode)))
 
-(leader-ala-vim "tg" #'toggle-indent-tabs-mode)
+(leader-ala-vim "t g" #'toggle-indent-tabs-mode)
 
 (defun tabify-buffer ()
   "tabify a buffer"
@@ -120,7 +120,7 @@
       (custom-set-faces (setq my/current-background '(default ((t (:background "gray17" :foreground "white smoke"))))))
     (custom-set-faces (setq my/current-background '(default ((t (:background "gray15" :foreground "white smoke"))))))))
 
-(leader-ala-vim "tb" #'my/toggle-background)
+(leader-ala-vim "t b" #'my/toggle-background)
 
 ;; Two functions borrow from Mickey Petersen:
 ;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
@@ -181,7 +181,7 @@
       (set-frame-font font t)
     (message "Can't find font: %S" font)))
 
-(leader-ala-vim "tF" #'choose-default-font)
+(leader-ala-vim "t F" #'choose-default-font)
 
 (provide 'personal-commands)
 ;;; personal-commands.el ends here
