@@ -75,6 +75,14 @@ current region if one exists or the current buffer if not."
        ,@body
        (- (float-time) ,start))))
 
+;; From: http://justinhj.github.io/2009/04/15/running-elisp-function-on-each-marked.html
+(defun for-each-dired-marked-file(fn)
+  "Do stuff for each marked file, only works in dired window"
+  (interactive)
+  (if (eq major-mode 'dired-mode)
+      (let ((filenames (dired-get-marked-files)))
+        (mapcar fn filenames))
+    (error (format "Not a Dired buffer \(%s\)" major-mode))))
 
 (provide 'miscellaneous)
 ;;; misc.el ends here
