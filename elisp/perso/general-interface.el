@@ -199,7 +199,7 @@
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
-(leader-ala-vim "tH" #'hl-line-mode)
+(leader-ala-vim "t H" #'hl-line-mode)
 (global-so-long-mode)
 (delete-selection-mode t)
 
@@ -247,6 +247,29 @@
 (setq global-auto-revert-non-file-buffers t
       auto-revert-verbose nil)
 (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
+
+(push `("draft/neomutt-" . ,#'mail-mode) auto-mode-alist)
+
+;; Switch nicely to an eshell buffer in the default-directory of the
+;; current buffer.
+;; From: https://www.blogbyben.com/2013/08/a-tiny-eshell-add-on-jump-to-shell.html
+;; Inspired by: http://www.emacswiki.org/emacs/EshellControlFromOtherBuffer
+(defun my/eshell-switch-to-and-change-dir ()
+  "Switch to eshell and make sure we're in the directory the current buffer is in."
+  (interactive)
+  (let ((dir default-directory))
+    (let ((b (get-buffer eshell-buffer-name)))
+      (unless b
+        (eshell)))
+    (display-buffer eshell-buffer-name t)
+    (switch-to-buffer-other-window eshell-buffer-name)
+    (end-of-buffer)
+    (unless (equal dir default-directory)
+      (cd dir)
+      (eshell-send-input)
+      (end-of-buffer))))
+
+(general-def "C-c s" #'my/eshell-switch-to-and-change-dir)
 
 ;;;; Transient settings
 (defvar-local transient-directory-cache
@@ -1020,7 +1043,7 @@ targets."
   (myfold/set-folding-method (intern fold-method)))
 
 (leader-ala-vim
-  "tf" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
+  "t f" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
 
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
 ;; with it. Vdiff is also very nice.
