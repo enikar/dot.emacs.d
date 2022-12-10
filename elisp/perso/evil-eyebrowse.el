@@ -139,11 +139,12 @@ slot to switch to."
       (evil-eb-update-map apropos-mode-map)))
 
 (declare-function 'dired-do-compress "dired-aux")
-(with-eval-after-load 'dired
-  (progn
-    (general-def dired-mode-map "V" #'dired-do-compress)
-    (general-unbind dired-mode-map "Z")
-    (evil-eb-update-map dired-mode-map)))
+(with-eval-after-load 'dired-aux
+  (if (boundp 'dired-mode-map)
+      (progn
+        (general-def dired-mode-map "V" #'dired-do-compress)
+        (general-unbind dired-mode-map "Z")
+        (evil-eb-update-map dired-mode-map))))
 
 (with-eval-after-load 'man
   (if (boundp 'Man-mode-map)
@@ -167,7 +168,12 @@ slot to switch to."
   (if (boundp 'Info-mode-map)
       (evil-eb-update-map Info-mode-map)))
 
+;; That doesn't work for info buffer load by desktop since
+;; the desktop is load before this is required.
 (add-hook 'Info-mode-hook #'evil-eb-info-mode-bindings)
+;; So, this is a turn around…
+(dolist (buf (get-buffers-matching-mode 'Info-mode))
+  (with-current-buffer buf (evil-eb-info-mode-bindings)))
 
 ;; Add some shortcut to the packages-menu-mode (list-packages)
 ;; in his map (package-menu-mode-map). We use package-menu-mode-hook.
