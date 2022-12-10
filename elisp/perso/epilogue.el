@@ -10,15 +10,16 @@
 (require 'programming)
 
 ;;;; Load persitent scratch
-(defun scratch-lexical-binding ()
+(defun scratch-buffer-settings ()
   (with-current-buffer "*scratch*"
-    (setq lexical-binding t)))
+    (setq lexical-binding t)
+    (evil-mode)))
 
 (use-package persistent-scratch
   :init (persistent-scratch-autosave-mode t)
         (ignore-errors (persistent-scratch-restore))
 
-  :hook (after-init . scratch-lexical-binding)
+  :hook (after-init . scratch-buffer-settings)
 
   :custom (persistent-scratch-save-file (my/put-this-in-var "persistent-scratch"))
           (persistent-scratch-what-to-save '(major-mode point narrowing text-properties)))
@@ -35,7 +36,7 @@
           (require 'evil-eyebrowse))
 
 ;; set some mode to be in emacs state.
-(my/set-mode-in-emacs-state)
+(add-hook 'after-init-hook #'my/set-mode-in-emacs-state)
 
 ;;;; Load desktop
 (desktop-save-mode 1)
