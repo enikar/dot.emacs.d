@@ -1004,7 +1004,7 @@ targets."
           (undo-tree-enable-undo-in-region t)
           (undo-tree-history-directory-alist
            `(("." . ,(my/put-this-in-var "undo-tree/"))))
-          :init (leader-ala-vim "_" #'undo-tree-visualize))
+  :init (leader-ala-vim "_" #'undo-tree-visualize))
 
 ;; Folding. There are several possibilities.
 ;; Use:
