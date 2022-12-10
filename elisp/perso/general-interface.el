@@ -184,7 +184,9 @@
 ;; when I quit read-only-mode the buffer stays in emacs-state…
 ;; What I would like, is to restore the previous state of the buffer…
 ;; or perhaps decide what state apply based on the major mode.
-
+;; Also fix the case for buffer already in read-only-mode when emacs
+;; is started. For now the doesn't work. These buffers remain in
+;; evil-normal-state.
 (setq-default tab-width 4
               indent-tabs-mode nil
               tab-always-indent 'complete
@@ -250,16 +252,32 @@
 ;; current buffer.
 ;; From: https://www.blogbyben.com/2013/08/a-tiny-eshell-add-on-jump-to-shell.html
 ;; Inspired by: http://www.emacswiki.org/emacs/EshellControlFromOtherBuffer
+;; XXX That needs some improvements to work as I wish.
+;; (defun my/eshell-switch-to-and-change-dir ()
+;;   "Switch to eshell and make sure we're in the directory the current buffer is in."
+;;   (interactive)
+;;   (let ((dir default-directory))
+;;     (let ((b (if (boundp 'eshell-buffer-name)
+;;                  (get-buffer  eshell-buffer-name))))
+;;       (unless b
+;;         (eshell)))
+;;     (display-buffer eshell-buffer-name t)
+;;     (switch-to-buffer-other-window eshell-buffer-name)
+;;     (end-of-buffer)
+;;     (unless (equal dir default-directory)
+;;       (cd dir)
+;;       (eshell-send-input)
+;;       (end-of-buffer))))
 (defun my/eshell-switch-to-and-change-dir ()
   "Switch to eshell and make sure we're in the directory the current buffer is in."
   (interactive)
   (let ((dir default-directory))
-    (let ((b (get-buffer eshell-buffer-name)))
-      (unless b
-        (eshell)))
-    (display-buffer eshell-buffer-name t)
-    (switch-to-buffer-other-window eshell-buffer-name)
-    (end-of-buffer)
+    (if (boundp 'eshell-buffer-name)
+        (progn
+          (display-buffer eshell-buffer-name t)
+          (switch-to-buffer-other-window eshell-buffer-name)
+          (end-of-buffer))
+      (eshell))
     (unless (equal dir default-directory)
       (cd dir)
       (eshell-send-input)
@@ -295,14 +313,6 @@
     #'auto-compile-on-load-mode
     #'auto-compile-on-save-mode))
 
-;; (use-package paradox
-;;   :defer t
-;;   :commands (paradox-list-packages paradox-upgrade-packages)
-;;   :custom (paradox-automatically-star nil)
-;;           (paradox-execute-asynchronously t)
-;;           (paradox-github-token t))
-          ;; (paradox-lines-per-entry 2)
-
 (defvar my/mode-in-emacs-state
   '(calculator-mode
     calendar-mode
@@ -330,7 +340,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 ;;(setq evil-want-keybinding nil)
 (use-package evil
-  :init (evil-mode 1)
+  :hook ((after-init . evil-mode)
+         (view-mode . evil-emacs-state))
   :custom (evil-ex-search-highlight-all t)
           (evil-ex-search-persistent-highlight nil)
           (evil-ex-search-case 'smart)
@@ -342,7 +353,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           (evil-want-C-i-jump nil)
           (evil-kbd-macro-suppress-motion-error t)
   :diminish (evil-mode)
-  :hook (view-mode . evil-emacs-state)
   :config
     (general-def
         :keymaps 'evil-motion-state-map
@@ -372,15 +382,14 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "g"))    ; remove the prefix is sufficient
 
 (use-package evil-quickscope
-  :hook (evil-mode . global-evil-quickscope-mode)
+  :hook (after-init . global-evil-quickscope-mode)
   :diminish (evil-quickscope-mode))
 
 (use-package evil-lion
-  :hook (evil-mode . evil-lion-mode)
-  :diminish (evil-lion-mode))
+  :hook (after-init . evil-lion-mode))
 
 (use-package evil-surround
-  :hook (evil-mode . global-evil-surround-mode)
+  :hook (after-init . global-evil-surround-mode)
   :diminish (evil-surround-mode))
 
 (use-package embrace
@@ -395,7 +404,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :config (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-goggles
-  :hook (evil-mode . evil-goggles-mode)
+  :hook (after-init . evil-goggles-mode)
   :diminish (evil-goggles-mode)
   :custom
   (evil-goggles-pulse 'display-graphic-p)
@@ -405,7 +414,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package evil-string-inflection)
 
 (use-package evil-matchit
-  :hook (evil-mode . global-evil-matchit-mode))
+  :hook (after-init . global-evil-matchit-mode))
 
 (use-package evil-nerd-commenter
   :init
@@ -423,10 +432,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package nocomments-mode
   :defer t
-  :init (leader-ala-vim "cn" #'nocomments-mode))
+  :init (leader-ala-vim "c n" #'nocomments-mode))
 
 (use-package evil-visualstar
-  :hook (evil-mode . global-evil-visualstar-mode)
+  :hook (after-init . global-evil-visualstar-mode)
   :custom (evil-visualstar/persistent t))
 
 (use-package evil-org
@@ -456,10 +465,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             "M-g" "Goto…"))
 
 (use-package goto-chg
+  :defer t
   :general ("M-g M-g"  #'goto-last-change)
            ("M-g M-h"  #'goto-last-change-reverse))
 
 (use-package expand-region
+  :defer t
   :init (general-def "C-="  #'er/expand-region)
         (leader-ala-vim "$" #'er/expand-region))
 
@@ -519,6 +530,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
 (use-package evil-avy
+  :defer t
   :init
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
@@ -537,6 +549,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         (leader-ala-vim "a o" #'ace-window))
 
 (use-package ace-link
+  :defer t
   :init (ace-link-setup-default)
         (leader-ala-vim "a L" #'ace-link))
 
@@ -552,8 +565,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package vertico
-  :demand t
-  :config (vertico-mode)
+  :hook (after-init . vertico-mode)
   :custom (vertico-count 15)
           (vertico-resize t)
   :general (:keymaps 'vertico-map
@@ -638,6 +650,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :hook (vertico-mode . vertico-prescient-mode))
 
 (use-package affe
+  :defer t
   :init ;; use orderless as the affe regexp compiler
   (defun affe-orderless-regexp-compiler (input _type _ignorecase)
     (setq input (orderless-pattern-compiler input))
@@ -651,6 +664,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (consult-customize affe-grep :preview-key (kbd "M-.")))
 
 (use-package consult-dir
+  :defer t
   :init (general-def "C-x C-d"  #'consult-dir)
         (general-def :keymaps 'vertico-map
           "C-x C-d"  #'consult-dir
@@ -669,6 +683,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
            (call-interactively (symbol-function ',fn)))))))
 
 (use-package embark
+  :defer t
   :custom (embark-help-key (kbd "?"))
   :init
   (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
@@ -768,13 +783,18 @@ targets."
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-excluded-modes'.
   ;; :hook (minibuffer-setup-hook . corfu-enable-in-minibuffer)
-  :init
-  (global-corfu-mode))
+  ;; :init
+  ;; (global-corfu-mode))
+  :hook (after-init . global-corfu-mode)
+  :config (require 'kind-icon)
+          (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
 (use-package corfu-prescient
-  :config (corfu-prescient-mode))
+  :hook (corfu-mode . corfu-prescient-mode))
+  ;; :config (corfu-prescient-mode))
 
 (use-package kind-icon
+  :defer t
   :custom (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
           (kind-icon-default-style
            '(:padding 0 :stroke 0 :margin 0 :radius 0 :height 0.7 :scale 1.0))
@@ -787,7 +807,7 @@ targets."
 ;;       (call-interactively #'dabbrev-completion)))
 
 ;; Since I use cape, I can replace #'dabbrev-completion-all-buffers
-;; #'cape-dabbrev. As well I don't use it…
+;; with #'cape-dabbrev. As well I don't use it…
 (use-package dabbrev
   :defer t
   :general
@@ -858,12 +878,12 @@ targets."
   :init (leader-ala-vim "g r" #'consult-recoll))
 
 (use-package sml-modeline
-  :config (sml-modeline-mode))
+  :commands (sml-modeline-mode))
 
-;; Install an advice when setup the doom modeline.
-;; Hence, I can redefine the modeline used with
-;; paradox.
+;; Install an advice when setup the doom modeline to try
+;; to always have the same information.
 (use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
   :custom (doom-modeline-minor-modes t)
           (doom-modeline-persp-name t)
   :config
@@ -912,13 +932,16 @@ targets."
        #'doom-modeline-set-my/project-modeline)))
 
   (advice-add #'doom-modeline-mode :after #'my/modeline-advice)
-  (doom-modeline-mode))
+  (sml-modeline-mode))
+
+(use-package anzu
+  :diminish (anzu-mode)
+  :hook (after-init . global-anzu-mode))
 
 (use-package evil-anzu
-  :diminish (anzu-mode)
-  :config
-  (require 'anzu)
-  (global-anzu-mode +1))
+  :defer t
+  :init (with-eval-after-load 'evil
+          (require 'evil-anzu)))
 
 (use-package all-the-icons-dired
   :diminish (all-the-icons-dired-mode)
@@ -931,6 +954,7 @@ targets."
   :config (all-the-icons-completion-mode 1)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
 
+;; XXX perhaps remove this package. I have never used it.
 (use-package emojify
   :defer t
   :diminish (emojify)
@@ -960,23 +984,22 @@ targets."
 ;; to activate bindings when a region is selected
 ;; use `gr` prefix in normal mode to access mc functionalities
 (use-package evil-mc
+  :hook (after-init . global-evil-mc-mode)
   :diminish (evil-mc-mode)
-  :init (global-evil-mc-mode 1)
-        (general-def
+  :init (general-def
           :keymaps 'evil-mc-key-map
           :states '(normal visual)
           "C-t" #'pop-tag-mark ; want to keep pop tag
           "g C-t" #'evil-mc-skip-and-goto-next-match))
 
 (use-package undo-tree
+  :hook (after-init . global-undo-tree-mode)
   :diminish (undo-tree-mode)
   :custom (evil-undo-system 'undo-tree)
           (undo-tree-enable-undo-in-region t)
           (undo-tree-history-directory-alist
            `(("." . ,(my/put-this-in-var "undo-tree/"))))
-  :init (leader-ala-vim "_" #'undo-tree-visualize)
-        (global-undo-tree-mode))
-
+  :init (leader-ala-vim "_" #'undo-tree-visualize))
 
 (use-package restart-emacs
   :init (leader-ala-vim
@@ -1049,7 +1072,9 @@ targets."
   "t f" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
 
 ;; vimdiff, ediff is perfect but they aren't folding possibilities
-;; with it. Vdiff is also very nice.
+;; with it. Vdiff is also very nice but it is buggy.
+;; Sometimes, a error occur in a diff session, that makes
+;; vdiff unusable. It needs to be restart.
 (use-package vdiff
   :defer t
   :init (leader-ala-vim
@@ -1068,8 +1093,7 @@ targets."
             ;;'(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
            '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
              ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
-             ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil)))
-  :init (openwith-mode t))
+             ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil))))
 
 (use-package magit
   :defer t
