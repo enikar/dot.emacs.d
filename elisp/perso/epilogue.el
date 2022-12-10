@@ -25,7 +25,7 @@
 
 ;;;; Load eyebrowse and evil-eyebrowse
 (use-package eyebrowse
-  :init (eyebrowse-mode t)
+  :hook (after-init . eyebrowse-mode)
   :custom (eyebrowse-mode-line-style 'always)
   :general ("C-<right>" #'eyebrowse-next-window-config
             "C-<left>" #'eyebrowse-prev-window-config)
