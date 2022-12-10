@@ -451,7 +451,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :diminish (which-key-mode)
   :hook (after-init . which-key-mode)
   :init (general-unbind help-map "C-h")
-        (general-unbind  esc-map "C-h")
+        (general-unbind esc-map "C-h")
   :config (which-key-add-key-based-replacements
             "C-x r" "Reg+Rect+Bmk"
             "C-x n" "Narrowing"
@@ -570,9 +570,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package vertico
-  :hook (after-init . vertico-mode)
+  :config (vertico-mode)
   :custom (vertico-count 15)
-          (vertico-resize t)
+          (vertico-resize nil)
   :general (:keymaps 'vertico-map
             :no-autoload t
             "C-'"        #'vertico-quick-exit
@@ -649,7 +649,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               completion-category-overrides '((files (style partial-completion)))))
 
 (use-package prescient
-  :config (prescient-persist-mode))
+  :hook (after-init . prescient-persist-mode))
 
 (use-package vertico-prescient
   :hook (vertico-mode . vertico-prescient-mode))
