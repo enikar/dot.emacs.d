@@ -1272,6 +1272,9 @@ argument, query for word to search."
         (general-def "C-c v" #'vterm)
         (push 'vterm-mode my/mode-in-emacs-state))
 
+(use-package eshell-vterm
+  :hook (eshell-mode . eshell-vterm-mode))
+
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
