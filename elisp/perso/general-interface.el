@@ -570,7 +570,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
 (use-package vertico
-  :config (vertico-mode)
+  :hook (after-init . vertico-mode)
   :custom (vertico-count 15)
           (vertico-resize nil)
   :general (:keymaps 'vertico-map
@@ -1269,6 +1269,9 @@ argument, query for word to search."
   :init (setq vterm-always-compile-module t)
         (general-def "C-c v" #'vterm)
         (push 'vterm-mode my/mode-in-emacs-state))
+
+(use-package eshell-vterm
+  :hook (eshell-mode . eshell-vterm-mode))
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
