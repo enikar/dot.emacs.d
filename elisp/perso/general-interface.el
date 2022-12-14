@@ -29,6 +29,7 @@
     (add-hook mode hook)))
 
 ;;;; general to bind keys in a convenient way.
+(use-package general)
 (require 'general)
 ;;(general-evil-setup)
 ;;(general-auto-unbind-keys)
@@ -1107,6 +1108,9 @@ targets."
 
 (use-package magit-delta
   :commands (magit-delta-mode))
+
+(use-package git-timemachine
+  :commands (git-timemachine))
 
 ;; (use-package libgit)
 ;; (use-package magit-libgit)
