@@ -84,5 +84,40 @@ current region if one exists or the current buffer if not."
         (mapcar fn filenames))
     (error (format "Not a Dired buffer \(%s\)" major-mode))))
 
+;; From: https://mbork.pl/2019-02-17_Inserting_the_current_file_name_at_point
+(defun insert-current-file-name-at-point (&optional full-path)
+  "Insert the current filename at point.
+With prefix argument, use full path."
+  (interactive "P")
+  (let* ((buffer
+	      (if (minibufferp)
+	          (window-buffer (minibuffer-selected-window))
+	        (current-buffer)))
+	     (filename (buffer-file-name buffer)))
+    (if filename
+	    (insert (if full-path filename (file-name-nondirectory filename)))
+      (error (format "Buffer %s is not visiting a file" (buffer-name buffer))))))
+
+;; From: https://oremacs.com/2017/03/18/dired-ediff/
+(defun my/dired-ediff-files ()
+  (interactive)
+  (let ((files (dired-get-marked-files))
+        (wnd (current-window-configuration)))
+    (if (<= (length files) 2)
+        (let ((file1 (car files))
+              (file2 (if (cdr files)
+                         (cadr files)
+                       (read-file-name
+                        "file: "
+                        (dired-dwim-target-directory)))))
+          (if (file-newer-than-file-p file1 file2)
+              (ediff-files file2 file1)
+            (ediff-files file1 file2))
+          (add-hook 'ediff-after-quit-hook-internal
+                    (lambda ()
+                      (setq ediff-after-quit-hook-internal nil)
+                      (set-window-configuration wnd))))
+      (error "no more than 2 files should be marked"))))
+
 (provide 'miscellaneous)
 ;;; misc.el ends here
