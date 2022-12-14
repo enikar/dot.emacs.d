@@ -78,7 +78,7 @@
    - helpful
    - undo-tree
    - magit
-   - paradox
+   - git-timemachine
    - hl-todo
    - treemacs
    - ripgrep
@@ -92,6 +92,7 @@
    - open-with
    - duplicate-thing
    - vterm
+   - eshell-vterm
    - auto-compile
 
 ** Programming
@@ -135,7 +136,6 @@
 *** Python
   - python.el (from emacs)
   - anaconda-mode
-  - importmagic
 
 *** Others languages
   - raku-mode
