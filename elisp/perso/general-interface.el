@@ -144,6 +144,11 @@
       dired-dwim-target t
       dired-kill-when-opening-new-dired-buffer t
       dired-switches-in-mode-line 'as-is
+      dired-guess-shell-alist-user '(("\\.pdf\\'" "zathura")
+                                     ("\\.tex\\'" "pdflatex")
+                                     ("\\.lisp\\'" "sbcl --script")
+                                     ("\\.ods\\'\\|\\.xlsx?\\'\\|\\.docx?\\'\\|\\.csv\\'"
+                                      "libreoffice"))
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
@@ -154,6 +159,11 @@
       apropos-do-all t
       eww-download-directory "~/download/"
       calendar-week-start-day 1
+      calendar-latitude 45.1877777778 ; for M-x sunrise-sunset
+      calendar-longitude 5.72694444445
+      calendar-location-name "Grenoble, France"
+      org-directory "~/org"
+      org-agenda-files (file-expand-wildcards org-directory)
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
@@ -537,14 +547,14 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "a"   '(:ignore t :wk "Avy")
       "a a"  #'evil-avy-mode
       ;;"a c"  #'avy-goto-char
-      ;;"a C"  #'avy-goto-char-2
+      "a c"  #'avy-goto-char-2
       "a j"  #'avy-goto-char-timer
       "a l"  #'avy-goto-line
       "a r"  #'avy-resume
       ;;"a s"  #'avy-goto-subword-1
-      ;;"a w"  #'avy-goto-word-0
-      ;;"a W"  #'avy-goto-word-1))
-      ))
+      ;;"a 0"  #'avy-goto-word-0
+      "a w"  #'avy-goto-word-1))
+
 (use-package ace-window
   :defer t
   :init (general-def "M-o" #'ace-window)
@@ -1289,6 +1299,7 @@ argument, query for word to search."
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 ;;(put 'erase-buffer 'disabled nil)
+(put 'set-goal-column 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
 
