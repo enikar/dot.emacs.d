@@ -62,6 +62,9 @@
 (use-package highlight-numbers
   :hook ((prog-mode) . highlight-numbers-mode))
 
+(use-package company
+  :defer t)
+
 ;;;; syntax checking
 ;; toggle flycheck window (from spacemacs)
 (defun my/toggle-flycheck-error-list ()
@@ -108,6 +111,13 @@ If the error list is visible, hide it.  Otherwise, show it."
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
 
+;; add a hook for inferior-haskell-hook
+;; I should write another function than run-haskell to
+;; split current window and launch ghci with the correct arguments.
+;; run-haskell call inferior-haskell-process. This function needs to be
+;; rewritten. So I can choose my way of doing things.
+;; Another thing: the completion is not acceptable. Find a way
+;; to have at least the same completion as in ghci.
 (defun my/haskell-mode-hooks ()
   (flycheck-mode)
   (haskell-indentation-mode)
@@ -125,11 +135,18 @@ If the error list is visible, hide it.  Otherwise, show it."
   :hook ((haskell-mode . my/haskell-mode-hooks)
          (ghci-script-mode . my/no-auto-fill))
   :init
-    (setq haskell-process-args-ghci '("-ferror-spans" "-ghci-script ~/dot.ghci")
+    (setq haskell-process-args-ghci '("-ferror-spans")
           haskell-process-log t
+
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
-          haskell-process-suggest-restart nil))
+          haskell-process-suggest-restart nil)
+  :config
+  (general-def haskell-mode-map
+    "C-c C-r" #'run-haskell)
+  (general-def interactive-haskell-mode-map
+    "M-."     #'haskell-mode-goto-loc
+    "C-c C-t" #'haskell-mode-show-type-at))
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
@@ -275,7 +292,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; common lisp
 (use-package slime
-  :hook (lisp-mode . slime-mode)
+  :hook ((lisp-mode . slime-mode))
+        ;;(slime-mode . company-mode))
   :diminish (slime-autodoc-mode)
   :config
   (setq slime-lisp-implementations
@@ -283,9 +301,12 @@ If the error list is visible, hide it.  Otherwise, show it."
                 :coding-system utf-8-unix)
           (clisp ("clisp" "-I"))
           (ecl ("ecl")))
-        slime-contribs '(slime-fancy))
+        slime-contribs '(slime-fancy slime-company))
 
   (slime-setup))
+
+(use-package slime-company
+  :defer t)
 
 ;;;; scheme
 (use-package flycheck-guile
