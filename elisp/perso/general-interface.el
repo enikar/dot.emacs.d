@@ -157,7 +157,10 @@
       nobreak-char-display t
       nobreak-char-ascii-display nil
       apropos-do-all t
+      idlwave-config-directory (my/put-this-in-var "idlwave")
       eww-download-directory "~/download/"
+      url-configuration-directory (my/put-this-in-var "url")
+      url-cookie-file (my/put-this-in-var "url/cookie")
       calendar-week-start-day 1
       calendar-latitude 45.1877777778 ; for M-x sunrise-sunset
       calendar-longitude 5.72694444445
@@ -1119,8 +1122,11 @@ targets."
 (use-package magit-delta
   :commands (magit-delta-mode))
 
+;; works on emacs-state
 (use-package git-timemachine
-  :commands (git-timemachine))
+  :defer t
+  :init (leader-ala-vim "m t" #'git-timemachine)
+        (push 'git-timemachine-mode my/mode-in-emacs-state))
 
 ;; (use-package libgit)
 ;; (use-package magit-libgit)

@@ -16,11 +16,11 @@
  '(custom-safe-themes
    '("2a154c0238fb9d965e5ecfd90dfbe942c6c07c8053d84c6536bf73bada2c587b" default))
  '(dabbrev-case-replace nil)
- '(dired-dwim-target t t)
+ '(dired-dwim-target t)
  '(dired-listing-switches "-alhF --group-directories-first")
  '(dired-ls-F-marks-symlinks t)
  '(dired-mode-hook
-   '(dired-extra-startup all-the-icons-dired-mode doom-modeline-set-my/project-modeline evil-emacs-state) t)
+   '(dired-extra-startup all-the-icons-dired-mode doom-modeline-set-my/project-modeline evil-emacs-state))
  '(display-fill-column-indicator-character 124)
  '(ediff-merge-split-window-function 'split-window-horizontally)
  '(ediff-split-window-function 'split-window-horizontally)
@@ -34,12 +34,12 @@
  '(highlight-parentheses-delay 0.2 nil nil "Customized with use-package highlight-parentheses")
  '(ibuffer-default-sorting-mode 'major-mode)
  '(ibuffer-expert t)
- '(ibuffer-mode-hook '(ibuffer-auto-mode))
+ '(ibuffer-mode-hook '(ibuffer-auto-mode) t)
  '(indicate-buffer-boundaries 'right)
  '(load-prefer-newer t)
  '(make-backup-files t)
  '(package-selected-packages
-   '(git-timemachine eshell-vterm magit magit-delta anaconda-mode attrap dash-functional deadgrep doom-modeline elisp-refs exec-path-from-shell expand-region flyspell-correct helpful hl-todo json-reformat utop affe avy-menu cape consult-flycheck ctrlf disaster sml-modeline dabbrev transient-dwim corfu-prescient vertico-prescient gitconfig yasnippet-snippets visual-regexp avy-embark-collect dumb-jump fringe-helper typescript-mode jq-format symbol-overlay hlint-refactor restart-emacs vdiff evil-vimish-fold evil-mc treemacs-all-the-icons general wgrep wgrep-ag package crystal-mode realgud-byebug realgud-pry robe yard-mode consult-flyspell inf-ruby evil-ruby-text-objects ruby-end yari consult-dir consult consult-ag consult-ls-git consult-recoll consult-yasnippet embark-consult vertico all-the-icons-completion py-snippets evil-org kind-icon corfu duplicate-thing marginalia orderless prescient vterm dimmer smalltalk-mode geiser-guile geiser-racket flycheck-raku nim-mode racket-mode systemd lua-mode fzf latex-extra latex-math-preview latex-preview-pane latexdiff nocomments-mode json-mode evil-visualstar ripgrep emojify evil-nerd-commenter evil-string-inflection cmake-mode dune ocp-indent evil-lion flycheck-guile ace-link ag all-the-icons all-the-icons-dired all-the-icons-ibuffer anzu auctex auto-compile avy dante diminish evil evil-anzu evil-avy evil-embrace evil-goggles evil-iedit-state evil-matchit evil-multiedit evil-numbers evil-quickscope evil-surround eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint geiser haskell-mode haskell-snippets highlight-indent-guides highlight-numbers highlight-parentheses hydra iedit merlin merlin-eldoc openwith persistent-scratch rainbow-delimiters rainbow-identifiers raku-mode rustic slime transient treemacs-evil tuareg undo-tree use-package which-key with-editor xcscope yaml-mode))
+   '(slime-company git-timemachine eshell-vterm magit magit-delta anaconda-mode attrap dash-functional deadgrep doom-modeline elisp-refs exec-path-from-shell expand-region flyspell-correct helpful hl-todo json-reformat utop affe avy-menu cape consult-flycheck ctrlf disaster sml-modeline dabbrev transient-dwim corfu-prescient vertico-prescient gitconfig yasnippet-snippets visual-regexp avy-embark-collect dumb-jump fringe-helper typescript-mode jq-format symbol-overlay hlint-refactor restart-emacs vdiff evil-vimish-fold evil-mc treemacs-all-the-icons general wgrep wgrep-ag package crystal-mode realgud-byebug realgud-pry robe yard-mode consult-flyspell inf-ruby evil-ruby-text-objects ruby-end yari consult-dir consult consult-ag consult-ls-git consult-recoll consult-yasnippet embark-consult vertico all-the-icons-completion py-snippets evil-org kind-icon corfu duplicate-thing marginalia orderless prescient vterm dimmer smalltalk-mode geiser-guile geiser-racket flycheck-raku nim-mode racket-mode systemd lua-mode fzf latex-extra latex-math-preview latex-preview-pane latexdiff nocomments-mode json-mode evil-visualstar ripgrep emojify evil-nerd-commenter evil-string-inflection cmake-mode dune ocp-indent evil-lion flycheck-guile ace-link ag all-the-icons all-the-icons-dired all-the-icons-ibuffer anzu auctex auto-compile avy dante diminish evil evil-anzu evil-avy evil-embrace evil-goggles evil-iedit-state evil-matchit evil-multiedit evil-numbers evil-quickscope evil-surround eyebrowse fill-column-indicator flycheck flycheck-ocaml flycheck-yamllint geiser haskell-mode haskell-snippets highlight-indent-guides highlight-numbers highlight-parentheses hydra iedit merlin merlin-eldoc openwith persistent-scratch rainbow-delimiters rainbow-identifiers raku-mode rustic slime transient treemacs-evil tuareg undo-tree use-package which-key with-editor xcscope yaml-mode))
  '(prog-mode-hook '(abbrev-mode))
  '(recentf-menu-filter 'recentf-sort-basenames-ascending)
  '(save-place-mode t)
