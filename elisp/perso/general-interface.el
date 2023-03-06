@@ -616,6 +616,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-h a"    #'consult-apropos
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
+          "M-s M-i"  #'consult-info
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
@@ -628,7 +629,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
-  :config (setq consult-narrow-key (kbd "C-+"))
+  :config (setq consult-narrow-key "C-+")
           (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
 
 (defun immediate-which-key-for-narrow (fun &rest args)
@@ -699,7 +700,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package embark
   :defer t
-  :custom (embark-help-key (kbd "?"))
+  :custom (embark-help-key "?")
   :init
   (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
   (general-def "C-c b"  #'embark-act)
