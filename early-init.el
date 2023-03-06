@@ -38,7 +38,7 @@
       '((top . 0)
         (left . 0)
         (width . 158)
-        (height . 40)
+        (height . 39)
         (menu-bar-lines 0)
         (tool-bar-lines 0)
         (vertical-scroll-bars)

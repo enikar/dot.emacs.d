@@ -8,9 +8,9 @@
 (setq package-native-compile t
       use-package-enable-imenu-support t)
 
-;; (eval-when-compile
-;;   (require 'use-package))
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
+;; (require 'use-package)
 ;; To add a :ensure for each use-package
 ;; (require 'use-package-ensure)
 ;; (setq use-package-always-ensure t)
@@ -127,6 +127,7 @@
       scroll-conservatively 10000
       scroll-preserve-screen-position 1
       sentence-end-double-space nil
+      bidi-inhibit-bpa t
       confirm-kill-processes nil
       kill-buffer-query-functions
                    (remq 'process-kill-buffer-query-function
@@ -208,6 +209,7 @@
               indent-tabs-mode nil
               tab-always-indent 'complete
               tab-first-completion 'word-or-paren-or-punct
+              bidi-paragraph-direction 'left-to-right
               indicate-empty-lines t
               fill-column 72)
 
@@ -265,6 +267,7 @@
 (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
 (push `("draft/neomutt-" . ,#'mail-mode) auto-mode-alist)
+(add-hook 'mail-mode-hook #'flyspell-mode)
 
 ;; Switch nicely to an eshell buffer in the default-directory of the
 ;; current buffer.
@@ -617,9 +620,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-x 4 b"  #'consult-buffer-other-window
           "C-x r l"  #'consult-bookmark
           "C-x C-f"  #'find-file
-          "C-h a"    #'consult-apropos
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
+          "M-s M-i"  #'consult-info
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
@@ -632,7 +635,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
-  :config (setq consult-narrow-key (kbd "C-+"))
+  :config (setq consult-narrow-key "C-+")
           (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
 
 (defun immediate-which-key-for-narrow (fun &rest args)
@@ -680,7 +683,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     "g G" #'affe-grep)
   :custom (affe-count 30)
   :config ;; Manual preview key for `affe-grep'
-  (consult-customize affe-grep :preview-key (kbd "M-.")))
+  (consult-customize affe-grep :preview-key "M-."))
 
 (use-package consult-dir
   :defer t
@@ -703,7 +706,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package embark
   :defer t
-  :custom (embark-help-key (kbd "?"))
+  :custom (embark-help-key "?")
   :init
   (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
   (general-def "C-c b"  #'embark-act)
@@ -896,15 +899,18 @@ targets."
   :defer t
   :init (leader-ala-vim "g r" #'consult-recoll))
 
-(use-package sml-modeline
-  :commands (sml-modeline-mode))
-
 ;; Install an advice when setup the doom modeline to try
 ;; to always have the same information.
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :custom (doom-modeline-minor-modes t)
-          (doom-modeline-persp-name t)
+          (doom-modeline-battery nil)
+          (doom-modeline-irc nil)
+          (doom-modeline-gnus nil)
+          (doom-modeline-unicode-fallback t)
+          (doom-modeline-window-width-limit 81)
+          (doom-modeline-bar-width 10)
+          (doom-modeline-hud t)
   :config
   (require 'doom-modeline-core)
   (require 'doom-modeline-segments)
@@ -949,9 +955,12 @@ targets."
        'dired-mode-hook
        #'doom-modeline-set-project-modeline
        #'doom-modeline-set-my/project-modeline)))
-
-  (advice-add #'doom-modeline-mode :after #'my/modeline-advice)
-  (sml-modeline-mode))
+  ;; Turn around for not truncating the mode-line
+  ;;(set-face-attribute 'mode-line nil :font "DejaVu Sans 14")
+  (set-face-attribute 'mode-line nil :font "Noto Sans 18")
+  ;; (set-face-attribute 'mode-line-active nil :family "Noto Sans" :height 0.8) ;; that make emacs hang!
+  ;; (set-face-attribute 'mode-line-inactive nil :family "Noto Sans" :height 0.8)
+  (advice-add #'doom-modeline-mode :after #'my/modeline-advice))
 
 (use-package anzu
   :diminish (anzu-mode)
@@ -974,11 +983,11 @@ targets."
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
 
 ;; XXX perhaps remove this package. I have never used it.
-(use-package emojify
-  :defer t
-  :diminish (emojify)
-  :custom (emojify-emojis-dir  (my/put-this-in-var "emojis")))
-  ;:hook (after-init . global-emojify-mode))
+;; (use-package emojify
+;;   :defer t
+;;   :diminish (emojify)
+;;   :custom (emojify-emojis-dir  (my/put-this-in-var "emojis")))
+;;   ;:hook (after-init . global-emojify-mode))
 
 (use-package iedit
   :defer t
