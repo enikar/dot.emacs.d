@@ -5,11 +5,9 @@
    This is not a starter kit. Worst, these settings cannot be bootstrap.
 
    I use external package I download with git clone. They are Origami (from
-   https://github.com/elp-revive/origami.el) and Hasky-extensions (from
-   https://github.com/hasky-mode/hasky-extensions). Hasky-extensions is
-   abandonned but it matches my use.
+   https://github.com/elp-revive/origami.el).
 
-   I also use gforth.el from the debian package gforth and ltx-help.el
+   I also use gforth.el from the soruce of gforth and ltx-help.el
    (latex-help) from the debian package texlive-lang-english.
 
    As I compile emacs from the source to have also links to C code in helpful,
@@ -42,6 +40,7 @@
    - evil-multiedit
 
 ** all-the-icons
+   - all-the-icons
    - all-the-icons-dired
    - all-the-icons-ibuffer
    - all-the-icons-completion
@@ -77,6 +76,7 @@
    - iedit
    - helpful
    - undo-tree
+   - undo-fu-session
    - magit
    - git-timemachine
    - hl-todo
@@ -84,13 +84,13 @@
    - ripgrep
    - deadgrep
    - ag
+   - rg
    - wgrep
    - wgrep-ag
    - nocomments-mode
    - goto-chg
    - fill-column-indicator
    - open-with
-   - duplicate-thing
    - vterm
    - eshell-vterm
    - auto-compile
@@ -104,7 +104,6 @@
    - dante
    - attrap
    - haskell-snippets
-   - hasky-extensions
 
 *** Ruby
    - inf-ruby
@@ -149,3 +148,7 @@
   - json-mode
   - latex-extra
   - nim-mode
+  - fennel-mode
+  - erlang
+  - elixir-mode
+  - lfe-mode
