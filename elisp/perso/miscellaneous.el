@@ -119,5 +119,15 @@ With prefix argument, use full path."
                       (set-window-configuration wnd))))
       (error "no more than 2 files should be marked"))))
 
+;; From: https://www.masteringemacs.org/article/fun-emacs-calc
+(require 'cl-lib)
+(defun hms-to-dec (hms-str)
+  (let ((hms (split-string hms-str "[°'′\"″NWE ]" t)))
+    (cl-flet ((to-deg ()
+                   (string-to-number
+                    (calc-eval (format "deg(%s@ %s' %s\")"
+                                       (pop hms) (pop hms) (pop hms))))))
+      (list (to-deg) (to-deg)))))
+
 (provide 'miscellaneous)
 ;;; misc.el ends here
