@@ -77,9 +77,11 @@
 A formatted list of window configs is presented as candidates.
 If no match was found, the user input is interpreted as a new
 slot to switch to."
-  (let* ((candidates (--map (cons (evil-eb--format-slot it)
-                                  (car it))
-                            (eyebrowse--get 'window-configs)))
+  (let* ((candidates (mapcar
+                      (lambda(it)
+                        (cons (evil-eb--format-slot it)
+                              (car it)))
+                      (eyebrowse--get 'window-configs)))
          (candidate (completing-read "Enter slot: " candidates))
          (choice (cdr (assoc candidate candidates))))
     (or choice (eyebrowse--string-to-number candidate)
