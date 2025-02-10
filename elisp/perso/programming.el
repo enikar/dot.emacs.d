@@ -71,12 +71,13 @@
   "Toggle flycheck's error list window.
 If the error list is visible, hide it.  Otherwise, show it."
   (interactive)
-  (-if-let (window (flycheck-get-error-list-window))
-      (quit-window nil window)
-    (flycheck-list-errors)))
+  (let ((window (flycheck-get-error-list-window)))
+    (if window
+        (quit-window nil window)
+        (flycheck-list-errors))))
 
 (use-package flycheck
-  :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc))
+  :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc haskell-stack-ghc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
           (flycheck-python-pycompile-executable "python3")
@@ -90,7 +91,8 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init (leader-ala-vim
           :no-autload t
           "f" '(:ignore t :wk "Flycheck")
-          "f f" #'flycheck-mode)
+          "f f" #'flycheck-mode
+          "f l" #'my/toggle-flycheck-error-list)
         (prefix-c-xt :no-autoload t "f" #'flycheck-mode)
   :config (which-key-add-key-based-replacements
            "C-c !" "Flycheck"))
@@ -111,7 +113,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (defun my/no-auto-fill ()
   (auto-fill-mode 0))
 
-;; add a hook for inferior-haskell-hook
+;; TODO add a hook for inferior-haskell-hook
 ;; I should write another function than run-haskell to
 ;; split current window and launch ghci with the correct arguments.
 ;; run-haskell call inferior-haskell-process. This function needs to be
@@ -121,6 +123,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (defun my/haskell-mode-hooks ()
   (flycheck-mode)
   (haskell-indentation-mode)
+  (interactive-haskell-mode)
   (imenu-add-menubar-index)
   (general-unbind
     :keymaps 'haskell-mode-map
@@ -134,6 +137,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.l?hs\\'"
   :hook ((haskell-mode . my/haskell-mode-hooks)
          (ghci-script-mode . my/no-auto-fill))
+  :diminish (interactive-haskell-mode)
   :init
     (setq haskell-process-args-ghci '("-ferror-spans")
           haskell-process-log t
@@ -167,6 +171,7 @@ If the error list is visible, hide it.  Otherwise, show it."
                               "-Wwarn=missing-home-modules"
                               "-fno-diagnostics-show-caret"
                               "--make"
+                              "-with-rtsopts=\"-M5G\""
                               "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
          (dante-mode . my/set-flycheck-haskell-checker))
@@ -185,6 +190,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package hlint-refactor
   :hook (dante-mode . hlint-refactor-mode)
+  :diminish (hlint-refactor-mode)
   :config (which-key-add-key-based-replacements "C-c ," "Refactor"))
 
 ;; (use-package retrie
@@ -199,9 +205,16 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.ya?ml\\'"
   :config (require 'flycheck-yamllint))
 
+;;;; Elixir
+(use-package elixir-mode)
+  ;;:hook (elixir-mode . flycheck-mode) ;;; doesn't work
+  ;;:config (require 'flycheck-elixir))
 
-(push (expand-file-name "elisp/hasky-extensions" user-emacs-directory) load-path)
-(general-def :keymaps 'haskell-mode-map "C-c l" #'hasky-extensions)
+;;;; lfe (lisp flavour erlang)
+(use-package lfe-mode)
+  ;; :init (my/add-hooks 'lfe-mode-hook
+  ;;                     #'highlight-parentheses-mode
+  ;;                     #'rainbow-delimiters-mode))
 
 ;;;; ruby
 ;; TODO: de nouveau essayer realgud-byebug.
@@ -273,12 +286,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package merlin
   :custom-face (merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4"))))
   :hook ((tuareg-mode caml-mode) . merlin-mode)
-  :config (setq merlin-command 'opam))
+  :init (setq merlin-command 'opam))
 
 (use-package flycheck-ocaml
   :hook (tuareg-mode . flycheck-mode)
   :init (setq merlin-error-after-save nil)
-  :config (flycheck-ocaml-setup))
+        (flycheck-ocaml-setup))
 
 (use-package dune
   :mode ("dune" . dune-mode))
@@ -340,6 +353,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package geiser-racket
   :defer t)
 
+
+;;;; Fennel language: extension .fnl
+(use-package fennel-mode)
+
 ;;;; python
 ;; anaconda + python.el is better than elpy !
 (use-package anaconda-mode
@@ -371,7 +388,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; rust
 ;; rustic provide all functionnalities
 (use-package rustic
-  :mode ("\\.rs\\'" . rustic-mode))
+  :mode ("\\.rs\\'" . rustic-mode)
+  :custom (rustic-lsp-setup-p nil))
 
 ;;;; lua
 (use-package lua-mode
@@ -403,6 +421,10 @@ If the error list is visible, hide it.  Otherwise, show it."
   :hook (nim-mode . nimsuggest-mode))
 
 ;;;; LaTeX
+;; auctex is very boring. They don't respect convention for
+;; autoloading. Loading auctex.el slow down the emacs startup
+(load "auctex" nil t)
+
 (use-package latex-extra
   :hook (LaTeX-mode . latex-extra-mode))
 
@@ -419,9 +441,6 @@ If the error list is visible, hide it.  Otherwise, show it."
   (setq tab-width 8))
 (add-hook 'shell-mode-hook #'my/set-tab-width-to-8)
 
-;; auctex is very boring. They don't respect convention for
-;; autoloading. Loading auctex.el slow down the emacs startup
-(load "auctex" nil t)
 
 ;;;; gforth
 (push "~/.emacs.d/elisp/gforth" load-path)
@@ -432,7 +451,7 @@ If the error list is visible, hide it.  Otherwise, show it."
     ("\\.4th$" . #'forth-mode)
     ("\\.fth$" . #'forth-mode)) auto-mode-alist))
 
-;;;; latex help
+;; ;;;; latex help
 (push "~/.emacs.d/elisp/latex-help" load-path)
 ;;(autoload #'latex-help "ltx-help" "Latex help in info" t)
 (general-def help-map "C-l" #'latex-help)
