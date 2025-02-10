@@ -205,6 +205,9 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.ya?ml\\'"
   :config (require 'flycheck-yamllint))
 
+;;;; Erlang
+(use-package erlang)
+
 ;;;; Elixir
 (use-package elixir-mode)
   ;;:hook (elixir-mode . flycheck-mode) ;;; doesn't work
