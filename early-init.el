@@ -15,22 +15,6 @@
                         (time-subtract after-init-time before-init-time))
                        gcs-done)))
 
-;;;; Packages stuff
-(setq package-user-dir "~/.emacs.d/elpa")
-(setq load-prefer-newer t)
-(setq package-archives
-    '(("melpa" . "https://melpa.org/packages/")
-      ("elpa"   . "https://elpa.gnu.org/packages/")
-      ("elpa-devel" . "https://elpa.gnu.org/devel/")
-      ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-(setq package-archive-priorities
-      '(("melpa" . 3)
-        ("elpa" . 2)
-        ("nongnu" . 1)
-        ("elpa-devel" . 1)))
-;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
-;; none for the moment.
 
 ;;;; Settings for Xorg. Ignore settings from .Xresources and .Xdefault
 (advice-add #'x-apply-session-resources :override #'ignore)

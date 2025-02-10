@@ -2,8 +2,26 @@
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message "enikar")
 
+
 ;; start emacs server early
 (server-start)
+
+;;;; Packages stuff
+(setq package-user-dir "~/.emacs.d/elpa")
+(setq load-prefer-newer t)
+(setq package-archives
+    '(("melpa" . "https://melpa.org/packages/")
+      ("elpa"   . "https://elpa.gnu.org/packages/")
+      ("elpa-devel" . "https://elpa.gnu.org/devel/")
+      ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+
+(setq package-archive-priorities
+      '(("melpa" . 3)
+        ("elpa" . 2)
+        ("nongnu" . 1)
+        ("elpa-devel" . 1)))
+;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
+;; none for the moment.
 
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
