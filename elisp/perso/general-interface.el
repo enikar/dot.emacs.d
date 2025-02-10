@@ -5,8 +5,8 @@
 
 ;;; Code:
 
-(setq package-native-compile t
-      use-package-enable-imenu-support t)
+(setq use-package-enable-imenu-support t
+      package-native-compile nil)
 
 (eval-when-compile
   (require 'use-package))
@@ -16,7 +16,6 @@
 ;; (setq use-package-always-ensure t)
 
 (require 'cl-lib)
-(use-package dash)
 
 (defun my/add-hooks (mode-hook &rest hooks)
   "Add hooks in the list `hooks' to `mode-hook'"
@@ -29,7 +28,6 @@
     (add-hook mode hook)))
 
 ;;;; general to bind keys in a convenient way.
-(use-package general)
 (require 'general)
 ;;(general-evil-setup)
 ;;(general-auto-unbind-keys)
@@ -84,6 +82,7 @@
   "SPC"   #'execute-extended-command
   "M-SPC" #'cycle-spacing
   ":"     #'eval-expression
+  "*"     #'duplicate-dwim
   "g"     '(:ignore t :wk "Searching")
   "g R"    #'rgrep
   "q"     '(:ignore t :wk "Quitting")
@@ -106,6 +105,8 @@
   "<f12>"                #'next-error
   "M-s m"                #'multi-occur
   "C-x r e"              #'edit-bookmarks
+  "C-x j"                #'duplicate-dwim
+  "C-c l"                #'dictionary-search-dwim
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
 ;;;; Global settings
@@ -125,7 +126,7 @@
       scroll-step 1
       scroll-margin 0
       scroll-conservatively 10000
-      scroll-preserve-screen-position 1
+      scroll-preserve-screen-position t
       sentence-end-double-space nil
       bidi-inhibit-bpa t
       confirm-kill-processes nil
@@ -165,6 +166,7 @@
       eww-download-directory "~/download/"
       url-configuration-directory (my/put-this-in-var "url")
       url-cookie-file (my/put-this-in-var "url/cookie")
+      treesit-extra-load-path `(,(my/put-this-in-var "tree-sitter"))
       calendar-week-start-day 1
       calendar-latitude 45.1877777778 ; for M-x sunrise-sunset
       calendar-longitude 5.72694444445
@@ -174,6 +176,11 @@
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
+;;;; isearch
+      search-exit-option 'edit
+      isearch-allow-scroll t
+      isearch-lazy-highlight t
+      isearch-lazy-count t
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -203,7 +210,7 @@
 ;; What I would like, is to restore the previous state of the buffer…
 ;; or perhaps decide what state apply based on the major mode.
 ;; Also fix the case for buffer already in read-only-mode when emacs
-;; is started. For now the doesn't work. These buffers remain in
+;; is started. For now that doesn't work. These buffers remain in
 ;; evil-normal-state.
 (setq-default tab-width 4
               indent-tabs-mode nil
@@ -214,6 +221,9 @@
               fill-column 72)
 
 ;; (set-input-meta-mode 'encoded) ; for terminal
+
+;; Add bindings for the find-library command
+(find-function-setup-keys)
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
@@ -304,15 +314,16 @@
       (eshell-send-input)
       (end-of-buffer))))
 
-(general-def "C-c s" #'my/eshell-switch-to-and-change-dir)
+(general-def "C-c e" #'my/eshell-switch-to-and-change-dir)
 
 ;;;; Transient settings
 (defvar-local transient-directory-cache
   (my/put-this-in-var "transient"))
 (apply #'custom-set-variables
-       (--map
+       (mapcar
+        (lambda(it)
           (list (car it)
-                (expand-file-name (cdr it) transient-directory-cache))
+                (expand-file-name (cdr it) transient-directory-cache)))
         '((transient-levels-file . "levels.el")
           (transient-values-file . "values.el")
           (transient-history-file . "history.el"))))
@@ -341,7 +352,7 @@
     dired-mode
     finder-mode
     shortdoc-mode
-    ;;view-mode ; doesn't work for this mode…
+    ;;view-mode ; doesn't work for this because it's a minor mode
     )
   "List of mode that we want to be in initial emacs-state.
 To use it: (push 'a-mode my/mode-in-emacs-state)")
@@ -545,8 +556,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         (alist-get ?W avy-dispatch-alist) 'avy-action-copy-whole-line
         (alist-get ?Y avy-dispatch-alist) 'avy-action-yank-whole-line
         (alist-get ?t avy-dispatch-alist) 'avy-action-teleport
-        (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line)
-  )
+        (alist-get ?T avy-dispatch-alist) 'avy-action-teleport-whole-line))
 
 ;; Useless because the minor is not activated, as well that changes
 ;; only fFtT operators. I setup some bindings with my leader-ala-vim
@@ -564,6 +574,11 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;;"a s"  #'avy-goto-subword-1
       ;;"a 0"  #'avy-goto-word-0
       "a w"  #'avy-goto-word-1))
+(use-package casual-avy
+  :defer t
+  :init
+  (leader-ala-vim
+    "a m" #'casual-avy-tmenu))
 
 (use-package ace-window
   :defer t
@@ -577,12 +592,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 ;; avy-isearch is not compatible with ctrlf because they don't use
 ;; the same variable. TODO: write a command avy-ctrlf draw from
-;; avy-isearch.
-(use-package ctrlf
-  :custom (ctrlf-default-search-style 'fuzzy)
-          (ctrlf-alternate-search-style 'fuzzy-regexp)
-  ;;:init (general-def ctrlf-minibuffer-mode-map "M-j" #'avy-isearch) ; doesn't work
-  :config (ctrlf-mode))
+;; avy-isearch. Finally, isearch is better imho.
+;; (use-package ctrlf
+;;   :custom (ctrlf-default-search-style 'fuzzy)
+;;           (ctrlf-alternate-search-style 'fuzzy-regexp)
+;;   ;;:init (general-def ctrlf-minibuffer-mode-map "M-j" #'avy-isearch) ; doesn't work
+;;   :config (ctrlf-mode))
 
 ;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
@@ -601,19 +616,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package consult
   :commands (consult-customize) ;; for affe
-  ;;:config
-  ;; (defun pt/yank-pop ()
-  ;;   "As pt/yank, but calling consult-yank-pop."
-  ;;   (interactive)
-  ;;   (let ((point-before (point)))
-  ;;     (consult-yank-pop)
-  ;;     (indent-region point-before (point))))
 
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
           (xref-show-definitions-function #'consult-xref)
           (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
-          (consult-preview-key '(:debounce 0.5 any))
+          (consult-preview-key '(:debounce 1 any))
 
   :init (general-def
           "C-x b"    #'consult-buffer
@@ -637,6 +645,15 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               register-preview-function #'consult-register-format)
   :config (setq consult-narrow-key "C-+")
           (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
+
+;; ;; Use `consult-completion-in-region' if Vertico is enabled.
+;; ;; Otherwise use the default `completion--in-region' function.
+;; (setq completion-in-region-function
+;;       (lambda (&rest args)
+;;         (apply (if vertico-mode
+;;                    #'consult-completion-in-region
+;;                  #'completion--in-region)
+;;                args)))
 
 (defun immediate-which-key-for-narrow (fun &rest args)
   (let* ((refresh t)
@@ -713,8 +730,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (leader-ala-vim "RET" #'embark-act)
   (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
   (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
-  (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark)))
-  (general-def :keymaps 'help-map "B" #'embark-bindings)
+  (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark))
+  (general-def :keymaps 'help-map "B" #'embark-bindings))
 ;; Use which key to show the embark's actions.
 ;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
 (defun embark-which-key-indicator ()
@@ -811,6 +828,7 @@ targets."
   :config (require 'kind-icon)
           (push #'kind-icon-margin-formatter corfu-margin-formatters))
 
+;;  ** need to change the corfu--state-vars to corfu--initial-state in corfu-prescient
 (use-package corfu-prescient
   :hook (corfu-mode . corfu-prescient-mode))
   ;; :config (corfu-prescient-mode))
@@ -892,8 +910,8 @@ targets."
 
 (use-package consult-flyspell
   :defer t
-  :init (setq consult-flyspell-correct-function #'(lambda () (flyspell-correct-at-point) (consult-flyspell)))
-        (leader-ala-vim "=" #'consult-flyspell-correct-function))
+  :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
+        (leader-ala-vim "=" #'consult-flyspell))
 
 (use-package consult-recoll
   :defer t
@@ -971,6 +989,10 @@ targets."
   :init (with-eval-after-load 'evil
           (require 'evil-anzu)))
 
+(use-package all-the-icons
+  :diminish (all-the-icons-mode))
+
+
 (use-package all-the-icons-dired
   :diminish (all-the-icons-dired-mode)
   :hook (dired-mode . all-the-icons-dired-mode))
@@ -981,13 +1003,6 @@ targets."
 (use-package all-the-icons-completion
   :config (all-the-icons-completion-mode 1)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup))
-
-;; XXX perhaps remove this package. I have never used it.
-;; (use-package emojify
-;;   :defer t
-;;   :diminish (emojify)
-;;   :custom (emojify-emojis-dir  (my/put-this-in-var "emojis")))
-;;   ;:hook (after-init . global-emojify-mode))
 
 (use-package iedit
   :defer t
@@ -1025,9 +1040,17 @@ targets."
   :diminish (undo-tree-mode)
   :custom (evil-undo-system 'undo-tree)
           (undo-tree-enable-undo-in-region t)
+          (undo-tree-auto-save-history nil)
           (undo-tree-history-directory-alist
            `(("." . ,(my/put-this-in-var "undo-tree/"))))
   :init (leader-ala-vim "_" #'undo-tree-visualize))
+
+(use-package undo-fu-session
+  :commands (undo-fu-session-global-mode)
+  :diminish (undo-fu-session)
+  :custom (undo-fu-session-directory
+           (my/put-this-in-var "undo-fu-session"))
+  :init (undo-fu-session-global-mode))
 
 ;; Folding. There are several possibilities.
 ;; Use:
@@ -1145,10 +1168,22 @@ targets."
 (use-package ripgrep
   :defer t
   :init (leader-ala-vim "g g" #'ripgrep-regexp))
+
 (use-package deadgrep
   :defer t
   :init (leader-ala-vim "g d" #'deadgrep)
         (push 'deadgrep-mode my/mode-in-emacs-state))
+
+(use-package rg
+  :custom (rg-keymap-prefix ["C-c s"])
+          (rg-ignore-case [smart])
+          (rg-use-transient-menu t)
+  :config (rg-enable-menu))
+
+(use-package wgrep
+  :config (general-def
+            :keymap 'wgrep-mode-map
+            "C-c C-a" #'wgrep-save-all-buffer))
 
 (use-package ag
   :defer t
@@ -1256,11 +1291,6 @@ argument, query for word to search."
   (setf (alist-get ?H avy-dispatch-alist) #'avy-action-helpful)
   (setf (alist-get ?= avy-dispatch-alist) #'avy-action-lookup-dictionnary))
 
-
-(use-package duplicate-thing
-  :defer t
-  :init (leader-ala-vim "*" #'duplicate-thing))
-
 (use-package paren
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
@@ -1292,6 +1322,9 @@ argument, query for word to search."
 
 (use-package svg-lib
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
+
+(use-package pdf-tools
+  :defer t)
 
 (use-package vterm
   :defer t
