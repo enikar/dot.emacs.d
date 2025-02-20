@@ -1182,7 +1182,7 @@ targets."
 
 (use-package wgrep
   :config (general-def
-            :keymap 'wgrep-mode-map
+            :keymaps 'wgrep-mode-map
             "C-c C-a" #'wgrep-save-all-buffer))
 
 (use-package ag
