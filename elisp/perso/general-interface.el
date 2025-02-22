@@ -12,8 +12,8 @@
   (require 'use-package))
 ;; (require 'use-package)
 ;; To add a :ensure for each use-package
-;; (require 'use-package-ensure)
-;; (setq use-package-always-ensure t)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 
 (require 'cl-lib)
 
@@ -28,7 +28,10 @@
     (add-hook mode hook)))
 
 ;;;; general to bind keys in a convenient way.
-(require 'general)
+(use-package general)
+;; (unless (package-installed-p 'general)
+;;   (package-install 'general))
+;; (require 'general)
 ;;(general-evil-setup)
 ;;(general-auto-unbind-keys)
 (general-create-definer prefix-c-xw :prefix "C-x w")
@@ -127,6 +130,9 @@
       scroll-margin 0
       scroll-conservatively 10000
       scroll-preserve-screen-position t
+      ediff-merge-split-window-function 'split-window-horizontally
+      ediff-split-window-function 'split-window-horizontally
+      focus-follows-mouse nil
       sentence-end-double-space nil
       bidi-inhibit-bpa t
       confirm-kill-processes nil
@@ -144,10 +150,13 @@
       use-short-answers t
       enable-recursive-minibuffers t
       history-length 100
+      recentf-menu-filter 'recentf-sort-basenames-ascending
       require-final-newline t
       executable-prefix-env t
+      dired-ls-F-marks-symlinks t
       dired-dwim-target t
       dired-kill-when-opening-new-dired-buffer t
+      dired-listing-switches "-alhF --group-directories-first"
       dired-switches-in-mode-line 'as-is
       dired-guess-shell-alist-user '(("\\.pdf\\'" "zathura")
                                      ("\\.tex\\'" "pdflatex")
@@ -176,6 +185,10 @@
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
+      save-place-mode t
+;;;; ibuffer
+      ibuffer-expert t
+      ibuffer-default-sorting-mode 'major-mode
 ;;;; isearch
       search-exit-option 'edit
       isearch-allow-scroll t
@@ -195,12 +208,18 @@
       project-list-file (my/put-this-in-var "project")
       eshell-directory-name (my/put-this-in-var "eshell")
       request-storage-directory (my/put-this-in-var "request")
-      shared-game-score-directory (my/put-this-in-var "games"))
+      shared-game-score-directory (my/put-this-in-var "games")
+      warning-minimum-level :error
+      warning-suppress-log-types '((comp))
+      warning-suppress-types '((use-package))
+      vc-make-backup-files t)
+
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 ;; (add-hook 'before-save-hook #'time-stamp)
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+
 (minibuffer-depth-indicate-mode)
 (tooltip-mode -1)
 
@@ -230,6 +249,13 @@
 (leader-ala-vim "t H" #'hl-line-mode)
 (global-so-long-mode)
 (delete-selection-mode t)
+(column-number-mode t)
+
+(defun my/ibuffer-delete-M-o()
+  (general-unbind ibuffer-mode-map "M-o"))
+(my/add-hooks 'ibuffer-mode-hook
+              #'my/ibuffer-delete-M-o
+              #'ibuffer-auto-mode)
 
 ;;;; better dired mode
 (autoload #'dired-omit-mode "dired-x")
@@ -413,6 +439,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;; "gT"
       "g"))    ; remove the prefix is sufficient
 
+(use-package evil-numbers)
+
 (use-package evil-quickscope
   :hook (after-init . global-evil-quickscope-mode)
   :diminish (evil-quickscope-mode))
@@ -580,6 +608,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (leader-ala-vim
     "a m" #'casual-avy-tmenu))
 
+(use-package casual-suite)
 (use-package ace-window
   :defer t
   :init (general-def "M-o" #'ace-window)
@@ -859,6 +888,7 @@ targets."
    "C-M-/" #'dabbrev-expand) ;; dabbrev-expand is also provide by C-p in evil-insert-state
   ;; Other useful Dabbrev configurations.
   :custom
+  (dabbrev-case-replace nil)
   (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 ;;;; Fonctions for completion-at-point-functions hook provide
@@ -907,6 +937,8 @@ targets."
              ;; "j n" #'symbol-overlay-jump-next
              ;; "j p" #'symbol-overlay-jump-prev
              ;; "j r" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
+
+(use-package casual-symbol-overlay)
 
 (use-package consult-flyspell
   :defer t
@@ -1007,6 +1039,8 @@ targets."
 (use-package iedit
   :defer t
   :general ("C-;"  #'iedit-mode))
+
+(use-package evil-iedit-state)
 
 (use-package evil-multiedit
   :commands (evil-multiedit-ex-match)
@@ -1158,16 +1192,11 @@ targets."
   :init (leader-ala-vim "m t" #'git-timemachine)
         (push 'git-timemachine-mode my/mode-in-emacs-state))
 
-;; (use-package libgit)
-;; (use-package magit-libgit)
+(use-package consult-git-log-grep)
 
 (use-package consult-ls-git
   :defer t
   :init (leader-ala-vim "m f" #'consult-ls-git))
-
-(use-package ripgrep
-  :defer t
-  :init (leader-ala-vim "g g" #'ripgrep-regexp))
 
 (use-package deadgrep
   :defer t
@@ -1175,6 +1204,7 @@ targets."
         (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package rg
+  :init (leader-ala-vim "g g" #'rg-dwim)
   :custom (rg-keymap-prefix ["C-c s"])
           (rg-ignore-case [smart])
           (rg-use-transient-menu t)
@@ -1184,22 +1214,6 @@ targets."
   :config (general-def
             :keymaps 'wgrep-mode-map
             "C-c C-a" #'wgrep-save-all-buffer))
-
-(use-package ag
-  :defer t
-  :init (setq ag-highlight-search t)
-  (leader-ala-vim
-    "g a"  '(:ignore t :wk "Ag")
-    "g a a" #'ag
-    "g a f" #'ag-files
-    "g a r" #'ag-regexp
-    "g a p" #'ag-project
-    "g a F" #'ag-project-files
-    "g a R" #'ag-project-regexp))
-
-(use-package consult-ag
-  :defer t
-  :init (leader-ala-vim "g a c" #'consult-ag))
 
 (use-package visual-regexp
   :defer t
@@ -1334,6 +1348,10 @@ argument, query for word to search."
 
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
+
+(use-package exec-path-from-shell)
+(use-package pkg-info
+  :defer t)
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)

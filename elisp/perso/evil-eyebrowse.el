@@ -170,12 +170,26 @@ slot to switch to."
   (if (boundp 'Info-mode-map)
       (evil-eb-update-map Info-mode-map)))
 
+
 ;; That doesn't work for info buffer load by desktop since
 ;; the desktop is load before this is required.
 (add-hook 'Info-mode-hook #'evil-eb-info-mode-bindings)
 ;; So, this is a turn around…
+(declare-function 'get-buffers-matching-mode "personal-commands")
 (dolist (buf (get-buffers-matching-mode 'Info-mode))
   (with-current-buffer buf (evil-eb-info-mode-bindings)))
+
+;; In emacs30 there is a new mode for *Async-native-compile*:
+;; emacs-lisp-compilation-mode
+(defun my/elisp-compilation-mode-hook ()
+  (if (boundp 'emacs-lisp-compilation-mode-map)
+      (evil-eb-update-map emacs-lisp-compilation-mode-map)))
+
+(add-hook 'emacs-lisp-compilation-mode-hook #'my/elisp-compilation-mode-hook)
+
+(dolist (buf (get-buffers-matching-mode 'emacs-lisp-compilation-mode))
+  (with-current-buffer buf
+    (evil-eb-update-map emacs-lisp-compilation-mode-map)))
 
 ;; Add some shortcut to the packages-menu-mode (list-packages)
 ;; in his map (package-menu-mode-map). We use package-menu-mode-hook.

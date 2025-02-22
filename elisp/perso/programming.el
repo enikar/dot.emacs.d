@@ -5,40 +5,18 @@
 
 ;;; Code:
 
-;; (eval-when-compile
-;;   (require 'use-package))
+(eval-when-compile
+  (require 'use-package))
 
-(require 'use-package)
 (require 'general-interface)
-(require 'dash)
 
-(use-package yasnippet-snippets
-  :defer t)
 
-(use-package yasnippet
-  :defer t
-  :hook ((prog-mode) . yas-minor-mode)
-  :init
-  (general-def yas-minor-mode-map
-    "C-c & e"   #'yas-expand
-    "C-c & t"   #'yas-describe-tables)
-  (leader-ala-vim
-    "y" '(:ignore t :wk "Yasnippet")
-    "y e" #'yas-expand
-    "y t" #'yas-describe-tables
-    "y n" #'yas-new-snippet
-    "y s" #'yas-insert-snippet
-    "y v" #'yas-visit-snippet-file)
-  :config (yas-reload-all)
-  (which-key-add-key-based-replacements
-    "C-c &" "Yasnippets"))
-
-(use-package consult-yasnippet
-  :init (general-def yas-minor-mode-map "C-c & c" #'consult-yasnippet)
-        (leader-ala-vim "y c" #'consult-yasnippet))
+(add-hook 'prog-mode-hook #'abbrev-mode)
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
+
+(use-package rainbow-identifiers)
 
 (use-package highlight-parentheses
   :diminish (highlight-parentheses-mode)
@@ -212,6 +190,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package elixir-mode)
   ;;:hook (elixir-mode . flycheck-mode) ;;; doesn't work
   ;;:config (require 'flycheck-elixir))
+(use-package inf-elixir)
 
 ;;;; lfe (lisp flavour erlang)
 (use-package lfe-mode)
@@ -290,6 +269,8 @@ If the error list is visible, hide it.  Otherwise, show it."
   :custom-face (merlin-type-face ((t (:inherit caml-types-expr-face :background "MistyRose4"))))
   :hook ((tuareg-mode caml-mode) . merlin-mode)
   :init (setq merlin-command 'opam))
+(use-package merlin-eldoc)
+
 
 (use-package flycheck-ocaml
   :hook (tuareg-mode . flycheck-mode)
@@ -413,6 +394,11 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.json\\'")
 (use-package jq-format)
 
+(use-package smalltalk-mode)
+(use-package systemd)
+(use-package gitconfig)
+
+
 (use-package typescript-mode
   :mode "\\.ts\\'")
 
@@ -426,6 +412,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; LaTeX
 ;; auctex is very boring. They don't respect convention for
 ;; autoloading. Loading auctex.el slow down the emacs startup
+(unless (package-installed-p 'auctex)
+  (package-install 'auctex))
 (load "auctex" nil t)
 
 (use-package latex-extra

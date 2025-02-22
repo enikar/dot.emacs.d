@@ -6,6 +6,9 @@
 ;; start emacs server early
 (server-start)
 
+(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
+(load-theme 'tsdh-modified t)
+
 ;;;; Packages stuff
 (setq package-user-dir "~/.emacs.d/elpa")
 (setq load-prefer-newer t)
@@ -32,7 +35,7 @@
 (defun my/put-this-in-var (name)
   (expand-file-name name my/emacs-var-dir))
 
-(setq custom-file (expand-file-name "custom.el" "~/.emacs.d/")
+(setq custom-file (make-temp-file "emacs-custom-")
       abbrev-file-name (my/put-this-in-var "abbrev_defs")
       save-abbrevs 'silently
       bookmark-default-file (my/put-this-in-var "bookmarks")
@@ -40,7 +43,7 @@
       recentf-max-saved-itmes 30
       save-place-file (my/put-this-in-var "saveplace"))
 
-(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
+
 (push "~/.emacs.d/elisp/perso" load-path)
 
 (defun my/recentf-exclude (f)
@@ -52,7 +55,6 @@
 (setq recentf-exclude  `(,#'my/recentf-exclude))
 
 (let ((file-name-handler-alist nil))
-  (load custom-file)
   (require 'general-interface)
   (require 'programming)
   (require 'personal-commands)
