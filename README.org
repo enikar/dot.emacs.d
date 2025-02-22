@@ -38,6 +38,7 @@
    - evil-visualstar
    - evil-mc
    - evil-multiedit
+   - evil-numbers
 
 ** all-the-icons
    - all-the-icons
@@ -83,10 +84,8 @@
    - treemacs
    - ripgrep
    - deadgrep
-   - ag
    - rg
    - wgrep
-   - wgrep-ag
    - nocomments-mode
    - goto-chg
    - fill-column-indicator
@@ -97,7 +96,6 @@
 
 ** Programming
    - flycheck
-   - yasnippet
 
 *** Haskell
    - haskell-mode
