@@ -1,0 +1,153 @@
+* Introduction
+  These are my settings for emacs 30.
+
+** Important
+   This is not a starter kit. Worst, these settings cannot be bootstrap.
+
+   I use external package I download with git clone. They are Origami (from
+   https://github.com/elp-revive/origami.el).
+
+   I also use gforth.el from the soruce of gforth and ltx-help.el
+   (latex-help) from the debian package texlive-lang-english.
+
+   As I compile emacs from the source to have also links to C code in helpful,
+   I don't use the debian system for emacsen, although I should do.
+
+   All files are under GPL v3 License.
+
+** Use emacs 30
+  Some settings are in early-init.el. Emacs before version 27 doesn't
+  read this file.
+
+* Some packages used
+
+** use-package
+
+** evil
+   - evil-anzu
+   - evil-nerd-commenter
+   - evil-matchit
+   - evil-embrace
+   - evil-surround
+   - evil-goggles
+   - evil-visualstar
+   - evil-lion
+   - evil-string-inflection
+   - evil-quickscope
+   - evil-avy
+   - evil-visualstar
+   - evil-mc
+   - evil-multiedit
+
+** all-the-icons
+   - all-the-icons
+   - all-the-icons-dired
+   - all-the-icons-ibuffer
+   - all-the-icons-completion
+
+** doom-modeline
+
+** Vertico + consult
+   - vertico
+   - consult
+   - marginalia
+   - orderless
+   - prescient
+   - embark
+   - affe
+
+** Corfu
+   - corfu
+   - cape
+
+** treemacs
+   - treemacs-evil
+   - treemacs-magit
+   - treemacs-all-the-icons
+
+** others
+   - eyebrowse
+   - general.el (for all keybindings)
+   - desktop.el (from emacs)
+   - dimmer
+   - diminish
+   - avy
+   - iedit
+   - helpful
+   - undo-tree
+   - undo-fu-session
+   - magit
+   - git-timemachine
+   - hl-todo
+   - treemacs
+   - ripgrep
+   - deadgrep
+   - ag
+   - rg
+   - wgrep
+   - wgrep-ag
+   - nocomments-mode
+   - goto-chg
+   - fill-column-indicator
+   - open-with
+   - vterm
+   - eshell-vterm
+   - auto-compile
+
+** Programming
+   - flycheck
+   - yasnippet
+
+*** Haskell
+   - haskell-mode
+   - dante
+   - attrap
+   - haskell-snippets
+
+*** Ruby
+   - inf-ruby
+   - yari
+   - robe
+   - ruby-end
+   - realgud-pry
+   - realgud-byebug
+   - yard-mode
+   - evil-ruby-text-objects
+
+*** Ocaml
+   - tuareg
+   - merlin
+   - flycheck-ocaml
+   - dune
+   - ocp-indent
+   - utop
+
+*** Common lisp
+   - slime
+
+*** Scheme
+   - geiser
+   - geiser-guile
+   - racket-mode
+   - geiser-racket
+
+*** Python
+  - python.el (from emacs)
+  - anaconda-mode
+
+*** Others languages
+  - raku-mode
+  - crystal-mode
+  - rustic (rust)
+  - lua-mode
+  - smalltalk-mode
+  - cmake-mode
+  - yaml-mode
+  - markdown-mode
+  - json-mode
+  - latex-extra
+  - nim-mode
+  - fennel-mode
+  - erlang
+  - elixir-mode
+  - lfe-mode
