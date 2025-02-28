@@ -38,6 +38,7 @@
    - evil-visualstar
    - evil-mc
    - evil-multiedit
+   - evil-numbers
 
 ** all-the-icons
    - all-the-icons
@@ -80,12 +81,9 @@
    - git-timemachine
    - hl-todo
    - treemacs
-   - ripgrep
    - deadgrep
-   - ag
    - rg
    - wgrep
-   - wgrep-ag
    - nocomments-mode
    - goto-chg
    - fill-column-indicator
@@ -96,13 +94,11 @@
 
 ** Programming
    - flycheck
-   - yasnippet
 
 *** Haskell
    - haskell-mode
    - dante
    - attrap
-   - haskell-snippets
 
 *** Ruby
    - inf-ruby
