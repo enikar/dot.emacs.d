@@ -185,7 +185,6 @@
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
-      save-place-mode t
 ;;;; ibuffer
       ibuffer-expert t
       ibuffer-default-sorting-mode 'major-mode
@@ -220,6 +219,7 @@
 ;; (add-hook 'before-save-hook #'time-stamp)
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
+(save-place-mode t)
 (minibuffer-depth-indicate-mode)
 (tooltip-mode -1)
 

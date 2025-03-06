@@ -149,6 +149,9 @@ If the error list is visible, hide it.  Otherwise, show it."
                               "-Wwarn=missing-home-modules"
                               "-fno-diagnostics-show-caret"
                               "--make"
+                              "+RTS"
+                              "-M5G"
+                              "-RTS"
                               "-with-rtsopts=\"-M5G\""
                               "-ignore-dot-ghci"))
   :hook ((haskell-mode . dante-mode)
