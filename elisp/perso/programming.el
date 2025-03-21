@@ -102,14 +102,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   (flycheck-mode)
   (haskell-indentation-mode)
   (interactive-haskell-mode)
-  (imenu-add-menubar-index)
-  (general-unbind
-    :keymaps 'haskell-mode-map
-    :prefix "C-c"
-    "TAB"
-    "C-b"
-    "C-l"
-    "C-t"))
+  (imenu-add-menubar-index))
 
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
@@ -117,16 +110,30 @@ If the error list is visible, hide it.  Otherwise, show it."
          (ghci-script-mode . my/no-auto-fill))
   :diminish (interactive-haskell-mode)
   :init
-    (setq haskell-process-args-ghci '("-ferror-spans")
+    (push 'haskell-error-mode my/mode-in-emacs-state)
+    (push 'haskell-interactive-mode my/mode-in-emacs-state)
+    (setq haskell-process-args-ghci '("+RTS" "-M5G" "-RTS" "-ferror-spans")
           haskell-process-log t
-
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)
   :config
-  (general-def haskell-mode-map
-    "C-c C-r" #'run-haskell)
-  (general-def interactive-haskell-mode-map
+  ;; Either here or in the hook, it doesn't work.
+  ;; (general-unbind
+  ;;   :keymaps 'haskell-mode-map
+  ;;   :prefix "C-c"
+  ;;   "TAB"
+  ;;   "C-b"
+  ;;   "C-l"
+  ;;   "C-t")
+  (general-def
+    :states '(normal insert)
+    :keymaps 'haskell-mode-map
+    "C-c C-r" #'run-haskell
+    "C-c C-a" #'haskell-mode-generate-tags)
+  (general-def
+    :states '(normal insert)
+    :keymaps 'interactive-haskell-mode-map
     "M-."     #'haskell-mode-goto-loc
     "C-c C-t" #'haskell-mode-show-type-at))
 
@@ -415,21 +422,21 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; LaTeX
 ;; auctex is very boring. They don't respect convention for
 ;; autoloading. Loading auctex.el slow down the emacs startup
-(unless (package-installed-p 'auctex)
-  (package-install 'auctex))
-(load "auctex" nil t)
+;; (unless (package-installed-p 'auctex)
+;;   (package-install 'auctex))
+;; (load "auctex" nil t)
+(use-package auctex)
 
 (use-package latex-extra
   :hook (LaTeX-mode . latex-extra-mode))
 
-(use-package latex-math-preview
-  :defer t)
+;; (use-package latex-math-preview)
+
 
 (use-package latex-preview-pane
-  :defer t)
+  :commands (latex-preview-pane-mode))
 
-(use-package latexdiff
-  :defer t)
+;; (use-package latexdiff)
 
 (defun my/set-tab-width-to-8 ()
   (setq tab-width 8))
