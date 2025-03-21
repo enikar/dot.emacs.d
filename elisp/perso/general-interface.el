@@ -5,8 +5,7 @@
 
 ;;; Code:
 
-(setq use-package-enable-imenu-support t
-      package-native-compile nil)
+(setq use-package-enable-imenu-support t)
 
 (eval-when-compile
   (require 'use-package))
