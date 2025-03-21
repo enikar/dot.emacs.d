@@ -96,8 +96,7 @@
   "t w"    #'whitespace-mode
   "x"     '(:ignore t :wk "Xref")
   "x d"    #'xref-find-definitions
-  "x r"    #'xref-find-references
-  "x s"    #'xref-show-xrefs-function)
+  "x r"    #'xref-find-references)
 
 (general-def
   "<cancel>"             #'keyboard-quit
@@ -1226,9 +1225,8 @@ targets."
 
 (use-package dumb-jump
   :commands (xref-find-definitions
-             xref-find-references
-             xref-show-xrefs-function)
-  :hook (xref-backend-functions . dumb-jump-xref-activate)
+             xref-find-references)
+  :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)
   :custom (dumb-jump-prefer-searcher 'rg))
 
 (defun my/helpful-help-bindings ()
