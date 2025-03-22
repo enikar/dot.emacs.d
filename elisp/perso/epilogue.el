@@ -94,5 +94,9 @@
          (xref--read-identifier-history . 20)
          )
        desktop-globals-to-save))
+
+;; We put this at the end, else something remove it (evil probably).
+(keymap-global-set "C-M-h" #'mark-defun)
+
 (provide 'epilogue)
 ;;; epilogue.el ends here
