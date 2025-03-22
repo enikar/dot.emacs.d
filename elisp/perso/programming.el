@@ -122,6 +122,7 @@ If the error list is visible, hide it.  Otherwise, show it."
     :states '(normal insert)
     :keymaps 'haskell-mode-map
     "C-c C-r" #'run-haskell
+    "C-c C-d" #'haskell-navigate-imports
     "C-c C-a" #'haskell-mode-generate-tags)
   (general-def
     :states '(normal insert)
