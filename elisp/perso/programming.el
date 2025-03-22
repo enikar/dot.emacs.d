@@ -118,14 +118,8 @@ If the error list is visible, hide it.  Otherwise, show it."
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)
   :config
-  ;; Either here or in the hook, it doesn't work.
-  ;; (general-unbind
-  ;;   :keymaps 'haskell-mode-map
-  ;;   :prefix "C-c"
-  ;;   "TAB"
-  ;;   "C-b"
-  ;;   "C-l"
-  ;;   "C-t")
+  ;; I don't use speedbar anymore but that may be usefull
+  (speedbar-add-supported-extension ".hs")
   (general-def
     :states '(normal insert)
     :keymaps 'haskell-mode-map
@@ -308,12 +302,9 @@ If the error list is visible, hide it.  Otherwise, show it."
                 :coding-system utf-8-unix)
           (clisp ("clisp" "-I"))
           (ecl ("ecl")))
-        slime-contribs '(slime-fancy slime-company))
+        slime-contribs '(slime-fancy))
 
   (slime-setup))
-
-(use-package slime-company
-  :defer t)
 
 ;;;; scheme
 (use-package flycheck-guile
