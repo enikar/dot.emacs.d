@@ -118,8 +118,6 @@ If the error list is visible, hide it.  Otherwise, show it."
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)
   :config
-  ;; I don't use speedbar anymore but that may be usefull
-  (speedbar-add-supported-extension ".hs")
   (general-def
     :states '(normal insert)
     :keymaps 'haskell-mode-map
@@ -130,6 +128,10 @@ If the error list is visible, hide it.  Otherwise, show it."
     :keymaps 'interactive-haskell-mode-map
     "M-."     #'haskell-mode-goto-loc
     "C-c C-t" #'haskell-mode-show-type-at))
+
+;; I don't use speedbar anymore but it may be usefull
+(with-eval-after-load 'speedbar
+  (speedbar-add-supported-extension ".hs"))
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
