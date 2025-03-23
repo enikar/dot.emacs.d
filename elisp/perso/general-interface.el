@@ -1090,36 +1090,11 @@ targets."
 ;; Folding. There are several possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
-;; - origami: M-x origami-mode
 ;; - vdiff (vim diff): inside a vdiff session
 ;; - evil-vimish-fold: M-x evil-vimish-fold-mode
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode (these are built in emacs).
 ;; Hideshow is built in emacs, so it has my preference.
-;; the :load-path of use-package doesn't work. I wonder why.
-(push (expand-file-name "origami.d/" "~/.emacs.d/elisp") load-path)
-(autoload #'origami-mode "origami")
-(leader-ala-vim
-  "o" '(:ignore t :wk "Origami")
-  "o o" #'origami-open-node
-  "o O" #'origami-open-node-recursively
-  "o s" #'origami-show-node
-  "o S" #'origami-show-only-node
-  "o c" #'origami-close-node
-  "o C" #'origami-close-node-recursively
-  "o a" #'origami-open-all-nodes
-  "o A" #'origami-close-all-nodes
-  "o t" #'origami-toggle-node
-  "o T" #'origami-toggle-node-recursively
-  "o H" #'origami-toggle-all-nodes
-  "o <" #'origami-previous-fold
-  "o >" #'origami-next-fold
-  "o f" #'origami-forward-fold
-  "o F" #'origami-forward-fold-same-level
-  "o B" #'origami-backward-fold-same-level
-  "o u" #'origami-undo
-  "o r" #'origami-redo
-  "o R" #'origami-reset)
 
 ;; Manual definition of folds ala vim..
 (use-package evil-vimish-fold
@@ -1133,7 +1108,6 @@ targets."
       (funcall m -1)))
   (cl-case fold-method
     (hideshow (hs-minor-mode))
-    (origami (origami-mode))
     (vimish  (evil-vimish-fold-mode))
     (none nil)))
 
@@ -1144,7 +1118,7 @@ targets."
     (let ((candidate
            (completing-read
             "Folding method: "
-            '(hideshow origami vimish none))))
+            '(hideshow vimish none))))
       `(,candidate)))
   (myfold/set-folding-method (intern fold-method)))
 
