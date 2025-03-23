@@ -124,14 +124,20 @@
 
 ;; Two functions borrow from Mickey Petersen:
 ;; https://www.masteringemacs.org/article/searching-buffers-occur-mode
+;; (defun get-buffers-matching-mode (mode)
+;;   "Returns a list of buffers where their major-mode is equal to MODE"
+;;   (let ((buffer-mode-matches '()))
+;;     (dolist (buf (buffer-list))
+;;       (with-current-buffer buf
+;;         (when (eq mode major-mode)
+;;           (push buf buffer-mode-matches))))
+;;     buffer-mode-matches))
+;; Alternative way to write it, with a functional style
 (defun get-buffers-matching-mode (mode)
-  "Returns a list of buffers where their major-mode is equal to MODE"
-  (let ((buffer-mode-matches '()))
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-        (when (eq mode major-mode)
-          (push buf buffer-mode-matches))))
-    buffer-mode-matches))
+  (seq-filter (lambda(buf)
+                (with-current-buffer buf
+                  (eq mode major-mode)))
+              (buffer-list)))
 
 (defun multi-occur-in-this-mode ()
   "Show all lines matching REGEXP in buffers with this major mode."
