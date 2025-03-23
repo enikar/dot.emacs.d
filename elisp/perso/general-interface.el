@@ -573,7 +573,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package avy
   :init (general-def "M-j" #'avy-goto-char-timer)
-  :custom (avy-timeout-seconds 1.0)
+  :custom (avy-timeout-seconds 1.3)
   :config (avy-setup-default)
 
   (setf (alist-get ?k avy-dispatch-alist) 'avy-action-kill-stay
@@ -601,13 +601,29 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;;"a s"  #'avy-goto-subword-1
       ;;"a 0"  #'avy-goto-word-0
       "a w"  #'avy-goto-word-1))
+
 (use-package casual-avy
   :defer t
   :init
   (leader-ala-vim
     "a m" #'casual-avy-tmenu))
 
-(use-package casual-suite)
+(use-package casual-suite
+  :init
+  (general-def :keymaps 'lc-mode-map "C-o" #'casual-calc-tmenu)
+  (general-def :keymaps 'red-mode-map "C-o" #'casual-dired-tmenu)
+  (general-def :keymaps 'earch-mode-map "C-o" #'casual-isearch-tmenu)
+  (general-def :keymaps 'uffer-mode-map "C-o" #'casual-ibuffer-tmenu)
+  (general-def :keymaps 'uffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
+  (general-def :keymaps 'uffer-mode-map "s" #'casual-ibuffer-sortby-tmenu)
+  (general-def :keymaps 'info-mode-map "C-o" #'casual-info-tmenu)
+  (general-def "M-g M-o" #'casual-avy-tmenu)
+  (general-def :keymaps 'eb-mode-map "C-o" #'casual-re-builder-tmenu)
+  (general-def :keymaps 'eb-lisp-mode-map "C-o" #'casual-re-builder-tmenu)
+  (general-def :keymaps 'ookmark-bmenu-mode-map "C-o" #'casual-bookmarks-tmenu)
+  (general-def :keymaps 'symbol-overlay-map "C-o" #'casual-symbol-overlay-tmenu)
+  (leader-ala-vim "C-o" #'casual-editkit-main-tmenu))
+
 (use-package ace-window
   :defer t
   :init (general-def "M-o" #'ace-window)
