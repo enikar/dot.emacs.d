@@ -953,7 +953,10 @@ targets."
              ;; "j p" #'symbol-overlay-jump-prev
              ;; "j r" `(,#'symbol-overlay-remove-all :wk "clear overlay")))
 
-(use-package casual-symbol-overlay)
+
+(use-package casual-symbol-overlay
+  :init (leader-ala-vim
+          "j o" #'casual-symbol-overlay-tmenu))
 
 (use-package consult-flyspell
   :defer t
