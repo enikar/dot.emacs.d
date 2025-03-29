@@ -40,7 +40,7 @@
       save-abbrevs 'silently
       bookmark-default-file (my/put-this-in-var "bookmarks")
       recentf-save-file (my/put-this-in-var "recentf")
-      recentf-max-saved-itmes 30
+      recentf-max-saved-items 30
       save-place-file (my/put-this-in-var "saveplace"))
 
 

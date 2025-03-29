@@ -5,7 +5,7 @@
 (require 'general-interface)
 
 ;; TODO: look to visual-line-mode
-(defun toogle-hscroll-mode ()
+(defun toggle-hscroll-mode ()
   "Toggle buffer local truncate-lines's value."
   (interactive)
   (if truncate-lines
