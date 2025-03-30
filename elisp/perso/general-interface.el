@@ -1344,6 +1344,11 @@ argument, query for word to search."
 (use-package pkg-info
   :defer t)
 
+(use-package remember
+  :init (leader-ala-vim "C-r" #'remember)
+  (setq remember-data-file (my/put-this-in-var "notes.txt")))
+
+
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
