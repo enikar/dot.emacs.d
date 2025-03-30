@@ -146,7 +146,9 @@
    (get-buffers-matching-mode major-mode)
    (car (occur-read-primary-args))))
 
-(general-def "M-s M-m" #'multi-occur-in-this-mode)
+(general-def
+  :keymaps 'search-map
+  "M-m" #'multi-occur-in-this-mode)
 
 (defun my/set-personnal-font (arg)
   "Restore my favorite font setting. With prefix argument try to keep

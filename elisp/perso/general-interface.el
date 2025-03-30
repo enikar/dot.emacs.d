@@ -104,12 +104,16 @@
   "<f9>"                 #'compile
   "<f11>"                #'previous-error
   "<f12>"                #'next-error
-  "M-s m"                #'multi-occur
   "C-x r e"              #'edit-bookmarks
   "C-x j"                #'duplicate-dwim
   "C-c l"                #'dictionary-search-dwim
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
+(general-def
+  :keymaps 'search-map
+  "m"      #'multi-occur
+  "M-r"    #'isearch-backward ; C-r is used by evil for redo
+  )
 ;;;; Global settings
 ;; Tramp Var Directory
 (defvar-local my/tvd
@@ -189,6 +193,7 @@
 ;;;; isearch
       search-exit-option 'edit
       isearch-allow-scroll t
+      isearch-allow-motion t
       isearch-lazy-highlight t
       isearch-lazy-count t
 ;;;; desktop variables
