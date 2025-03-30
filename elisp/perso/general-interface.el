@@ -1222,18 +1222,8 @@ targets."
   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)
   :custom (dumb-jump-prefer-searcher 'rg))
 
-(defun my/helpful-help-bindings ()
-  (general-def
-    :keymaps 'helpful-mode-map
-    :states '(normal emacs)
-    "c" #'help-customise
-    "q" #'quit-window
-    "i" #'help-goto-info
-    "s" #'help-view-source))
-
 (use-package helpful
   :defer t
-  :hook (helpful-mode . my/helpful-help-bindings)
   :general (:keymaps 'help-map
                      "C" #'helpful-command
                      "f" #'helpful-callable
@@ -1249,7 +1239,15 @@ targets."
     "h p" #'helpful-at-point
     "h c" #'helpful-command
     "h d" #'shortdoc-display-group
-    "h o" #'describe-symbol))
+    "h o" #'describe-symbol)
+  :config
+  (general-def
+    :keymaps 'helpful-mode-map
+    :states '(normal emacs)
+    "c" #'help-customise
+    "q" #'quit-window
+    "i" #'help-goto-info
+    "s" #'help-view-source))
 
 
 ;;;; additionnal actions for avy
