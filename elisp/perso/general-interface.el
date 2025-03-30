@@ -597,10 +597,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init
     (leader-ala-vim
       "a"   '(:ignore t :wk "Avy")
-      "a a"  #'evil-avy-mode
+      "a a"  #'avy-goto-char-timer
       ;;"a c"  #'avy-goto-char
       "a c"  #'avy-goto-char-2
-      "a j"  #'avy-goto-char-timer
+      "a e"  #'evil-avy-mode
       "a l"  #'avy-goto-line
       "a r"  #'avy-resume
       ;;"a s"  #'avy-goto-subword-1
