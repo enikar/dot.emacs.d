@@ -614,6 +614,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     "a m" #'casual-avy-tmenu))
 
 (use-package casual-suite
+  :defer t
   :init
   (general-def :keymaps 'calc-mode-map "C-o" #'casual-calc-tmenu)
   (general-def :keymaps 'dired-mode-map "C-o" #'casual-dired-tmenu)
