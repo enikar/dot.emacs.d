@@ -169,6 +169,9 @@ If the error list is visible, hide it.  Otherwise, show it."
     (general-def dante-mode-map
       "C-c :" #'dante-info))
 
+(use-package company
+  :defer t)
+
 (use-package attrap
   :commands (attrap-attrap)
   :general (:keymaps 'dante-mode-map "M-!" #'attrap-attrap))
