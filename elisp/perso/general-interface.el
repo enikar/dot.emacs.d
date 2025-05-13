@@ -72,7 +72,7 @@
 (prefix-c-xt
   "a" #'font-lock-fontify-buffer
   "b" #'font-lock-fontify-block
-  "c" #'comment-dwim      ;; SPC cr
+  "c" #'comment-dwim      ;; SPC cd
   "e" #'recentf-edit-list
   "i" #'indent-region
   "l" #'font-lock-mode
@@ -106,6 +106,7 @@
   "<f12>"                #'next-error
   "C-x r e"              #'edit-bookmarks
   "C-x j"                #'duplicate-dwim
+  "C-x k"                #'kill-current-buffer
   "C-c l"                #'dictionary-search-dwim
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
@@ -305,7 +306,7 @@
       auto-revert-verbose nil)
 (push 'Buffer-menu-mode global-auto-revert-ignore-modes)
 
-(push `("draft/neomutt-" . ,#'mail-mode) auto-mode-alist)
+(push `("drafts/neomutt-" . ,#'mail-mode) auto-mode-alist)
 (add-hook 'mail-mode-hook #'flyspell-mode)
 
 ;; Switch nicely to an eshell buffer in the default-directory of the
@@ -481,6 +482,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :hook (after-init . global-evil-matchit-mode))
 
 (use-package evil-nerd-commenter
+  :defer t
   :init
   (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
   (leader-ala-vim
@@ -499,10 +501,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init (leader-ala-vim "c n" #'nocomments-mode))
 
 (use-package evil-visualstar
+  :defer t
   :hook (after-init . global-evil-visualstar-mode)
   :custom (evil-visualstar/persistent t))
 
 (use-package evil-org
+  :defer t
   :hook (org-mode . evil-org-mode))
 
 (use-package which-key
@@ -577,6 +581,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 
 (use-package avy
+  :defer t
   :init (general-def "M-j" #'avy-goto-char-timer)
   :custom (avy-timeout-seconds 1.3)
   :config (avy-setup-default)
