@@ -26,95 +26,6 @@
   (dolist (mode mode-hooks)
     (add-hook mode hook)))
 
-;;;; general to bind keys in a convenient way.
-(use-package general)
-;; (unless (package-installed-p 'general)
-;;   (package-install 'general))
-;; (require 'general)
-;;(general-evil-setup)
-;;(general-auto-unbind-keys)
-(general-create-definer prefix-c-xw :prefix "C-x w")
-(general-create-definer prefix-c-xt :prefix "C-x t")
-(general-unbind :states '(normal viusal motion operator) "SPC")
-(general-create-definer leader-ala-vim
-  :states '(normal visual motion operator insert emacs)
-  :prefix "SPC"
-  :non-normal-prefix "M-SPC"
-  ;;:prefix-command 'leader-ala-vim-command
-  :prefix-map 'leader-ala-vim-map)
-
-(prefix-c-xw
-  "f" #'find-file-at-point ;; gf
-  "h" #'hexl-find-file
-   ;; "i" #'insert-file   ;; :r also `C-x i'
-  "w" #'write-region      ;; visual, then :w ; also from embark `W'
-  "v" #'view-file)
-
-(general-unbind ctl-x-map
-  "t"   ; unbind all "C-x t" bindings (functions for using emacs tab).
-  "r g" ; insert-regsiter also bound to C-x r i
-  "r x" ; copy-register also bound to C-x r s
-  )
-(general-unbind help-map
-  "RET"
-  "h"
-  "g"
-  "n"
-  "C-a"
-  "C-c"
-  "C-d"
-  "C-e"
-  "C-f"
-  "C-o"
-  "C-t"
-  "C-w"
-  "C-\\")
-(prefix-c-xt
-  "a" #'font-lock-fontify-buffer
-  "b" #'font-lock-fontify-block
-  "c" #'comment-dwim      ;; SPC cd
-  "e" #'recentf-edit-list
-  "i" #'indent-region
-  "l" #'font-lock-mode
-  "m" #'man-follow        ;; But evil-lookup bound to K is better
-  "p" #'pop-tag-mark)
-
-(leader-ala-vim
-  ""      '(nil :wk "leader-ala-vim menu")
-  "SPC"   #'execute-extended-command
-  "M-SPC" #'cycle-spacing
-  ":"     #'eval-expression
-  "*"     #'duplicate-dwim
-  "g"     '(:ignore t :wk "Searching")
-  "g R"    #'rgrep
-  "q"     '(:ignore t :wk "Quitting")
-  "q q"    #'save-buffers-kill-terminal
-  "q r"    #'restart-emacs
-  "t"     '(:ingore t :wk "Toggling")
-  "t s"    #'flyspell-mode
-  "t w"    #'whitespace-mode
-  "x"     '(:ignore t :wk "Xref")
-  "x d"    #'xref-find-definitions
-  "x r"    #'xref-find-references)
-
-(general-def
-  "<cancel>"             #'keyboard-quit
-  "<XF86Calculator>"     #'calc
-  "M-RET"                #'hippie-expand
-  "<f9>"                 #'compile
-  "<f11>"                #'previous-error
-  "<f12>"                #'next-error
-  "C-x r e"              #'edit-bookmarks
-  "C-x j"                #'duplicate-dwim
-  "C-x k"                #'kill-current-buffer
-  "C-c l"                #'dictionary-search-dwim
-  [remap eval-last-sexp] #'pp-eval-last-sexp)
-
-(general-def
-  :keymaps 'search-map
-  "m"      #'multi-occur
-  "M-r"    #'isearch-backward ; C-r is used by evil for redo
-  )
 ;;;; Global settings
 ;; Tramp Var Directory
 (defvar-local my/tvd
@@ -164,8 +75,8 @@
       dired-guess-shell-alist-user '(("\\.pdf\\'" "zathura")
                                      ("\\.tex\\'" "pdflatex")
                                      ("\\.lisp\\'" "sbcl --script")
-                                     ("\\.ods\\'\\|\\.xlsx?\\'\\|\\.docx?\\'\\|\\.csv\\'"
-                                      "libreoffice"))
+                                     ("\\.ods\\'\\|\\.docx?\\'" "abiword")
+                                     ("\\.xlsx?\\'\\|\\.csv\\'" "gnumeric"))
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
@@ -247,6 +158,96 @@
 
 ;; Add bindings for the find-library command
 (find-function-setup-keys)
+
+;;;; general to bind keys in a convenient way.
+(use-package general)
+;; (unless (package-installed-p 'general)
+;;   (package-install 'general))
+;; (require 'general)
+;;(general-evil-setup)
+;;(general-auto-unbind-keys)
+(general-create-definer prefix-c-xw :prefix "C-x w")
+(general-create-definer prefix-c-xt :prefix "C-x t")
+(general-unbind :states '(normal viusal motion operator) "SPC")
+(general-create-definer leader-ala-vim
+  :states '(normal visual motion operator insert emacs)
+  :prefix "SPC"
+  :non-normal-prefix "M-SPC"
+  ;;:prefix-command 'leader-ala-vim-command
+  :prefix-map 'leader-ala-vim-map)
+
+(prefix-c-xw
+  "f" #'find-file-at-point ;; `gf' and also `C-x C-f M-n'
+  "h" #'hexl-find-file
+   ;; "i" #'insert-file   ;; `:r' also `C-x i'
+  "w" #'write-region      ;; visual, then :w ; also from embark `W'
+  "v" #'view-file)
+
+(general-unbind ctl-x-map
+  "t"   ; unbind all "C-x t" bindings (functions for using emacs tab).
+  "r g" ; insert-regsiter also bound to C-x r i
+  "r x" ; copy-register also bound to C-x r s
+  )
+(general-unbind help-map
+  "RET"
+  "h"
+  "g"
+  "n"
+  "C-a"
+  "C-c"
+  "C-d"
+  "C-e"
+  "C-f"
+  "C-o"
+  "C-t"
+  "C-w"
+  "C-\\")
+(prefix-c-xt
+  "a" #'font-lock-fontify-buffer
+  "b" #'font-lock-fontify-block
+  "c" #'comment-dwim      ;; SPC cd
+  "e" #'recentf-edit-list
+  "i" #'indent-region
+  "l" #'font-lock-mode
+  "m" #'man-follow        ;; But evil-lookup bound to K is better
+  "p" #'pop-tag-mark)
+
+(leader-ala-vim
+  ""      '(nil :wk "leader-ala-vim menu")
+  "SPC"   #'execute-extended-command
+  "M-SPC" #'cycle-spacing
+  ":"     #'eval-expression
+  "*"     #'duplicate-dwim
+  "g"     '(:ignore t :wk "Searching")
+  "g R"    #'rgrep
+  "q"     '(:ignore t :wk "Quitting")
+  "q q"    #'save-buffers-kill-terminal
+  "q r"    #'restart-emacs
+  "t"     '(:ingore t :wk "Toggling")
+  "t s"    #'flyspell-mode
+  "t w"    #'whitespace-mode
+  "x"     '(:ignore t :wk "Xref")
+  "x d"    #'xref-find-definitions
+  "x r"    #'xref-find-references)
+
+(general-def
+  "<cancel>"             #'keyboard-quit
+  "<XF86Calculator>"     #'calc
+  "M-RET"                #'hippie-expand
+  "<f9>"                 #'compile
+  "<f11>"                #'previous-error
+  "<f12>"                #'next-error
+  "C-x r e"              #'edit-bookmarks
+  "C-x j"                #'duplicate-dwim
+  "C-x k"                #'kill-current-buffer
+  "C-c l"                #'dictionary-search-dwim
+  [remap eval-last-sexp] #'pp-eval-last-sexp)
+
+(general-def
+  :keymaps 'search-map
+  "m"      #'multi-occur
+  "M-r"    #'isearch-backward ; C-r is used by evil for redo
+  )
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
@@ -339,6 +340,8 @@
           (switch-to-buffer-other-window eshell-buffer-name)
           (end-of-buffer))
       (eshell))
+    ;; it seems that does nothing because dir is always equal to default-directory
+    ;; by definition except if eshell change default-directory…
     (unless (equal dir default-directory)
       (cd dir)
       (eshell-send-input)
