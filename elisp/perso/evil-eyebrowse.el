@@ -52,7 +52,7 @@
 
 (require 'evil)
 (require 'eyebrowse)
-(require 'dash)
+;;(require 'dash)
 (require 'general)
 
 ;; I just copy/paste code from eyebrowse and adapt

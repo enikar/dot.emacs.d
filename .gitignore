@@ -1,0 +1,12 @@
+.gitignore
+*~
+*.bak
+*.elc
+elpa/
+eln-cache/
+elisp/old/
+elisp/gforth/
+elisp/latex-help/
+var/
+/elisp/curry/
+.gitignore
