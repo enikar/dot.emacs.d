@@ -89,7 +89,7 @@
       eww-download-directory "~/download/"
       url-configuration-directory (my/put-this-in-var "url")
       url-cookie-file (my/put-this-in-var "url/cookie")
-      treesit-extra-load-path (my/put-this-in-var "tree-sitter")
+      ;; treesit-extra-load-path (my/put-this-in-var "tree-sitter")
       calendar-week-start-day 1
       calendar-latitude 45.1877777778 ; for M-x sunrise-sunset
       calendar-longitude 5.72694444445
