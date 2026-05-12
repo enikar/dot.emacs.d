@@ -979,9 +979,9 @@ targets."
 
 (use-package flyspell-correct)
 
-(use-package consult-recoll
-  :defer t
-  :init (leader-ala-vim "g r" #'consult-recoll))
+;; (use-package consult-recoll
+;;   :defer t
+;;   :init (leader-ala-vim "g r" #'consult-recoll))
 
 ;; Install an advice when setup the doom modeline to try
 ;; to always have the same information.
