@@ -4,10 +4,7 @@
 ** Important
    This is not a starter kit. Worst, these settings cannot be bootstrap.
 
-   I use external package I download with git clone. They are Origami (from
-   https://github.com/elp-revive/origami.el).
-
-   I also use gforth.el from the soruce of gforth and ltx-help.el
+   I also use gforth.el from the source of gforth and ltx-help.el
    (latex-help) from the debian package texlive-lang-english.
 
    As I compile emacs from the source to have also links to C code in helpful,
