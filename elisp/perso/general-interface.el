@@ -126,7 +126,8 @@
       warning-minimum-level :error
       warning-suppress-log-types '((comp))
       warning-suppress-types '((use-package))
-      vc-make-backup-files t)
+      vc-make-backup-files t
+      image-use-external-converter t)
 
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
@@ -1193,9 +1194,6 @@ targets."
           "m" '(:ignore t :wk "Magit")
           "m m" #'magit
           "m d" #'magit-file-dispatch))
-
-(use-package magit-delta
-  :commands (magit-delta-mode))
 
 ;; works on emacs-state
 (use-package git-timemachine
