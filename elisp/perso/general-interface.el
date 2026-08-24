@@ -668,9 +668,11 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     "C-o" #'casual-eshell-tmenu)
   (leader-ala-vim "C-o" #'casual-editkit-main-tmenu)
   (eval-after-load 'ediff
-    (add-hook 'ediff-keymap-setup-hook
-              (lambda()
-                (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu)))))
+    (progn
+      (casual-ediff-install)
+      (add-hook 'ediff-keymap-setup-hook
+                (lambda ()
+                  (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu))))))
 
 
 (use-package ace-window
