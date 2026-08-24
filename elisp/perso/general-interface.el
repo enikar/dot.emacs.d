@@ -1382,8 +1382,8 @@ argument, query for word to search."
         (general-def "C-c v" #'vterm)
         (push 'vterm-mode my/mode-in-emacs-state))
 
-;; (use-package eshell-vterm
-;;   :hook (eshell-mode . eshell-vterm-mode))
+(use-package eshell-vterm
+  :hook (eshell-mode . eshell-vterm-mode))
 
 (use-package exec-path-from-shell)
 (use-package pkg-info
