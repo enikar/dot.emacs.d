@@ -4,7 +4,8 @@
 
 
 ;; start emacs server early
-(server-start)
+(require 'server)
+(unless (server-running-p) (server-start))
 
 (push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
 (load-theme 'tsdh-modified t)
@@ -14,6 +15,7 @@
 (setq load-prefer-newer t)
 (setq package-archives
     '(("melpa" . "https://melpa.org/packages/")
+      ;; ("melpa" . "https://snapshots.melpa.org/packages/")
       ("elpa"   . "https://elpa.gnu.org/packages/")
       ("elpa-devel" . "https://elpa.gnu.org/devel/")
       ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
@@ -23,7 +25,7 @@
         ("elpa" . 2)
         ("nongnu" . 1)
         ("elpa-devel" . 1)))
-;; package-pinned-packages: alist of packages which dont't follow package-archive-priorities
+;; package-pinned-packages: alist of packages which don't follow package-archive-priorities
 ;; none for the moment.
 
 (set-charset-priority 'unicode)
@@ -40,7 +42,7 @@
       save-abbrevs 'silently
       bookmark-default-file (my/put-this-in-var "bookmarks")
       recentf-save-file (my/put-this-in-var "recentf")
-      recentf-max-saved-items 30
+      recentf-max-saved-items 50
       save-place-file (my/put-this-in-var "saveplace"))
 
 
