@@ -37,9 +37,16 @@
       ;; select-enable-primary t
       ;; mouse-drag-copy-region t
       comint-scroll-show-maximum-output t
-      comint-scroll-to-bottom-on-input t
+      comint-prompt-read-only t
+      ansi-color-for-comint-mode t
+      comint-buffer-maximum-size 10000
+      comint-completion-autolist t
+      comint-input-ignoredups t
       compilation-scroll-output 'first-error
       compilation-auto-jump-to-first-error 'first-known
+      ansi-color-for-compilation-mode t
+      make-pointer-invisible t
+      mouse-highlight 1
       scroll-step 1
       scroll-margin 0
       scroll-conservatively 10000
@@ -66,6 +73,7 @@
       history-length 100
       recentf-menu-filter 'recentf-sort-basenames-ascending
       require-final-newline t
+      backward-delete-char-untabify-method 'all
       executable-prefix-env t
       dired-ls-F-marks-symlinks t
       dired-dwim-target t
@@ -85,6 +93,7 @@
       nobreak-char-display t
       nobreak-char-ascii-display nil
       apropos-do-all t
+      savehist-file (my/put-this-in-var "savehist")
       idlwave-config-directory (my/put-this-in-var "idlwave")
       eww-download-directory "~/download/"
       url-configuration-directory (my/put-this-in-var "url")
@@ -108,6 +117,7 @@
       isearch-allow-motion t
       isearch-lazy-highlight t
       isearch-lazy-count t
+      xref-search-program 'ripgrep
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -134,9 +144,11 @@
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 ;; (add-hook 'before-save-hook #'time-stamp)
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
 
-(save-place-mode t)
-(minibuffer-depth-indicate-mode)
+(save-place-mode 1)
+(savehist-mode 1)
+(minibuffer-depth-indicate-mode 1)
 (tooltip-mode -1)
 
 ;; TODO a function for read-only-mode-hook.
@@ -153,8 +165,9 @@
               tab-first-completion 'word-or-paren-or-punct
               bidi-paragraph-direction 'left-to-right
               indicate-empty-lines t
+              comint-scroll-to-bottom-on-input t
+              comint-input-autoexpand 'input
               fill-column 72)
-
 ;; (set-input-meta-mode 'encoded) ; for terminal
 
 ;; Add bindings for the find-library command
@@ -162,9 +175,6 @@
 
 ;;;; general to bind keys in a convenient way.
 (use-package general)
-;; (unless (package-installed-p 'general)
-;;   (package-install 'general))
-;; (require 'general)
 ;;(general-evil-setup)
 ;;(general-auto-unbind-keys)
 (general-create-definer prefix-c-xw :prefix "C-x w")
@@ -203,6 +213,9 @@
   "C-t"
   "C-w"
   "C-\\")
+(general-def :keymaps 'help-map
+  "c" #'describe-char)
+
 (prefix-c-xt
   "a" #'font-lock-fontify-buffer
   "b" #'font-lock-fontify-block
@@ -586,10 +599,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     (avy-action-kill-whole-line pt)
     (save-excursion (yank)) t)
 
-
 (use-package avy
   :defer t
   :init (general-def "M-j" #'avy-goto-char-timer)
+        (general-def 'isearch-mode-map "M-j" 'avy-isearch)
   :custom (avy-timeout-seconds 1.3)
   :config (avy-setup-default)
 
@@ -626,7 +639,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     "a m" #'casual-avy-tmenu))
 
 (use-package casual-suite
-  :defer t
   :init
   (general-def :keymaps 'calc-mode-map "C-o" #'casual-calc-tmenu)
   (general-def :keymaps 'dired-mode-map "C-o" #'casual-dired-tmenu)
@@ -634,13 +646,32 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (general-def :keymaps 'ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
   (general-def :keymaps 'ibuffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
   (general-def :keymaps 'ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu)
-  (general-def :keymaps 'info-mode-map "C-o" #'casual-info-tmenu)
+  (general-def :keymaps 'Info-mode-map "C-c C-o" #'casual-info-tmenu)
   (general-def "M-g M-o" #'casual-avy-tmenu)
-  (general-def :keymaps 'eb-mode-map "C-o" #'casual-re-builder-tmenu)
-  (general-def :keymaps 'eb-lisp-mode-map "C-o" #'casual-re-builder-tmenu)
+  (general-def :keymaps 'reb-mode-map "C-o" #'casual-re-builder-tmenu)
+  (general-def :keymaps 'reb-lisp-mode-map "C-o" #'casual-re-builder-tmenu)
   (general-def :keymaps 'bookmark-bmenu-mode-map "C-o" #'casual-bookmarks-tmenu)
   (general-def :keymaps 'symbol-overlay-map "C-o" #'casual-symbol-overlay-tmenu)
-  (leader-ala-vim "C-o" #'casual-editkit-main-tmenu))
+  (general-def :keymaps 'emacs-lisp-mode-map "C-c C-o" #'casual-elisp-tmenu)
+  (general-def :keymaps 'compilation-mode-map "C-o" #'casual-compile-tmenu)
+  (general-def :keymaps 'grep-mode-map "C-o" #'casual-compile-tmenu)
+  (general-def :keymaps 'help-mode-map "C-o" #'causal-help-tmenu)
+  (general-def :keymaps 'prog-mode-map "C-c o" #'casual-ispell-tmenu)
+  (general-def :keymaps 'text-mode-map "C-c o" #'casual-ispell-tmenu)
+  (general-def :keymaps 'bibtex-mode-map "C-c o" #'casual-ispell-tmenu)
+  (general-def :keymaps 'conf-mode-map "C-c o" #'casual-ispell-tmenu)
+  (general-def :keymaps 'makefile-mode-map "C-c C-o" #'casual-make-tmenu)
+  (general-def :keymaps 'Man-mode-map "C-c C-o" #'casual-man-tmenu)
+  (general-def
+    :keymaps 'eshell-mode-map
+    :states '(insert emacs)
+    "C-o" #'casual-eshell-tmenu)
+  (leader-ala-vim "C-o" #'casual-editkit-main-tmenu)
+  (eval-after-load 'ediff
+    (add-hook 'ediff-keymap-setup-hook
+              (lambda()
+                (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu)))))
+
 
 (use-package ace-window
   :defer t
@@ -651,15 +682,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :defer t
   :init (ace-link-setup-default)
         (leader-ala-vim "a L" #'ace-link))
-
-;; avy-isearch is not compatible with ctrlf because they don't use
-;; the same variable. TODO: write a command avy-ctrlf draw from
-;; avy-isearch. Finally, isearch is better imho.
-;; (use-package ctrlf
-;;   :custom (ctrlf-default-search-style 'fuzzy)
-;;           (ctrlf-alternate-search-style 'fuzzy-regexp)
-;;   ;;:init (general-def ctrlf-minibuffer-mode-map "M-j" #'avy-isearch) ; doesn't work
-;;   :config (ctrlf-mode))
 
 ;; vertico + consult + embark + marginalia + orderless + prescient…
 ;; Initial configuration comes from: https://blog.sumtypeofway.com/posts/emacs-config.html
@@ -693,6 +715,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
           "M-s M-i"  #'consult-info
+          "M-s M-f"  #'consult-find
+          "M-s M-g"  #'consult-ripgrep
+          "M-g M-l"  #'consult-goto-line
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
@@ -705,6 +730,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
+        (setq consult-find-args
+              (concat "find . -not ( "
+                      "-path */.git* -prune "
+                      "-or -path */.cache* -prune )"))
   :config (setq consult-narrow-key "C-+")
           (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
 
@@ -930,25 +959,26 @@ targets."
 ;; cape-file
 ;; cape-history
 ;; cape-keyword
-;; cape-symbol
+;; cape-elisp-symbol
 ;; cape-abbrev
 ;; cape-ispell
 ;; cape-dict
 ;; cape-line
 
 (defun my/cape-prog-mode ()
-  (add-hook 'completion-at-point-functions #'cape-keyword nil 'local))
+  (add-hook 'completion-at-point-functions #'cape-keyword 0 'local))
 
 (defun my/cape-elisp-mode ()
-  (add-hook 'completion-at-point-functions #'cape-symbol nil 'local))
+  (add-hook 'completion-at-point-functions #'cape-elisp-symbol 0 'local))
 
 (defun my/cape-text-mode ()
-  (add-hook 'completion-at-point-functions #'cape-dict nil 'local))
+  (add-hook 'completion-at-point-functions #'cape-dict 0 'local))
 
 (use-package cape
   :hook ((prog-mode . my/cape-prog-mode)
          (text-mode . my/cape-text-mode)
-         (emacs-lisp-mode . my/cape-elisp-mode))
+         (emacs-lisp-mode . my/cape-elisp-mode)
+         (comint-mode . cape-history))
 
   :general ("M-²"  #'cape-dabbrev
             "s-²"  #'cape-dabbrev)
@@ -1183,8 +1213,8 @@ targets."
   :custom (openwith-confirm-invocation t)
           (openwith-associations
             ;;'(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
-           '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mplayer" (file))
-             ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mplayer" ("-idx" file))
+           '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mpv" (file))
+             ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mpv" (file))
              ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil))))
 
 (use-package magit
@@ -1214,7 +1244,7 @@ targets."
 
 (use-package rg
   :init (leader-ala-vim "g g" #'rg-dwim)
-  :custom (rg-keymap-prefix ["C-c s"])
+  :custom (rg-keymap-prefix ["C-c x"])
           (rg-ignore-case [smart])
           (rg-use-transient-menu t)
   :config (rg-enable-menu))
@@ -1352,22 +1382,32 @@ argument, query for word to search."
         (general-def "C-c v" #'vterm)
         (push 'vterm-mode my/mode-in-emacs-state))
 
-(use-package eshell-vterm
-  :hook (eshell-mode . eshell-vterm-mode))
+;; (use-package eshell-vterm
+;;   :hook (eshell-mode . eshell-vterm-mode))
 
 (use-package exec-path-from-shell)
 (use-package pkg-info
   :defer t)
 
+(use-package substitute
+  :hook (substitute-post-replace-functions .  substitute-report-operation)
+  :general ("C-c s" '(:keymap substitute-prefix-map :wk "substitute"))
+  :config (setq substitute-highlight t
+                substitute-fixed-case-letter nil)) ;; these are the default
+
 (use-package remember
   :init (leader-ala-vim "C-r" #'remember)
   (setq remember-data-file (my/put-this-in-var "notes.txt")))
 
+(repeat-mode 1)
+(setq repeat-exit-timeout 5
+      repeat-exit-key "<escape>")
 
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
+(diminish 'repeat-mode)
 
 ;;;; No disable commands
 (put 'narrow-to-region 'disabled nil)
