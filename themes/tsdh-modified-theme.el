@@ -1,4 +1,4 @@
-;;; tsdh-modified-theme.el --- tsdh-dark-theme modified
+;;; tsdh-modified-theme.el --- tsdh-dark-theme modifiedi -*- lexical-binding: t -*-
 
 ;; Author: Tassilo Horn
 ;; Keywords: theme
