@@ -12,6 +12,8 @@
 
 
 (add-hook 'prog-mode-hook #'abbrev-mode)
+(setq which-func-modes '(prog-mode))
+(which-function-mode 1)
 
 (use-package rainbow-delimiters
   :hook ((prog-mode) . rainbow-delimiters-mode))
@@ -193,21 +195,21 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.ya?ml\\'"
   :config (require 'flycheck-yamllint))
 
-;;;; language Curry
-(push "~/.emacs.d/elisp/curry" load-path)
-(setq auto-mode-alist
-      (append auto-mode-alist
-              '(("\\.curry$" . curry-mode)
-                ("\\.lcurry$" . literate-curry-mode))))
-(autoload 'curry-mode "curry-mode"
-         "Major mode for editing Curry programs." t)
-(autoload 'literate-curry-mode "curry-mode"
-         "Major mode for editing literate Curry scripts." t)
+;; ;;;; language Curry
+;; (push "~/.emacs.d/elisp/curry" load-path)
+;; (setq auto-mode-alist
+;;       (append auto-mode-alist
+;;               '(("\\.curry$" . curry-mode)
+;;                 ("\\.lcurry$" . literate-curry-mode))))
+;; (autoload 'curry-mode "curry-mode"
+;;          "Major mode for editing Curry programs." t)
+;; (autoload 'literate-curry-mode "curry-mode"
+;;          "Major mode for editing literate Curry scripts." t)
 
-(my/add-hooks 'curry-mode-hook
-              #'turn-on-curry-font-lock
-              #'turn-on-curry-decl-scan
-              #'turn-on-curry-pakcs)
+;; (my/add-hooks 'curry-mode-hook
+;;               #'turn-on-curry-font-lock
+;;               #'turn-on-curry-decl-scan
+;;               #'turn-on-curry-pakcs)
 
 ;; (add-hook 'curry-mode-hook 'turn-on-curry-font-lock)
 ;; (add-hook 'curry-mode-hook 'turn-on-curry-decl-scan)
