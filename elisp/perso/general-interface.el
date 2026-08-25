@@ -1251,6 +1251,7 @@ targets."
           (rg-use-transient-menu t)
   :config (rg-enable-menu))
 
+;; TODO: remove this package, try the built-in new feature
 (use-package wgrep
   :config (general-def
             :keymaps 'wgrep-mode-map
@@ -1263,11 +1264,11 @@ targets."
         (general-def "C-c r" #'vr/replace
                      "C-c q" #'vr/query-replace))
 
-(use-package dumb-jump
-  :commands (xref-find-definitions
-             xref-find-references)
-  :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)
-  :custom (dumb-jump-prefer-searcher 'rg))
+;; (use-package dumb-jump
+;;   :commands (xref-find-definitions
+;;              xref-find-references)
+;;   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)
+;;   :custom (dumb-jump-prefer-searcher 'rg))
 
 (use-package helpful
   :defer t
