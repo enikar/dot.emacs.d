@@ -1,5 +1,5 @@
 * Introduction
-  These are my settings for emacs 30.
+  These are my settings for emacs 31.
 
 ** Important
    This is not a starter kit. Worst, these settings cannot be bootstrap.
@@ -12,7 +12,7 @@
 
    All files are under GPL v3 License.
 
-** Use emacs 30
+** Use emacs 31
   Some settings are in early-init.el. Emacs before version 27 doesn't
   read this file.
 
@@ -88,6 +88,7 @@
    - vterm
    - eshell-vterm
    - auto-compile
+   - casual
 
 ** Programming
    - flycheck
