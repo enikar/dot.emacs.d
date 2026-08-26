@@ -75,16 +75,15 @@
       require-final-newline t
       backward-delete-char-untabify-method 'all
       executable-prefix-env t
+      dired-auto-revert-buffer #'dired-directory-changed-p
       dired-ls-F-marks-symlinks t
       dired-dwim-target t
       dired-kill-when-opening-new-dired-buffer t
-      dired-listing-switches "-alhF --group-directories-first"
+      dired-listing-switches "-AGlvhF --group-directories-first --time-style=long-iso"
       dired-switches-in-mode-line 'as-is
-      dired-guess-shell-alist-user '(("\\.pdf\\'" "zathura")
-                                     ("\\.tex\\'" "pdflatex")
-                                     ("\\.lisp\\'" "sbcl --script")
-                                     ("\\.ods\\'\\|\\.docx?\\'" "abiword")
-                                     ("\\.xlsx?\\'\\|\\.csv\\'" "gnumeric"))
+      dired-guess-shell-alist-user '(("\\.odt\\'\\|\\.ods\\'\\|\\.docx?\\'" "libreoffice")
+                                     ("\\.xlsx?\\'\\|\\.csv\\'" "libreoffice")
+                                     (".*" "xdg-open"))
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
@@ -264,7 +263,10 @@
   )
 
 (require 'hl-line)
-(my/add-hook-multi #'hl-line-mode 'prog-mode-hook 'text-mode-hook)
+(my/add-hook-multi #'hl-line-mode
+                   'prog-mode-hook
+                   'text-mode-hook
+                   'dired-mode-hook)
 (leader-ala-vim "t H" #'hl-line-mode)
 (global-so-long-mode)
 (delete-selection-mode t)
@@ -430,6 +432,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           (evil-ex-search-case 'smart)
           ;(evil-ex-visual-char-range t)
           ;(evil-want-C-u-scroll t)
+          (evil-move-cursor-back nil)
           (evil-search-module 'evil-search)
           (evil-want-Y-yank-to-eol nil)
           (evil-want-fine-undo t)
@@ -639,6 +642,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     "a m" #'casual-avy-tmenu))
 
 (use-package casual-suite
+  :custom (ediff-window-setup-function 'ediff-setup-windows-plain)
+          (ediff-split-window-function 'split-window-horizontally)
+
   :init
   (general-def :keymaps 'calc-mode-map "C-o" #'casual-calc-tmenu)
   (general-def :keymaps 'dired-mode-map "C-o" #'casual-dired-tmenu)
@@ -667,12 +673,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     :states '(insert emacs)
     "C-o" #'casual-eshell-tmenu)
   (leader-ala-vim "C-o" #'casual-editkit-main-tmenu)
-  (eval-after-load 'ediff
+  (with-eval-after-load 'ediff
     (progn
       (casual-ediff-install)
       (add-hook 'ediff-keymap-setup-hook
                 (lambda ()
-                  (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu))))))
+                    (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu))))))
 
 
 (use-package ace-window
@@ -1163,7 +1169,7 @@ targets."
 ;; - evil-vimish-fold: M-x evil-vimish-fold-mode
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode (these are built in emacs).
-;; Hideshow is built in emacs, so it has my preference.
+;; Hideshow is built in emacs, so it is my preference.
 
 ;; Manual definition of folds ala vim..
 (use-package evil-vimish-fold
@@ -1214,7 +1220,6 @@ targets."
   :hook (after-init . openwith-mode)
   :custom (openwith-confirm-invocation t)
           (openwith-associations
-            ;;'(("\\.\\(pdf\\|ps\\|djvu\\)\\'" "zathura" (file))
            '(("\\.\\(mp3\\|flac\\|ogg\\|aac\\)\\'" "mpv" (file))
              ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mkv\\|mp4\\|webm\\|ogv\\)\\'" "mpv" (file))
              ("\\.\\(od[sgtbfm]\\|st[icwd]\\|sx[gmdiwc]\\|ot[sgtp]\\|docx?\\|rtf\\|xl[sw]\\|pp[ts]\\)\\'" "libreoffice" nil))))
