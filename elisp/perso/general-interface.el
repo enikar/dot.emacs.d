@@ -636,6 +636,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "a w"  #'avy-goto-word-1))
 
 (use-package casual-suite
+  :defer t
   :custom (ediff-window-setup-function 'ediff-setup-windows-plain)
           (ediff-split-window-function 'split-window-horizontally)
 
