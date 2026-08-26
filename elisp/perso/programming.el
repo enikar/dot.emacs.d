@@ -195,26 +195,6 @@ If the error list is visible, hide it.  Otherwise, show it."
   :mode "\\.ya?ml\\'"
   :config (require 'flycheck-yamllint))
 
-;; ;;;; language Curry
-;; (push "~/.emacs.d/elisp/curry" load-path)
-;; (setq auto-mode-alist
-;;       (append auto-mode-alist
-;;               '(("\\.curry$" . curry-mode)
-;;                 ("\\.lcurry$" . literate-curry-mode))))
-;; (autoload 'curry-mode "curry-mode"
-;;          "Major mode for editing Curry programs." t)
-;; (autoload 'literate-curry-mode "curry-mode"
-;;          "Major mode for editing literate Curry scripts." t)
-
-;; (my/add-hooks 'curry-mode-hook
-;;               #'turn-on-curry-font-lock
-;;               #'turn-on-curry-decl-scan
-;;               #'turn-on-curry-pakcs)
-
-;; (add-hook 'curry-mode-hook 'turn-on-curry-font-lock)
-;; (add-hook 'curry-mode-hook 'turn-on-curry-decl-scan)
-;; (add-hook 'curry-mode-hook 'turn-on-curry-pakcs)
-
 ;;;; Erlang
 (use-package erlang)
 
@@ -322,14 +302,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;; common lisp
 (use-package slime
   :hook ((lisp-mode . slime-mode))
-        ;;(slime-mode . company-mode))
   :diminish (slime-autodoc-mode)
   :config
   (setq slime-lisp-implementations
         '((sbcl ("sbcl" "--core" "/enikar/lang/lisp/sbcl/sbcl.core-for-slime" "--dynamic-space-size" "2000")
                 :coding-system utf-8-unix)
-          (clisp ("clisp" "-I"))
-          (ecl ("ecl")))
+          (clisp ("clisp" "-I")))
         slime-contribs '(slime-fancy))
 
   (slime-setup))
@@ -397,12 +375,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package raku-mode
   :hook (raku-mode . flycheck-mode)
   :config (require 'flycheck-raku))
-
-;;;; rust
-;; rustic provide all functionnalities
-(use-package rustic
-  :mode ("\\.rs\\'" . rustic-mode)
-  :custom (rustic-lsp-setup-p nil))
 
 ;;;; lua
 (use-package lua-mode
