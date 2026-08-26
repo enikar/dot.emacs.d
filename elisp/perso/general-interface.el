@@ -635,12 +635,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;;"a 0"  #'avy-goto-word-0
       "a w"  #'avy-goto-word-1))
 
-(use-package casual-avy
-  :defer t
-  :init
-  (leader-ala-vim
-    "a m" #'casual-avy-tmenu))
-
 (use-package casual-suite
   :custom (ediff-window-setup-function 'ediff-setup-windows-plain)
           (ediff-split-window-function 'split-window-horizontally)
@@ -672,7 +666,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     :keymaps 'eshell-mode-map
     :states '(insert emacs)
     "C-o" #'casual-eshell-tmenu)
-  (leader-ala-vim "C-o" #'casual-editkit-main-tmenu)
+  (leader-ala-vim
+    "C-o" #'casual-editkit-main-tmenu
+    "a m" #'casual-avy-tmenu)
   (with-eval-after-load 'ediff
     (progn
       (casual-ediff-install)
