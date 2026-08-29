@@ -38,6 +38,8 @@
       ;; mouse-drag-copy-region t
       comint-scroll-show-maximum-output t
       comint-prompt-read-only t
+      comint-scroll-to-bottom-on-input t
+      comint-scroll-to-bottom-on-output nil
       ansi-color-for-comint-mode t
       comint-buffer-maximum-size 10000
       comint-completion-autolist t
@@ -51,6 +53,9 @@
       scroll-margin 0
       scroll-conservatively 10000
       scroll-preserve-screen-position t
+      scroll-error-top-bottom t
+      hscroll-step 1
+      hscroll-margin 0
       ediff-merge-split-window-function 'split-window-horizontally
       ediff-split-window-function 'split-window-horizontally
       focus-follows-mouse nil
@@ -73,7 +78,7 @@
       history-length 100
       recentf-menu-filter 'recentf-sort-basenames-ascending
       require-final-newline t
-      backward-delete-char-untabify-method 'all
+      backward-delete-char-untabify-method 'hungry
       executable-prefix-env t
       dired-auto-revert-buffer #'dired-directory-changed-p
       dired-ls-F-marks-symlinks t
@@ -84,6 +89,8 @@
       dired-guess-shell-alist-user '(("\\.odt\\'\\|\\.ods\\'\\|\\.docx?\\'" "libreoffice")
                                      ("\\.xlsx?\\'\\|\\.csv\\'" "libreoffice")
                                      (".*" "xdg-open"))
+      wdired-allow-to-change-permissions t
+
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
@@ -112,7 +119,7 @@
       ibuffer-default-sorting-mode 'major-mode
 ;;;; isearch
       search-exit-option 'edit
-      isearch-allow-scroll t
+      isearch-allow-scroll 'unlimited
       isearch-allow-motion t
       isearch-lazy-highlight t
       isearch-lazy-count t
