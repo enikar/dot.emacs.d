@@ -240,6 +240,7 @@
   "*"     #'duplicate-dwim
   "g"     '(:ignore t :wk "Searching")
   "g R"    #'rgrep
+  "g F"    #'find-name-dired
   "q"     '(:ignore t :wk "Quitting")
   "q q"    #'save-buffers-kill-terminal
   "q r"    #'restart-emacs
@@ -736,8 +737,11 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           :keymaps 'global
           "C-w b"  #'consult-buffer-other-window)
         (prefix-c-xt    "r"  #'consult-recent-file)
-        (leader-ala-vim "/"  #'consult-line
-                        "g c" #'consult-ripgrep)
+        (leader-ala-vim
+          "/"  #'consult-line
+          "g c" #'consult-ripgrep
+          "g C" #'consult-grep
+          "g f" #'consult-find)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
