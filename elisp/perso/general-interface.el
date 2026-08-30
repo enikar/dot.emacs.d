@@ -80,15 +80,6 @@
       require-final-newline t
       backward-delete-char-untabify-method 'hungry
       executable-prefix-env t
-      dired-auto-revert-buffer #'dired-directory-changed-p
-      dired-ls-F-marks-symlinks t
-      dired-dwim-target t
-      dired-kill-when-opening-new-dired-buffer t
-      dired-listing-switches "-AGlvhF --group-directories-first --time-style=long-iso"
-      dired-switches-in-mode-line 'as-is
-      dired-guess-shell-alist-user '(("\\.odt\\'\\|\\.ods\\'\\|\\.docx?\\'" "libreoffice")
-                                     ("\\.xlsx?\\'\\|\\.csv\\'" "libreoffice")
-                                     (".*" "xdg-open"))
       wdired-allow-to-change-permissions t
 
       next-error-message-highlight t
@@ -287,22 +278,51 @@
               #'ibuffer-auto-mode)
 
 ;;;; better dired mode
-(autoload #'dired-omit-mode "dired-x")
-(with-eval-after-load 'dired
-  (setq dired-x-hands-off-my-keys nil)
-  (require 'dired-x))
-(defun my/set-dired-omit-mode()
-  (dired-omit-mode 1))
+(use-package dired-subtree
+  :defer t)
+(setq  dired-auto-revert-buffer #'dired-directory-changed-p
+       dired-ls-F-marks-symlinks t
+       dired-dwim-target t
+       dired-kill-when-opening-new-dired-buffer t
+       dired-listing-switches "-AGlvhF --group-directories-first --time-style=long-iso"
+       dired-switches-in-mode-line nil
+       dired-guess-shell-alist-user '(("\\.odt\\'\\|\\.ods\\'\\|\\.docx?\\'" "libreoffice")
+                                      ("\\.xlsx?\\'\\|\\.csv\\'" "libreoffice")
+                                      (".*" "xdg-open")))
+(defun my/dired-mode-settings ()
+  (progn
+    (require 'dired-x)
+    (require 'dired-subtree)
+    (dired-omit-mode 1)
+    (setq dired-x-hands-off-my-keys nil)
+    (defvar-local dired-subtree-map
+      (let ((map (make-sparse-keymap)))
+        (keymap-set map "i" #'dired-subtree-insert)
+        (keymap-set map "r" #'dired-subtree-remove)
+        (keymap-set map "t" #'dired-subtree-toggle)
+        (keymap-set map "c" #'dired-subtree-cycle)
+        (keymap-set map "R" #'dired-subtree-revert)
+        (keymap-set map "n" #'dired-subtree-narrow)
+        (keymap-set map "u" #'dired-subtree-up)
+        (keymap-set map "d" #'dired-subtree-down)
+        (keymap-set map "N" #'dired-subtree-next-sibling)
+        (keymap-set map "P" #'dired-subtree-previous-sibling)
+        (keymap-set map "b" #'dired-subtree-beginning)
+        (keymap-set map "e" #'dired-subtree-end)
+        (keymap-set map "m" #'dired-subtree-mark-subtree)
+        (keymap-set map "U" #'dired-subtree-unmark-subtree)
+        (keymap-set map "o" #'dired-subtree-only-this-file)
+        (keymap-set map "O" #'dired-subtree-only-this-directory)
+        map))
+    (keymap-set dired-mode-map "C-," dired-subtree-map)
+    (keymap-set dired-mode-map "i" #'dired-subtree-insert)))
 
-(add-hook 'dired-mode-hook #'my/set-dired-omit-mode)
-;; (setq auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
-;;                                    auto-mode-alist))
+(add-hook 'dired-mode-hook #'my/dired-mode-settings)
+
 (push '("[^/]\\.dired$" . dired-virtual-mode) auto-mode-alist)
-
 ;; To show only directories in dired
 (fset 'dired-only-show-directories
       "*/tk")
-
 (general-def
  :keymaps 'dired-mode-map
  ;;"^" #'dired-up-directory-same-buffer
