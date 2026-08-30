@@ -115,6 +115,8 @@
       isearch-lazy-highlight t
       isearch-lazy-count t
       xref-search-program 'ripgrep
+      browse-url-browser-function 'eww-browse-url
+      browse-url-secondary-browser-function 'browse-url-firefox
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -431,6 +433,7 @@
     finder-mode
     shortdoc-mode
     speedbar-mode
+    eww-mode
     ;;view-mode ; doesn't work for this because it's a minor mode
     )
   "List of mode that we want to be in initial emacs-state.
