@@ -295,8 +295,7 @@
     (require 'dired-subtree)
     (dired-omit-mode 1)
     (setq dired-x-hands-off-my-keys nil)
-    (defvar-local dired-subtree-map
-      (let ((map (make-sparse-keymap)))
+    (let ((map (make-sparse-keymap)))
         (keymap-set map "i" #'dired-subtree-insert)
         (keymap-set map "r" #'dired-subtree-remove)
         (keymap-set map "t" #'dired-subtree-toggle)
@@ -313,9 +312,8 @@
         (keymap-set map "U" #'dired-subtree-unmark-subtree)
         (keymap-set map "o" #'dired-subtree-only-this-file)
         (keymap-set map "O" #'dired-subtree-only-this-directory)
-        map))
-    (keymap-set dired-mode-map "C-c C-d" dired-subtree-map)
-    (keymap-set dired-mode-map "i" #'dired-subtree-insert)))
+        (keymap-set dired-mode-map "C-c C-d" map)
+        (keymap-set dired-mode-map "i" #'dired-subtree-insert))))
 
 (add-hook 'dired-mode-hook #'my/dired-mode-settings)
 
