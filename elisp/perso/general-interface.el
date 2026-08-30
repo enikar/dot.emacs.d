@@ -314,7 +314,7 @@
         (keymap-set map "o" #'dired-subtree-only-this-file)
         (keymap-set map "O" #'dired-subtree-only-this-directory)
         map))
-    (keymap-set dired-mode-map "C-," dired-subtree-map)
+    (keymap-set dired-mode-map "C-c C-d" dired-subtree-map)
     (keymap-set dired-mode-map "i" #'dired-subtree-insert)))
 
 (add-hook 'dired-mode-hook #'my/dired-mode-settings)
