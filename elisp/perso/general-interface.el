@@ -791,20 +791,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package vertico-prescient
   :hook (vertico-mode . vertico-prescient-mode))
 
-(use-package affe
-  :defer t
-  :init ;; use orderless as the affe regexp compiler
-  (defun affe-orderless-regexp-compiler (input _type _ignorecase)
-    (setq input (orderless-pattern-compiler input))
-    (cons input (lambda (str) (orderless--highlight input str))))
-  (setq affe-regexp-compiler #'affe-orderless-regexp-compiler)
-  (leader-ala-vim
-    "g f" #'affe-find
-    "g G" #'affe-grep)
-  :custom (affe-count 30)
-  :config ;; Manual preview key for `affe-grep'
-  (consult-customize affe-grep :preview-key "M-."))
-
 (use-package consult-dir
   :defer t
   :init (general-def "C-x C-d"  #'consult-dir)
