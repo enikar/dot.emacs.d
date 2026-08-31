@@ -1419,12 +1419,6 @@ argument, query for word to search."
 (use-package pkg-info
   :defer t)
 
-(use-package substitute
-  :hook (substitute-post-replace-functions .  substitute-report-operation)
-  :general ("C-c s" '(:keymap substitute-prefix-map :wk "substitute"))
-  :config (setq substitute-highlight t
-                substitute-fixed-case-letter nil)) ;; these are the default
-
 (use-package remember
   :init (leader-ala-vim "C-r" #'remember)
   (setq remember-data-file (my/put-this-in-var "notes.txt")))
