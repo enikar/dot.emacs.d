@@ -706,6 +706,13 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
                 (lambda ()
                     (keymap-set ediff-mode-map "C-o" #'casual-ediff-tmenu))))))
 
+(use-package eww
+  :commands (browse-url eww-browse-url)
+  :init (general-def "C-c u" #'browse-url-at-point)
+  :config (require 'casual-eww)
+          (general-def
+            :keymaps 'eww-mode-map
+            "C-o" #'casual-eww-tmenu))
 
 (use-package ace-window
   :defer t
