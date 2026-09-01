@@ -136,7 +136,8 @@
       warning-suppress-log-types '((comp))
       warning-suppress-types '((use-package))
       vc-make-backup-files t
-      image-use-external-converter t)
+      image-use-external-converter t
+      enable-local-variables :safe)
 
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
@@ -1221,22 +1222,6 @@ targets."
 
 (leader-ala-vim
   "t f" `(,#'myfold/choose-folding-method :wk "Choose folding method"))
-
-;; vimdiff, ediff is perfect but they aren't folding possibilities
-;; with it. Vdiff is also very nice but it is buggy.
-;; Sometimes, a error occur in a diff session, that makes
-;; vdiff unusable. It needs to be restart.
-(use-package vdiff
-  :defer t
-  :init (leader-ala-vim
-          "v" '(:ignore t :wk "Vdiff")
-          "v v" #'vdiff-hydra/body
-          "v f" #'vdiff-files
-          "v F" #'vdiff-files3
-          "v b" #'vdiff-buffers
-          "v B" #'vdiff-buffers3
-          "v c" #'vdiff-current-file
-          "v m" #'vdiff-merge-conflict))
 
 (use-package openwith
   :hook (after-init . openwith-mode)
