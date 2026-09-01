@@ -117,6 +117,19 @@
       xref-search-program 'ripgrep
       browse-url-browser-function 'eww-browse-url
       browse-url-secondary-browser-function 'browse-url-firefox
+;;;; hippie-expand
+      hippie-expand-try-functions-list
+      '(try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-line
+        try-expand-line-all-buffers
+        try-expand-list
+        try-expand-list-all-buffers
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-expand-all-abbrevs)
 ;;;; desktop variables
       desktop-base-file-name "emacs-desktop.el"
       desktop-base-lock-name "emacs-desktop.lock"
@@ -138,7 +151,11 @@
       vc-make-backup-files t
       image-use-external-converter t
       enable-local-variables :safe
-      enable-local-eval nil)
+      enable-local-eval nil
+      gnutls-verify-error t
+      tls-checktrust t
+      gnutls-min-prime-bits 3072
+      ffap-machine-p-known 'reject)
 
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
