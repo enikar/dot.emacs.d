@@ -137,7 +137,8 @@
       warning-suppress-types '((use-package))
       vc-make-backup-files t
       image-use-external-converter t
-      enable-local-variables :safe)
+      enable-local-variables :safe
+      enable-local-eval nil)
 
 
 (add-hook 'text-mode-hook #'turn-on-auto-fill)
@@ -286,6 +287,12 @@
 (setq  dired-auto-revert-buffer #'dired-directory-changed-p
        dired-ls-F-marks-symlinks t
        dired-dwim-target t
+       dired-vc-rename-file t
+       dired-deletion-confirmer 'y-or-n-p
+       dired-recursive-deletes 'top
+       dired-recursive-copies 'always
+       dired-create-directory 'ask
+       dired-clean-confirm-killing-deleted-buffers nil
        dired-kill-when-opening-new-dired-buffer t
        dired-listing-switches "-AGlvhF --group-directories-first --time-style=long-iso"
        dired-switches-in-mode-line nil
