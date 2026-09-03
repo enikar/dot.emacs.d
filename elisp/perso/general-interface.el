@@ -1448,6 +1448,10 @@ argument, query for word to search."
 (setq repeat-exit-timeout 5
       repeat-exit-key "<escape>")
 
+(push (expand-file-name  "elisp/emacs-sdcv" user-emacs-directory) load-path)
+(autoload #'sdcv-search "sdcv-mode" "Dictionnary search with sdcv" t)
+(general-def "C-c d" #'sdcv-search)
+
 ;;;; diminish some minor modes
 (diminish 'auto-revert-mode)
 (diminish 'eldoc-mode)
