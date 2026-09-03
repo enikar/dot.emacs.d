@@ -10,8 +10,11 @@
 (push (expand-file-name "themes" user-emacs-directory) custom-theme-load-path)
 (load-theme 'tsdh-modified t)
 
+(defun emacs-dir-subdirectory (name)
+  (expand-file-name name user-emacs-directory))
+
 ;;;; Packages stuff
-(setq package-user-dir "~/.emacs.d/elpa")
+(setq package-user-dir (emacs-dir-subdirectory "elpa"))
 (setq load-prefer-newer t)
 (setq package-archives
     '(("melpa" . "https://melpa.org/packages/")
@@ -32,7 +35,7 @@
 (prefer-coding-system 'utf-8-unix)
 
 (defvar-local my/emacs-var-dir
-  (expand-file-name "var" user-emacs-directory))
+  (emacs-dir-subdirectory "var"))
 
 (defun my/put-this-in-var (name)
   (expand-file-name name my/emacs-var-dir))
@@ -46,7 +49,7 @@
       save-place-file (my/put-this-in-var "saveplace"))
 
 
-(push (expand-file-name "elisp/perso" user-emacs-directory) load-path)
+(push (emacs-dir-subdirectory "elisp/perso") load-path)
 
 (defun my/recentf-exclude (f)
   "Predicate to exlude filename from the recent file name list"
