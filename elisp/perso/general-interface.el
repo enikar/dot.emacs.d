@@ -177,6 +177,7 @@
 (tooltip-mode -1)
 (global-visual-line-mode 1)
 (global-visual-wrap-prefix-mode 1)
+(winner-mode 1)
 
 ;; TODO a function for read-only-mode-hook.
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
