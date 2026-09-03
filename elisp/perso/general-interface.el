@@ -94,7 +94,7 @@
       apropos-do-all t
       savehist-file (my/put-this-in-var "savehist")
       idlwave-config-directory (my/put-this-in-var "idlwave")
-      eww-download-directory "~/download/"
+      eww-download-directory "~/Download/"
       url-configuration-directory (my/put-this-in-var "url")
       url-cookie-file (my/put-this-in-var "url/cookie")
       ;; treesit-extra-load-path (my/put-this-in-var "tree-sitter")
