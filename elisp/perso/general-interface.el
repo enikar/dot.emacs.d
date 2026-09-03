@@ -199,7 +199,7 @@
 ;; (set-input-meta-mode 'encoded) ; for terminal
 
 ;; Add bindings for the find-library command
-(find-function-mode)
+(find-function-mode 1)
 
 ;;;; general to bind keys in a convenient way.
 (use-package general)
