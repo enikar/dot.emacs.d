@@ -305,10 +305,11 @@
 (delete-selection-mode t)
 (column-number-mode t)
 
-(defun my/ibuffer-delete-M-o()
-  (general-unbind ibuffer-mode-map "M-o"))
+(defun my/ibuffer-settings-extra ()
+  (general-unbind ibuffer-mode-map "M-o")
+  (visual-wrap-prefix-mode -1))
 (my/add-hooks 'ibuffer-mode-hook
-              #'my/ibuffer-delete-M-o
+              #'my/ibuffer-settings-extra
               #'ibuffer-auto-mode)
 
 ;;;; better dired mode
