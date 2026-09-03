@@ -108,6 +108,8 @@
       ;; time-stamp-active t
       ;; time-stamp-line-limit 10
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
+      delete-by-moving-to-trash t
+      trash-directory "~/trash/"
 ;;;; ibuffer
       ibuffer-expert t
       ibuffer-default-sorting-mode 'major-mode
