@@ -269,6 +269,9 @@
   "t"     '(:ingore t :wk "Toggling")
   "t s"    #'flyspell-mode
   "t w"    #'whitespace-mode
+  "t t"    #'tooltip-mode
+  "t v"    #'visual-line-mode
+  "t W"    #'visual-wrap-prefix-mode
   "x"     '(:ignore t :wk "Xref")
   "x d"    #'xref-find-definitions
   "x r"    #'xref-find-references)
