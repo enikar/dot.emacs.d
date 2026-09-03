@@ -83,6 +83,8 @@
       wdired-allow-to-change-permissions t
 
       diary-file (my/put-this-in-var "diary")
+      help-window-select t
+      help-window-keep-selected t
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
