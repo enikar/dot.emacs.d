@@ -435,7 +435,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 
 ;;;; gforth
-(push "~/.emacs.d/elisp/gforth" load-path)
+(push (expand-file-name "elisp/gforth" user-emacs-directory) load-path)
 (autoload #'forth-mode "gforth" "Forth mode" t)
 (autoload #'run-forth "gforth" "Run an inferior Forth process, input and output via buffer *forth*." t)
 (setq auto-mode-alist
@@ -444,7 +444,7 @@ If the error list is visible, hide it.  Otherwise, show it."
     ("\\.fth$" . #'forth-mode)) auto-mode-alist))
 
 ;; ;;;; latex help
-(push "~/.emacs.d/elisp/latex-help" load-path)
+(push (expand-file-name "elisp/latex-help" user-emacs-directory) load-path)
 ;;(autoload #'latex-help "ltx-help" "Latex help in info" t)
 (general-def help-map "C-l" #'latex-help)
 

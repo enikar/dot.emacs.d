@@ -7,7 +7,7 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-(push (file-name-as-directory "~/.emacs.d/themes/") custom-theme-load-path)
+(push (expand-file-name "themes" user-emacs-directory) custom-theme-load-path)
 (load-theme 'tsdh-modified t)
 
 ;;;; Packages stuff
@@ -46,7 +46,7 @@
       save-place-file (my/put-this-in-var "saveplace"))
 
 
-(push "~/.emacs.d/elisp/perso" load-path)
+(push (expand-file-name "elisp/perso" user-emacs-directory) load-path)
 
 (defun my/recentf-exclude (f)
   "Predicate to exlude filename from the recent file name list"
