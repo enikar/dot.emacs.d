@@ -81,7 +81,6 @@
       backward-delete-char-untabify-method 'hungry
       executable-prefix-env t
       wdired-allow-to-change-permissions t
-
       diary-file (my/put-this-in-var "diary")
       help-window-select t
       help-window-keep-selected t
@@ -319,7 +318,6 @@
        dired-deletion-confirmer 'y-or-n-p
        dired-recursive-deletes 'top
        dired-recursive-copies 'always
-       dired-create-directory 'ask
        dired-clean-confirm-killing-deleted-buffers nil
        dired-kill-when-opening-new-dired-buffer t
        dired-listing-switches "-AGlvhF --group-directories-first --time-style=long-iso"
