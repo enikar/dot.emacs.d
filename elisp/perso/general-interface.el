@@ -82,6 +82,7 @@
       executable-prefix-env t
       wdired-allow-to-change-permissions t
 
+      diary-file (my/put-this-in-var "diary")
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
