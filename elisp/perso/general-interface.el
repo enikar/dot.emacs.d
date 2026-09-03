@@ -110,6 +110,8 @@
       ;; time-stamp-format "%Y-%02m-%02d %02H:%02M:%02S (%u)"
       delete-by-moving-to-trash t
       trash-directory "~/trash/"
+      auto-save-interval 100
+      auto-save-visited-interval 60
 ;;;; ibuffer
       ibuffer-expert t
       ibuffer-default-sorting-mode 'major-mode
