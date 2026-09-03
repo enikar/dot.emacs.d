@@ -470,6 +470,7 @@
     shortdoc-mode
     speedbar-mode
     eww-mode
+    help-mode
     ;;view-mode ; doesn't work for this because it's a minor mode
     )
   "List of mode that we want to be in initial emacs-state.
