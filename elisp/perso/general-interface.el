@@ -292,7 +292,7 @@
 (general-def
   :keymaps 'search-map
   "m"      #'multi-occur
-  "M-r"    #'isearch-backward ; C-r is used by evil for redo)
+  "M-r"    #'isearch-backward) ; C-r is used by evil for redo
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode
