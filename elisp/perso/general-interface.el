@@ -1455,6 +1455,7 @@ argument, query for word to search."
 (diminish 'eldoc-mode)
 (diminish 'abbrev-mode)
 (diminish 'repeat-mode)
+(diminish 'visual-line-mode)
 
 ;;;; No disable commands
 (put 'narrow-to-region 'disabled nil)
