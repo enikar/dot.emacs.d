@@ -178,6 +178,8 @@
 (global-visual-wrap-prefix-mode 1)
 (winner-mode 1)
 (auto-save-visited-mode 1)
+;; Add bindings for the find-library command
+(find-function-mode 1)
 
 ;; TODO a function for read-only-mode-hook.
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
@@ -198,8 +200,6 @@
               fill-column 72)
 ;; (set-input-meta-mode 'encoded) ; for terminal
 
-;; Add bindings for the find-library command
-(find-function-mode 1)
 
 ;;;; general to bind keys in a convenient way.
 (use-package general)
@@ -292,8 +292,7 @@
 (general-def
   :keymaps 'search-map
   "m"      #'multi-occur
-  "M-r"    #'isearch-backward ; C-r is used by evil for redo
-  )
+  "M-r"    #'isearch-backward ; C-r is used by evil for redo)
 
 (require 'hl-line)
 (my/add-hook-multi #'hl-line-mode
@@ -1248,8 +1247,7 @@ targets."
     (none nil)))
 
 (defun myfold/choose-folding-method (fold-method)
-  "Choose a folding method among `hideshow', `origami', `vimish' or
-   `none'."
+  "Choose a folding method among `hideshow', `vimish' or `none'."
   (interactive
     (let ((candidate
            (completing-read
