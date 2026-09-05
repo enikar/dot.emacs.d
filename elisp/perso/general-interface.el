@@ -1453,10 +1453,6 @@ argument, query for word to search."
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
 
-(use-package exec-path-from-shell)
-(use-package pkg-info
-  :defer t)
-
 (use-package remember
   :init (leader-ala-vim "C-r" #'remember)
   (setq remember-data-file (my/put-this-in-var "notes.txt")))
