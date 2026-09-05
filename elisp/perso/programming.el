@@ -394,9 +394,18 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package json-mode
   :mode "\\.json\\'")
-(use-package jq-format)
 
-(use-package smalltalk-mode)
+(use-package jq-format
+  :commands (jq-format-json-buffer
+             jq-format-json-region
+             jq-format-jsonlines-region
+             jq-format-jsonlines-buffer
+             jq-format-json-on-save-mode
+             jq-format-jsonlines-on-save-mode))
+
+(use-package smalltalk-mode
+  :mode "\\.st\\'")
+
 (use-package systemd)
 (use-package gitconfig)
 
