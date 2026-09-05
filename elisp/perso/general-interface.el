@@ -567,7 +567,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (evil-goggles-async-duration nil)
   (evil-goggles-blocking-duration nil))
 
-(use-package evil-string-inflection)
+(use-package evil-string-inflection
+  :commands (evil-operator-string-inflection))
 
 (use-package evil-matchit
   :hook (after-init . global-evil-matchit-mode))
