@@ -287,6 +287,7 @@
   "C-x j"                #'duplicate-dwim
   "C-x k"                #'kill-current-buffer
   "C-c l"                #'dictionary-search-dwim
+  "C-c d"                #'dictionary-search-dict-org
   [remap eval-last-sexp] #'pp-eval-last-sexp)
 
 (general-def
@@ -1378,6 +1379,13 @@ argument, query for word to search."
       (if (thing-at-point 'word)
           (dictionary-lookup-definition)
         (dictionary-search-dwim '(4))))))
+
+(defun dictionary-search-dict-org (&optional arg)
+  (interactive "P")
+  (let ((old-value (if (boundp 'dictionary-server) dictionary-server nil)))
+    (setq dictionary-server "dict.org")
+    (dictionary-search-dwim arg)
+    (setq dictionary-server old-value)))
 
 (defun avy-action-lookup-dictionnary (pt)
   (save-excursion
