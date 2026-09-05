@@ -1433,7 +1433,16 @@ argument, query for word to search."
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
 
 (use-package pdf-tools
-  :defer t)
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+  :init
+  (my/add-hooks
+   'pdf-view-mode
+   #'pdf-misc-size-indication-minor-mode-hook
+   #'pdf-isearch-minor-mode
+   #'pdf-misc-context-menu-minor-mode
+   #'pdf-links-minor-mode
+   #'pdf-cache-prefetch-minor-mode
+   #'pdf-history-minor-mode-map))
 
 (use-package vterm
   :defer t
