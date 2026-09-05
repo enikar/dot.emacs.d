@@ -891,7 +891,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
   (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
   (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark))
-  (general-def :keymaps 'help-map "B" #'embark-bindings))
+  (general-def :keymaps 'help-map "B" #'embark-bindings)
+  :config (require 'embark-consult))
+
 ;; Use which key to show the embark's actions.
 ;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
 (defun embark-which-key-indicator ()
@@ -945,7 +947,8 @@ targets."
                (concat "/su:root@localhost:" file))))
 (general-def embark-file-map "C-r" #'su-find-file)
 
-(use-package embark-consult)
+(use-package embark-consult
+  :defer t)
 
 
 (use-package avy-embark-collect
