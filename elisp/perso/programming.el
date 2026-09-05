@@ -346,7 +346,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 
 ;;;; Fennel language: extension .fnl
-(use-package fennel-mode)
+(use-package fennel-mode
+  :mode ("\\.fnl\\'" . fennel-mode))
 
 ;;;; python
 ;; anaconda + python.el is better than elpy !
