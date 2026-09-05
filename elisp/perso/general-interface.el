@@ -1430,6 +1430,13 @@ argument, query for word to search."
   :hook ((prog-mode) . hl-todo-mode))
 
 (use-package svg-lib
+  :commands (svg-lib-tag
+             svg-lib-icon
+             svg-lib-icon+tag
+             svg-lib-button
+             svg-lib-progress-bar
+             svg-lib-progress-pie
+             svg-lib-date)
   :custom (svg-lib-icons-dir (my/put-this-in-var "svg-lib")))
 
 (use-package pdf-tools
