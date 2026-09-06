@@ -521,8 +521,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
     ;; settings to use evil-numbers C-a and C-x in vim normal mode
     ;; But C-x is use by emacs, and it is convenient to keep it.
     (leader-ala-vim :no-autolad t
-      "+"   #'evil-numbers/inc-at-pt
-      "-"   #'evil-numbers/dec-at-pt
       "TAB" `(,#'evil-switch-to-windows-last-buffer :wk "Last buffer"))
     (general-def
      :states 'normal
@@ -535,7 +533,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;; "gT"
       "g"))    ; remove the prefix is sufficient
 
-(use-package evil-numbers)
+(use-package evil-numbers
+  :defer t
+  :init (leader-ala-vim
+          "+"   #'evil-numbers/inc-at-pt
+          "-"   #'evil-numbers/dec-at-pt))
+
 
 (use-package evil-quickscope
   :hook (after-init . global-evil-quickscope-mode)
