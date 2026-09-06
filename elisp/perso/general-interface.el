@@ -1052,8 +1052,7 @@ targets."
 (use-package cape
   :hook ((prog-mode . my/cape-prog-mode)
          (text-mode . my/cape-text-mode)
-         (emacs-lisp-mode . my/cape-elisp-mode)
-         (comint-mode . cape-history))
+         (emacs-lisp-mode . my/cape-elisp-mode))
 
   :general ("M-²"  #'cape-dabbrev
             "s-²"  #'cape-dabbrev)
