@@ -784,8 +784,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             "DEL"        #'vertico-directory-delete-char))
 
 (use-package consult
-  :commands (consult-customize) ;; for affe
-
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
           (xref-show-definitions-function #'consult-xref)
