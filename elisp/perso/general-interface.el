@@ -1318,12 +1318,6 @@ targets."
         (general-def "C-c r" #'vr/replace
                      "C-c q" #'vr/query-replace))
 
-;; (use-package dumb-jump
-;;   :commands (xref-find-definitions
-;;              xref-find-references)
-;;   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)
-;;   :custom (dumb-jump-prefer-searcher 'rg))
-
 (use-package helpful
   :defer t
   :general (:keymaps 'help-map
@@ -1465,6 +1459,15 @@ argument, query for word to search."
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
 
+(use-package dumb-jump
+  :custom (dumb-jump-prefer-searcher 'rg)
+  :init (general-def  "C-c j"  #'dumb-jump-go)
+        (leader-ala-vim
+          "d" '(:ignore t :wk "Dumb-jump")
+          "d d" #'dumb-jump-go
+          "d b" #'dumb-jump-back
+          "d r" #'dumb-jump-find-references)
+  :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (repeat-mode 1)
 (setq repeat-exit-timeout 5
