@@ -270,6 +270,7 @@
   "t s"    #'flyspell-mode
   "t w"    #'whitespace-mode
   "t t"    #'tooltip-mode
+  "t n"    #'display-line-numbers-mode
   "t v"    #'visual-line-mode
   "t W"    #'visual-wrap-prefix-mode
   "x"     '(:ignore t :wk "Xref")
