@@ -444,9 +444,6 @@
           (transient-values-file . "values.el")
           (transient-history-file . "history.el"))))
 
-(use-package multisession
-  :custom (multisession-directory (my/put-this-in-var "multisession")))
-
 (use-package diminish
   :commands (diminish))
 
