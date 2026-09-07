@@ -58,9 +58,8 @@
 ;; -march=skylake, you know that skylake is the identifier you should pass to
 ;; -mtune and -march.
 
-;;(setq my-cpu-architecture "ivybridge")
-(setq cpu-architecture-file "~/.emacs.d/elisp/perso/cpu-architecture.el")
-(when (file-exists-p cpu-architecture-file)
+(setq my-cpu-architecture-file "~/.emacs.d/elisp/perso/cpu-architecture.el")
+(when (file-exists-p my-cpu-architecture-file)
   (load-file "~/.emacs.d/elisp/perso/cpu-architecture.el")
 ;; `native-comp-compiler-options' specifies flags passed directly to the C
 ;; compiler (for example, GCC) when compiling the Lisp-to-C output
