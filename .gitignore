@@ -10,3 +10,4 @@ elisp/latex-help/
 elisp/curry/
 var/
 .gitignore
+/elisp/perso/cpu-architecture.el
