@@ -1423,6 +1423,16 @@ argument, query for word to search."
           (require 'treemacs-magit)
           (require 'project-treemacs))
 
+
+(use-package consult-project-extra
+  :defer t
+  ;;:custom (consult-project-root-function #'consult-project-extra-project-fn)
+  :init (general-def
+          :keymaps 'project-prefix-map
+          "b" #'consult-project-buffer
+          "f" #'consult-project-extra-find
+          "w" #'consult-project-extra-find-other-window))
+
 (use-package fill-column-indicator
   :defer t
   ;;:commands (fci-mode)     ;; managed by general.el
