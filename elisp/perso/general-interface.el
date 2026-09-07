@@ -1289,7 +1289,8 @@ targets."
   :init (leader-ala-vim "m t" #'git-timemachine)
         (push 'git-timemachine-mode my/mode-in-emacs-state))
 
-(use-package consult-git-log-grep)
+(use-package consult-git-log-grep
+  :commands (consult-git-log-grep))
 
 (use-package consult-ls-git
   :defer t
