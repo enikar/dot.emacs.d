@@ -92,6 +92,8 @@
       nobreak-char-display t
       nobreak-char-ascii-display nil
       apropos-do-all t
+      bookmark-default-file (my/put-this-in-var "bookmarks")
+      save-place-file (my/put-this-in-var "saveplace")
       savehist-file (my/put-this-in-var "savehist")
       idlwave-config-directory (my/put-this-in-var "idlwave")
       eww-download-directory "~/Download/"

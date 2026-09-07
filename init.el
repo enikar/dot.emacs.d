@@ -43,10 +43,8 @@
 (setq custom-file (make-temp-file "emacs-custom-")
       abbrev-file-name (my/put-this-in-var "abbrev_defs")
       save-abbrevs 'silently
-      bookmark-default-file (my/put-this-in-var "bookmarks")
       recentf-save-file (my/put-this-in-var "recentf")
-      recentf-max-saved-items 50
-      save-place-file (my/put-this-in-var "saveplace"))
+      recentf-max-saved-items 50)
 
 
 (push (emacs-dir-subdirectory "elisp/perso") load-path)
