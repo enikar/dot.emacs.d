@@ -1400,6 +1400,10 @@ argument, query for word to search."
   :config (show-paren-mode)
   :custom (show-paren-style 'parenthesis))
 
+(use-package project
+  :custom (project-buffers-viewer 'project-list-buffers-ibuffer)
+          (project-kill-buffers-display-buffer-list t))
+
 (use-package treemacs-all-the-icons
   :defer t)
 (use-package treemacs-evil
