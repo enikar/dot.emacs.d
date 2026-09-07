@@ -1410,6 +1410,8 @@ argument, query for word to search."
   :defer t)
 (use-package treemacs-magit
   :defer t)
+(use-package project-treemacs
+  :defer t)
 (use-package treemacs
   :commands (treemacs)
   :custom (treemacs-width 40)
@@ -1418,7 +1420,8 @@ argument, query for word to search."
   :init (prefix-c-xt "t" #'treemacs)
   :config (require 'treemacs-all-the-icons)
           (require 'treemacs-evil)
-          (require 'treemacs-magit))
+          (require 'treemacs-magit)
+          (require 'project-treemacs))
 
 (use-package fill-column-indicator
   :defer t
