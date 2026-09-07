@@ -372,6 +372,8 @@
  ;;"^" #'dired-up-directory-same-buffer
  "C-x C-k D" #'dired-only-show-directories)
 
+(setopt speedbar-prefer-window t)
+
 ;;;; for Info-mode, with this method we can't bind "SPC"
 ;; So, as we want to use SPC (next-page is also bound to C-f), we use
 ;; 'local of general-def :keymaps keyword, evil-local-set-key is used
