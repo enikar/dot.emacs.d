@@ -275,7 +275,11 @@
   "t W"    #'visual-wrap-prefix-mode
   "x"     '(:ignore t :wk "Xref")
   "x d"    #'xref-find-definitions
-  "x r"    #'xref-find-references)
+  "x r"    #'xref-find-references
+  "x b"    #'xref-go-back
+  "x f"    #'xref-go-forward
+  "x a"    #'xref-find-apropos
+  "x R"    #'xref-find-references-and-replace)
 
 (general-def
   "<cancel>"             #'keyboard-quit
