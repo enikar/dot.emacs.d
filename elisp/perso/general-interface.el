@@ -49,6 +49,7 @@
       ansi-color-for-compilation-mode t
       make-pointer-invisible t
       mouse-highlight 1
+      focus-follows-mouse nil
       scroll-step 1
       scroll-margin 0
       scroll-conservatively 10000
@@ -58,7 +59,6 @@
       hscroll-margin 0
       ediff-merge-split-window-function 'split-window-horizontally
       ediff-split-window-function 'split-window-horizontally
-      focus-follows-mouse nil
       sentence-end-double-space nil
       bidi-inhibit-bpa t
       confirm-kill-processes nil
@@ -95,7 +95,6 @@
       bookmark-default-file (my/put-this-in-var "bookmarks")
       save-place-file (my/put-this-in-var "saveplace")
       savehist-file (my/put-this-in-var "savehist")
-      idlwave-config-directory (my/put-this-in-var "idlwave")
       eww-download-directory "~/Download/"
       url-configuration-directory (my/put-this-in-var "url")
       url-cookie-file (my/put-this-in-var "url/cookie")
