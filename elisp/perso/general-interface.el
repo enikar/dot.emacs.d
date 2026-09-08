@@ -1090,7 +1090,9 @@ targets."
   :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
         (leader-ala-vim "=" #'consult-flyspell))
 
-(use-package flyspell-correct)
+(use-package flyspell-correct
+  :defer t
+  :init (leader-ala-vim "." #'flyspell-correct-wrapper))
 
 ;; (use-package consult-recoll
 ;;   :defer t
