@@ -1167,9 +1167,12 @@ targets."
 (use-package evil-anzu
   :hook (evil-mode . my/evil-anzu-load))
 
-(use-package all-the-icons
-  :diminish (all-the-icons-mode))
+(defun my/all-the-icons-load ()
+  (require 'all-the-icons))
 
+(use-package all-the-icons
+  :diminish (all-the-icons-mode)
+  :hook (after-init . my/all-the-icons-load))
 
 (use-package all-the-icons-dired
   :diminish (all-the-icons-dired-mode)
