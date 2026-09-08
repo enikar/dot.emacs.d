@@ -3,7 +3,7 @@
 
 ;;; Code:
 (require 'general-interface)
-
+(require 'seq)
 ;; TODO: look to visual-line-mode
 (defun toggle-hscroll-mode ()
   "Toggle buffer local truncate-lines's value."
