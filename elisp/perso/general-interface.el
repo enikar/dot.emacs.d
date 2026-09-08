@@ -1490,6 +1490,29 @@ argument, query for word to search."
           "d r" #'dumb-jump-find-references)
   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
+(defun my/sr-speedbar-hook ()
+  (general-def
+    :keymaps 'speedbar-mode-map
+    :states '(normal motion visual operator insert emacs)
+    "q" #'delete-window
+    "Q" #'delete-window
+    "TAB" #'speedbar-toggle-line-expansion
+    "SPC" leader-ala-vim-map))
+
+(defun my/sr-speedbar-toggle ()
+  (interactive)
+  (require 'sr-speedbar)
+  (if (sr-speedbar-exist-p)
+      (sr-speedbar-close)
+    (progn
+      (sr-speedbar-open)
+      (sr-speedbar-select-window))))
+
+(use-package sr-speedbar
+  :defer t
+  :hook (speedbar-reconfigure-keymaps . my/sr-speedbar-hook)
+  :init (leader-ala-vim "t z" #'my/sr-speedbar-toggle))
+
 (repeat-mode 1)
 (setq repeat-exit-timeout 5
       repeat-exit-key "<escape>")
