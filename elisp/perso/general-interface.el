@@ -545,14 +545,14 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 
 (use-package evil-quickscope
-  :hook (after-init . global-evil-quickscope-mode)
+  :hook (evil-mode . global-evil-quickscope-mode)
   :diminish (evil-quickscope-mode))
 
 (use-package evil-lion
-  :hook (after-init . evil-lion-mode))
+  :hook (evil-mode . evil-lion-mode))
 
 (use-package evil-surround
-  :hook (after-init . global-evil-surround-mode)
+  :hook (evil-mode . global-evil-surround-mode)
   :diminish (evil-surround-mode))
 
 (use-package embrace
@@ -567,7 +567,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :config (evil-embrace-enable-evil-surround-integration))
 
 (use-package evil-goggles
-  :hook (after-init . evil-goggles-mode)
+  :hook (evil-mode . evil-goggles-mode)
   :diminish (evil-goggles-mode)
   :custom
   (evil-goggles-pulse 'display-graphic-p)
@@ -578,7 +578,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :commands (evil-operator-string-inflection))
 
 (use-package evil-matchit
-  :hook (after-init . global-evil-matchit-mode))
+  :hook (evil-mode . global-evil-matchit-mode))
 
 (use-package evil-nerd-commenter
   :defer t
