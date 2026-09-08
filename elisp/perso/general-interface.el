@@ -1161,10 +1161,11 @@ targets."
   :diminish (anzu-mode)
   :hook (after-init . global-anzu-mode))
 
+(defun my/evil-anzu-load ()
+  (require 'evil-anzu))
+
 (use-package evil-anzu
-  :defer t
-  :init (with-eval-after-load 'evil
-          (require 'evil-anzu)))
+  :hook (evil-mode . my/evil-anzu-load))
 
 (use-package all-the-icons
   :diminish (all-the-icons-mode))
