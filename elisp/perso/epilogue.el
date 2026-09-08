@@ -36,9 +36,6 @@
             "M-z" "Evil eyebrowse")
           (require 'evil-eyebrowse))
 
-;; set some mode to be in emacs state.
-(add-hook 'after-init-hook #'my/set-mode-in-emacs-state)
-
 ;;;; Load desktop
 (desktop-save-mode 1)
 (setq desktop-load-locked-desktop 'check-pid
