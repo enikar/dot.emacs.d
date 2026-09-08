@@ -1511,8 +1511,7 @@ argument, query for word to search."
   (if (sr-speedbar-exist-p)
       (sr-speedbar-close)
     (progn
-      (sr-speedbar-open)
-      (sr-speedbar-select-window))))
+      (sr-speedbar-open))))
 
 (use-package sr-speedbar
   :defer t
