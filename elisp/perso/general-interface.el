@@ -1083,6 +1083,8 @@ targets."
   :init (leader-ala-vim
           "j o" #'casual-symbol-overlay-tmenu))
 
+(leader-ala-vim "t d" #'ispell-change-dictionary)
+
 (use-package consult-flyspell
   :defer t
   :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
