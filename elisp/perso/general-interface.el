@@ -1498,18 +1498,27 @@ argument, query for word to search."
           "d r" #'dumb-jump-find-references)
   :config (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-(defun my/delete-window-or-burry-buffer ()
+(defun my/sb-delete-window-or-burry-buffer ()
   (interactive)
   (if (one-window-p)
       (bury-buffer)
-    (delete-window)))
+    (sr-speedbar-close)))
+
+;; FIXME: it doesn't work.
+;; (defun my/sb-delete-window-and-quit ()
+;;   (interactive)
+;;   (let ((bufname (buffer-name (current-buffer))))
+;;     (when (not (one-window-p))
+;;       (sr-speedbar-close))
+;;     (speedbar-set-timer nil)
+;;     (kill-buffer bufname)))
 
 (defun my/sr-speedbar-hook ()
   (general-def
     :keymaps 'speedbar-mode-map
     :states '(normal motion visual operator insert emacs)
-    "q" #'my/delete-window-or-burry-buffer
-    "Q" #'my/delete-window-or-burry-buffer
+    "q" #'my/sb-delete-window-or-burry-buffer
+    "Q" #'my/sb-delete-window-or-burry-buffer
     "TAB" #'speedbar-toggle-line-expansion
     "SPC" leader-ala-vim-map))
 
