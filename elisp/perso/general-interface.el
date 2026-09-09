@@ -1504,14 +1504,14 @@ argument, query for word to search."
       (bury-buffer)
     (sr-speedbar-close)))
 
-;; FIXME: it doesn't work.
+;; FIXME: it doesn't work : it doesn't kill the buffer.
 ;; (defun my/sb-delete-window-and-quit ()
 ;;   (interactive)
-;;   (let ((bufname (buffer-name (current-buffer))))
+;;   (let ((buf (current-buffer)))
 ;;     (when (not (one-window-p))
 ;;       (sr-speedbar-close))
 ;;     (speedbar-set-timer nil)
-;;     (kill-buffer bufname)))
+;;     (kill-buffer buf)))
 
 (defun my/sr-speedbar-hook ()
   (general-def
@@ -1527,8 +1527,7 @@ argument, query for word to search."
   (require 'sr-speedbar)
   (if (sr-speedbar-exist-p)
       (sr-speedbar-close)
-    (progn
-      (sr-speedbar-open))))
+    (sr-speedbar-open)))
 
 (use-package sr-speedbar
   :defer t
