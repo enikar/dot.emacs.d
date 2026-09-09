@@ -58,6 +58,10 @@
 ;; -march=skylake, you know that skylake is the identifier you should pass to
 ;; -mtune and -march.
 
+;; I put  (setq my-cpu-arcitecture "<ARCHITECTURE>") in a separate file not
+;; under git control. <ARCHITECTURE> is the result from the preceding gcc command.
+;; This way I can git clone my config on another system.
+
 (setq my-cpu-architecture-file "~/.emacs.d/elisp/perso/cpu-architecture.el")
 (when (file-exists-p my-cpu-architecture-file)
   (load-file "~/.emacs.d/elisp/perso/cpu-architecture.el")
