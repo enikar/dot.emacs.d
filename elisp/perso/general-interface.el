@@ -499,7 +499,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 ;; TODO try to set evil-want-integration to nil
 (use-package evil
   :hook ((after-init . evil-mode)
-         (view-mode . evil-emacs-state))
+         (view-mode . evil-emacs-state)
+         (evil-mode . my/set-mode-in-emacs-state))
   :custom (evil-ex-search-highlight-all t)
           (evil-ex-search-persistent-highlight nil)
           (evil-ex-search-case 'smart)
