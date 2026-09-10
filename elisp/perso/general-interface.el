@@ -1459,6 +1459,7 @@ argument, query for word to search."
   :init (general-def "C-c e" #'shell-pop))
 
 (use-package dumb-jump
+  :defer t
   :custom (dumb-jump-prefer-searcher 'rg)
   :init (general-def  "C-c j"  #'dumb-jump-go)
         (leader-ala-vim
