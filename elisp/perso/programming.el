@@ -112,11 +112,8 @@ If the error list is visible, hide it.  Otherwise, show it."
          (ghci-script-mode . my/no-auto-fill))
   :diminish (interactive-haskell-mode)
   :init
-    ;; I'm not sure if I ever use haskell-error-mode.
-    ;; Anyway I use dante + flycheck
-    ;;(push 'haskell-error-mode my/mode-in-emacs-state)
-    ;;(push 'haskell-interactive-mode my/mode-in-emacs-state)
-    (advice-add #'haskell-interactive-mode :after #'evil-emacs-state)
+    (push 'haskell-error-mode my/mode-in-emacs-state)
+    (push 'haskell-interactive-mode my/mode-in-emacs-state)
     (setq haskell-process-args-ghci '("+RTS" "-M5G" "-RTS" "-ferror-spans")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t

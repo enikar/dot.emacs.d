@@ -1301,12 +1301,14 @@ targets."
   :init (leader-ala-vim "m f" #'consult-ls-git))
 
 (use-package deadgrep
-  :hook (deadgrep-mode . evil-emacs-state)
-  :init (leader-ala-vim "g d" #'deadgrep))
+  :defer t
+  :init (leader-ala-vim "g d" #'deadgrep)
+        (push 'deadgrep-mode my/mode-in-emacs-state))
 
 (use-package rg
-  :hook (rg-mode . evil-emacs-state)
+  :defer t
   :init (leader-ala-vim "g g" #'rg-dwim)
+        (push 'rg-mode my/mode-in-emacs-state)
   :custom (rg-keymap-prefix ["C-c x"])
           (rg-ignore-case [smart])
           (rg-use-transient-menu t)
@@ -1475,9 +1477,10 @@ argument, query for word to search."
    #'pdf-history-minor-mode-map))
 
 (use-package vterm
+  :defer t
   :init (setq vterm-always-compile-module t)
         (general-def "C-c v" #'vterm)
-        (advice-add #'vterm :after #'evil-emacs-state))
+        (push 'vterm-mode my/mode-in-emacs-state))
 
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
