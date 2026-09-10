@@ -1309,6 +1309,7 @@ targets."
   :init (leader-ala-vim "g d" #'deadgrep))
 
 (use-package rg
+  :defer t
   :init (leader-ala-vim "g g" #'rg-dwim)
   :custom (rg-keymap-prefix ["C-c x"])
           (rg-ignore-case [smart])
