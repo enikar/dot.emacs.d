@@ -1305,9 +1305,8 @@ targets."
   :init (leader-ala-vim "m f" #'consult-ls-git))
 
 (use-package deadgrep
-  :defer t
-  :init (leader-ala-vim "g d" #'deadgrep)
-        (push 'deadgrep-mode my/mode-in-emacs-state))
+  :hook (deadgrep-mode . evil-emacs-state)
+  :init (leader-ala-vim "g d" #'deadgrep))
 
 (use-package rg
   :init (leader-ala-vim "g g" #'rg-dwim)
