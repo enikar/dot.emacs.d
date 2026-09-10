@@ -92,6 +92,7 @@
          )
        desktop-globals-to-save))
 
+(add-hook 'evil-mode-hook #'my/set-mode-in-emacs-state)
 ;; We put this at the end, else something remove it (evil probably).
 (keymap-global-set "C-M-h" #'mark-defun)
 

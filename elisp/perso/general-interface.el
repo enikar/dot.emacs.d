@@ -537,8 +537,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "C-h"    ; use by which-key
       ;; "gt"  ; bindings to emacs tab functions
       ;; "gT"
-      "g")    ; remove the prefix is sufficient
-    (my/set-mode-in-emacs-state))
+      "g"))    ; remove the prefix is sufficient
 
 (use-package evil-numbers
   :defer t
