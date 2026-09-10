@@ -1287,14 +1287,14 @@ targets."
 
 (use-package magit
   :defer t
-  :init (general-def "C-c g" #'magit-file-dispatch)
-        (leader-ala-vim
+  :init (leader-ala-vim
           "m" '(:ignore t :wk "Magit")
           "m m" #'magit
           "m d" #'magit-file-dispatch))
 
 (use-package consult-git-log-grep
-  :commands (consult-git-log-grep))
+  :defer t
+  :init (leader-ala-vim "m g"  #'consult-git-log-grep))
 
 (use-package consult-ls-git
   :defer t
