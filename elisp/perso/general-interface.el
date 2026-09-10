@@ -1481,10 +1481,9 @@ argument, query for word to search."
    #'pdf-history-minor-mode-map))
 
 (use-package vterm
-  :defer t
   :init (setq vterm-always-compile-module t)
         (general-def "C-c v" #'vterm)
-        (push 'vterm-mode my/mode-in-emacs-state))
+        (advice-add #'vterm :after #'evil-emacs-state))
 
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
