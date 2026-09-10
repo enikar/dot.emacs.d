@@ -1293,12 +1293,6 @@ targets."
           "m m" #'magit
           "m d" #'magit-file-dispatch))
 
-;; works on emacs-state, use evil-set-initial-state doesn't work
-;; anymore. There is no hook, and advice also fails!
-(use-package git-timemachine
-  :defer t
-  :init (leader-ala-vim "m t" #'git-timemachine))
-
 (use-package consult-git-log-grep
   :commands (consult-git-log-grep))
 
