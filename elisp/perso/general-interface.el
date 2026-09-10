@@ -495,6 +495,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
 
 ;;(setq evil-want-keybinding nil)
+;; TODO try to set evil-want-integration to nil
 (use-package evil
   :hook ((after-init . evil-mode)
          (view-mode . evil-emacs-state))
@@ -508,6 +509,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           (evil-want-Y-yank-to-eol nil)
           (evil-want-fine-undo t)
           (evil-want-C-i-jump nil)
+          (evil-want-integration t)
           (evil-kbd-macro-suppress-motion-error t)
   :diminish (evil-mode)
   :config
