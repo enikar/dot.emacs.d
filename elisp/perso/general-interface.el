@@ -546,7 +546,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 (use-package evil-nerd-commenter
   :defer t
   :init
-  (general-def "M-;" #'evilnc-comment-or-uncomment-lines)
+  ;;(general-def "M-;" #'comment-dwim) ;; this is the default binding.
   (leader-ala-vim
     ";"  #'evilnc-comment-operator
     "c" '(:ignore t :wk "Comments")
