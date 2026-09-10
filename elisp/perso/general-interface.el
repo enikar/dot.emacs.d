@@ -398,45 +398,6 @@
 (push `("drafts/neomutt-" . ,#'mail-mode) auto-mode-alist)
 (add-hook 'mail-mode-hook #'flyspell-mode)
 
-;; Switch nicely to an eshell buffer in the default-directory of the
-;; current buffer.
-;; From: https://www.blogbyben.com/2013/08/a-tiny-eshell-add-on-jump-to-shell.html
-;; Inspired by: http://www.emacswiki.org/emacs/EshellControlFromOtherBuffer
-;; XXX That needs some improvements to work as I wish.
-;; (defun my/eshell-switch-to-and-change-dir ()
-;;   "Switch to eshell and make sure we're in the directory the current buffer is in."
-;;   (interactive)
-;;   (let ((dir default-directory))
-;;     (let ((b (if (boundp 'eshell-buffer-name)
-;;                  (get-buffer  eshell-buffer-name))))
-;;       (unless b
-;;         (eshell)))
-;;     (display-buffer eshell-buffer-name t)
-;;     (switch-to-buffer-other-window eshell-buffer-name)
-;;     (end-of-buffer)
-;;     (unless (equal dir default-directory)
-;;       (cd dir)
-;;       (eshell-send-input)
-;;       (end-of-buffer))))
-(defun my/eshell-switch-to-and-change-dir ()
-  "Switch to eshell and make sure we're in the directory the current buffer is in."
-  (interactive)
-  (let ((dir default-directory))
-    (if (boundp 'eshell-buffer-name)
-        (progn
-          (display-buffer eshell-buffer-name t)
-          (switch-to-buffer-other-window eshell-buffer-name)
-          (end-of-buffer))
-      (eshell))
-    ;; it seems that does nothing because dir is always equal to default-directory
-    ;; by definition except if eshell change default-directory…
-    (unless (equal dir default-directory)
-      (cd dir)
-      (eshell-send-input)
-      (end-of-buffer))))
-
-(general-def "C-c e" #'my/eshell-switch-to-and-change-dir)
-
 ;;;; Transient settings
 (defvar-local transient-directory-cache
   (my/put-this-in-var "transient"))
@@ -1484,6 +1445,18 @@ argument, query for word to search."
 
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
+
+(use-package shell-pop
+  :defer t
+  :custom (shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
+          (shell-pop-universal-key "C-c e")
+          (shell-pop-full-span nil)
+          (shell-pop-window-size 50)
+          (shell-pop-per-window t)
+          (shell-pop-restore-window-configuration 'window-state)
+          ;; "bottom", "top", "left",  "right" or "full"
+          (shell-pop-window-position "right")
+  :init (general-def "C-c e" #'shell-pop))
 
 (use-package dumb-jump
   :custom (dumb-jump-prefer-searcher 'rg)
