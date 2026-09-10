@@ -790,7 +790,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
           (xref-show-definitions-function #'consult-xref)
-          (consult-project-root-function #'deadgrep--project-root) ;; ensure ripgrep works
+          ;;(consult-project-function #'(lambda (_) (locate-dominating-file "." ".git")))
           (consult-preview-key '(:debounce 1 any))
 
   :init (general-def
@@ -823,8 +823,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               (concat "find . -not ( "
                       "-path */.git* -prune "
                       "-or -path */.cache* -prune )"))
-  :config (setq consult-narrow-key "C-+")
-          (setq consult-project-function #'(lambda (_) (locate-dominating-file "." ".git"))))
+  :config (setq consult-narrow-key "C-+"))
 
 ;; ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; ;; Otherwise use the default `completion--in-region' function.
@@ -1441,7 +1440,7 @@ argument, query for word to search."
 
 (use-package consult-project-extra
   :defer t
-  ;;:custom (consult-project-root-function #'consult-project-extra-project-fn)
+  :custom (consult-project-function #'consult-project-extra-project-fn)
   :init (general-def
           :keymaps 'project-prefix-map
           "b" #'consult-project-buffer
