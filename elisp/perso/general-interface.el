@@ -1172,9 +1172,11 @@ targets."
 
 (use-package iedit
   :defer t
-  :general ("C-;"  #'iedit-mode))
+  :general ("C-;"  #'iedit-mode)
+  :config (require 'evil-iedit-state))
 
-(use-package evil-iedit-state)
+(use-package evil-iedit-state
+  :defer t)
 
 (use-package evil-multiedit
   :commands (evil-multiedit-ex-match)
