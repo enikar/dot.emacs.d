@@ -1294,7 +1294,8 @@ targets."
           (rg-use-transient-menu t)
   :config (rg-enable-menu))
 
-;; TODO: remove this package, try the built-in new feature
+;; the builtin edit mode for grep buffer seems less featureful.
+;; I keep wgrep.
 (use-package wgrep
   :config (general-def
             :keymaps 'wgrep-mode-map
