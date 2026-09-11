@@ -1020,7 +1020,6 @@ targets."
 ;; cape-keyword
 ;; cape-elisp-symbol
 ;; cape-abbrev
-;; cape-ispell
 ;; cape-dict
 ;; cape-line
 
