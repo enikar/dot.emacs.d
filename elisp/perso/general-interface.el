@@ -691,7 +691,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (general-def :keymaps 'reb-mode-map "C-o" #'casual-re-builder-tmenu)
   (general-def :keymaps 'reb-lisp-mode-map "C-o" #'casual-re-builder-tmenu)
   (general-def :keymaps 'bookmark-bmenu-mode-map "C-o" #'casual-bookmarks-tmenu)
-  (general-def :keymaps 'symbol-overlay-map "C-o" #'casual-symbol-overlay-tmenu)
   (general-def :keymaps 'emacs-lisp-mode-map "C-c C-o" #'casual-elisp-tmenu)
   (general-def :keymaps 'compilation-mode-map "C-o" #'casual-compile-tmenu)
   (general-def :keymaps 'grep-mode-map "C-o" #'casual-compile-tmenu)
@@ -1061,7 +1060,10 @@ targets."
 
 (use-package casual-symbol-overlay
   :init (leader-ala-vim
-          "j o" #'casual-symbol-overlay-tmenu))
+          "j o" #'casual-symbol-overlay-tmenu)
+        (general-def
+          :keymaps 'symbol-overlay-map
+          "C-o" #'casual-symbol-overlay-tmenu))
 
 (leader-ala-vim "t d" #'ispell-change-dictionary)
 
