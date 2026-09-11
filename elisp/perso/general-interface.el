@@ -1450,7 +1450,7 @@ argument, query for word to search."
   :defer t
   :custom (shell-pop-shell-type '("eshell" "*eshell*" (lambda nil (eshell))))
           (shell-pop-universal-key "C-c e")
-          (shell-pop-full-span nil)
+          (shell-pop-full-span t)
           (shell-pop-window-size 50)
           (shell-pop-per-window t)
           (shell-pop-restore-window-configuration 'window-state)
