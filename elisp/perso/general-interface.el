@@ -1189,7 +1189,7 @@ targets."
           "M-D" #'evil-multiedit-match-symbol-and-prev)
         (general-def :states 'insert
           "C-M-d" #'evil-multiedit-toggle-marker-here))
-        (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
+  :config (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
 
 ;; multiple-cursors for evil
 ;; see also https://github.com/fgallina/region-bindings-mode
