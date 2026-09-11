@@ -759,22 +759,37 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :init (general-def
           "C-x b"    #'consult-buffer
           "C-x 4 b"  #'consult-buffer-other-window
-          "C-x r l"  #'consult-bookmark
+          "C-x 5 b"  #'consult-buffer-other-frame
+          "C-x r b"  #'consult-bookmark
           "C-x C-f"  #'find-file
           "C-c m"    #'consult-imenu
           "M-y"      #'consult-yank-pop
+          "M-s e"    #'consult-isearch-history
+          "M-s l"    #'consult-line
+          "M-s L"    #'consult-line-multi
           "M-s M-i"  #'consult-info
           "M-s M-f"  #'consult-find
           "M-s M-g"  #'consult-ripgrep
           "M-g M-l"  #'consult-goto-line
+          "C-x p i"  #'consult-imenu-multi
+          "C-x p g"  #'consult-ripgrep
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
           :keymaps 'global
           "C-w b"  #'consult-buffer-other-window)
+        (general-def
+          :keymaps 'minibuffer-local-map
+          "M-s"    #'consult-history
+          "M-r"    #'consult-history)
+        (general-def
+          :keymaps 'isearch-mode-map
+          "l"      #'consult-line
+          "L"      #'consult-line-multi
+          "M-s e"  #'consult-isearch-history)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim
-          "/"  #'consult-line
+          "/"   #'consult-line
           "g c" #'consult-ripgrep
           "g C" #'consult-grep
           "g f" #'consult-find)
@@ -782,6 +797,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
               register-preview-function #'consult-register-format)
+        ;; to have a lower latency
+        ;; (setq consult-async-input-debounce 0.05
+        ;;       consult-async-input-throttle 0.1
+        ;;       consult-async-refresh-delay 0.05)
         (setq consult-find-args
               (concat "find . -not ( "
                       "-path */.git* -prune "
