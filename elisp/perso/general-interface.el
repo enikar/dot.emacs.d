@@ -1202,13 +1202,34 @@ targets."
 ;; use grn and backward grp. Finally use gru to “undo” the last
 ;; added cursor, and grq to remove all cursors.
 (use-package evil-mc
-  :hook (after-init . global-evil-mc-mode)
-  :diminish (evil-mc-mode)
-  :init (general-def
-          :keymaps 'evil-mc-key-map
-          :states '(normal visual)
-          "C-t" #'pop-tag-mark ; want to keep pop tag
-          "g C-t" #'evil-mc-skip-and-goto-next-match))
+  :defer t
+  :init
+  (leader-ala-vim "t m" #'evil-mc-mode)
+  (general-def
+    :keymaps 'evil-mc-key-map
+    :states '(normal visual)
+    "C-t" #'pop-tag-mark) ; want to keep pop tag
+  (general-def
+    :states '(normal visual)
+    "g r" '(:ignore t :wk "Evil mc"))
+  :config
+  (which-key-add-key-based-replacements
+    "g r m" "Make all cursors"
+    "g r u" "Undo last added"
+    "g r q" "Undo all cursors"
+    "g r s" "Pause cursors"
+    "g r r" "Resume cursors"
+    "g r f" "Make, goto first"
+    "g r l" "Make, goto last"
+    "g r h" "Make cursor here"
+    "g r j" "Make, mv. next line"
+    "g r k" "Make, mv prev. line"
+    "g r N" "Skip, goto next"
+    "g r P" "Skip, goto prev."
+    "g r n" "Skip, goto next match"
+    "g r p" "Skip, goto prev. match"
+    "g r I" "Make at visual sel. beg."
+    "g r A" "Make at visual sel. end"))
 
 (use-package undo-tree
   :hook (after-init . global-undo-tree-mode)
