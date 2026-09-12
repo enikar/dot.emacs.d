@@ -1178,18 +1178,19 @@ targets."
   :defer t)
 
 (use-package evil-multiedit
-  :after (evil)
-  :init (general-def :states 'visual
-          "R" #'evil-multiedit-match-all
-          "M-d" #'evil-multiedit-match-and-next
-          "M-D" #'evil-multiedit-match-and-prev
-          "C-M-d" #'evil-multiedit-restore
-        (general-def :states '(normal insert)
-          "M-d" #'evil-multiedit-match-symbol-and-next
-          "M-D" #'evil-multiedit-match-symbol-and-prev)
-        (general-def :states 'insert
-          "C-M-d" #'evil-multiedit-toggle-marker-here))
-  :config (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
+  :disabled)
+  ;; :after (evil)
+  ;; :init (general-def :states 'visual
+  ;;         "R" #'evil-multiedit-match-all
+  ;;         "M-d" #'evil-multiedit-match-and-next
+  ;;         "M-D" #'evil-multiedit-match-and-prev
+  ;;         "C-M-d" #'evil-multiedit-restore
+  ;;       (general-def :states '(normal insert)
+  ;;         "M-d" #'evil-multiedit-match-symbol-and-next
+  ;;         "M-D" #'evil-multiedit-match-symbol-and-prev)
+  ;;       (general-def :states 'insert
+  ;;         "C-M-d" #'evil-multiedit-toggle-marker-here))
+  ;; :config (evil-ex-define-cmd "ie[dit]" #'evil-multiedit-ex-match))
 
 ;; multiple-cursors for evil
 ;; see also https://github.com/fgallina/region-bindings-mode
