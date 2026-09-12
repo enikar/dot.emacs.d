@@ -409,10 +409,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package systemd)
 (use-package gitconfig)
 
-
-(use-package typescript-mode
-  :mode "\\.ts\\'")
-
 ;;;; nim. Nim-mode depends on flycheck-nimsuggest
 ;; Activating nimsuggest-mode activate flycheck-mode using
 ;; flycheck-nimsuggest.
