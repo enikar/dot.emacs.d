@@ -1194,7 +1194,12 @@ targets."
 ;; multiple-cursors for evil
 ;; see also https://github.com/fgallina/region-bindings-mode
 ;; to activate bindings when a region is selected
-;; use `gr` prefix in normal mode to access mc functionalities
+;; use `gr` prefix in normal mode to access mc functionalities.
+;; C-n / C-p are used for creating cursors, and M-n / M-p are used for
+;; cycling through cursors. The commands that create cursors wrap around;
+;; but, the ones that cycle them do not. To skip creating a cursor forward
+;; use grn and backward grp. Finally use gru to “undo” the last
+;; added cursor, and grq to remove all cursors.
 (use-package evil-mc
   :hook (after-init . global-evil-mc-mode)
   :diminish (evil-mc-mode)
