@@ -1180,7 +1180,7 @@ targets."
   :defer t)
 
 (use-package evil-multiedit
-  :commands (evil-multiedit-ex-match)
+  :after (evil)
   :init (general-def :states 'visual
           "R" #'evil-multiedit-match-all
           "M-d" #'evil-multiedit-match-and-next
