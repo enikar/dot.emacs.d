@@ -783,8 +783,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "M-r"    #'consult-history)
         (general-def
           :keymaps 'isearch-mode-map
-          "l"      #'consult-line
-          "L"      #'consult-line-multi
           "M-s e"  #'consult-isearch-history)
         (prefix-c-xt    "r"  #'consult-recent-file)
         (leader-ala-vim
