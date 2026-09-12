@@ -784,7 +784,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         (general-def
           :keymaps 'isearch-mode-map
           "M-s e"  #'consult-isearch-history)
-        (prefix-c-xt    "r"  #'consult-recent-file)
+        (prefix-c-xt "r"  #'consult-recent-file)
         (leader-ala-vim
           "/"   #'consult-line
           "g c" #'consult-ripgrep
