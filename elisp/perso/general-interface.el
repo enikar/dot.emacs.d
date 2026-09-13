@@ -865,6 +865,19 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
            (aw-switch-to-window (aw-select nil))
            (call-interactively (symbol-function ',fn)))))))
 
+(defun su-find-file (file)
+  "Open FILE as root."
+  (interactive "FOpen file as root: ")
+  (when (file-writable-p file)
+    (user-error "File is user writeable, aborting su"))
+  (find-file (if (file-remote-p file)
+                 (concat "/" (file-remote-p file 'method) ":"
+                         (file-remote-p file 'user) "@" (file-remote-p file 'host)
+                         "|su:root@"
+                         (file-remote-p file 'host) ":" (file-remote-p file 'localname))
+               (concat "/su:root@localhost:" file))))
+
+
 (use-package embark
   :defer t
   :custom (embark-help-key "?")
@@ -872,11 +885,13 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
   (general-def "C-c b"  #'embark-act)
   (leader-ala-vim "RET" #'embark-act)
+  :config
+  (require 'embark-consult)
   (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
   (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
   (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark))
   (general-def :keymaps 'help-map "B" #'embark-bindings)
-  :config (require 'embark-consult))
+  (general-def embark-file-map "C-r" #'su-find-file))
 
 ;; Use which key to show the embark's actions.
 ;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
@@ -918,18 +933,6 @@ targets."
 (advice-add #'embark-completing-read-prompter
             :around #'embark-hide-which-key-indicator)
 
-(defun su-find-file (file)
-  "Open FILE as root."
-  (interactive "FOpen file as root: ")
-  (when (file-writable-p file)
-    (user-error "File is user writeable, aborting su"))
-  (find-file (if (file-remote-p file)
-                 (concat "/" (file-remote-p file 'method) ":"
-                         (file-remote-p file 'user) "@" (file-remote-p file 'host)
-                         "|su:root@"
-                         (file-remote-p file 'host) ":" (file-remote-p file 'localname))
-               (concat "/su:root@localhost:" file))))
-(general-def embark-file-map "C-r" #'su-find-file)
 
 (use-package embark-consult
   :defer t)
