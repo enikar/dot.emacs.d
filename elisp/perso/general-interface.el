@@ -815,6 +815,22 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
    (mapcar (lambda (r) (consult--convert-regexp r type)) input)
    (lambda (str) (orderless--highlight input t str))))
 
+(defun immediate-which-key-for-narrow (fun &rest args)
+  (let* ((refresh t)
+         (timer (and consult-narrow-key
+                     (memq :narrow args)
+                     (run-at-time 0.05 0.05
+                                  #'(lambda ()
+                                      (if (eq last-input-event (elt consult-narrow-key 0))
+                                          (when refresh
+                                            (setq refresh nil)
+                                            (which-key--update))
+                                        (setq refresh t)))))))
+    (unwind-protect
+        (apply fun args)
+      (when timer
+        (cancel-timer timer)))))
+
 (use-package consult
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
@@ -897,6 +913,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         (cancel-timer timer)))))
 (advice-add 'consult--read :around #'immediate-which-key-for-narrow)
         (setq consult--regexp-compiler #'consult--orderless-regexp-compiler)
+        (advice-add 'consult--read :around #'immediate-which-key-for-narrow))
 
 (use-package marginalia
   :init (marginalia-mode)
