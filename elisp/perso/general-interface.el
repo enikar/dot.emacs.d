@@ -932,22 +932,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
                          (file-remote-p file 'host) ":" (file-remote-p file 'localname))
                (concat "/su:root@localhost:" file))))
 
-
-(use-package embark
-  :defer t
-  :custom (embark-help-key "?")
-  :init
-  (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
-  (general-def "C-c b"  #'embark-act)
-  (leader-ala-vim "RET" #'embark-act)
-  :config
-  (require 'embark-consult)
-  (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
-  (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
-  (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark))
-  (general-def :keymaps 'help-map "B" #'embark-bindings)
-  (general-def embark-file-map "C-r" #'su-find-file))
-
 ;; Use which key to show the embark's actions.
 ;; From: https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
 (defun embark-which-key-indicator ()
@@ -973,11 +957,6 @@ targets."
        nil nil t (lambda (binding)
                    (not (string-suffix-p "-argument" (cdr binding))))))))
 
-(setq embark-indicators
-  '(embark-which-key-indicator
-    embark-highlight-indicator
-    embark-isearch-highlight-indicator))
-
 (defun embark-hide-which-key-indicator (fn &rest args)
   "Hide the which-key indicator immediately when using the completing-read prompter."
   (which-key--hide-popup-ignore-command)
@@ -985,17 +964,32 @@ targets."
          (remq #'embark-which-key-indicator embark-indicators)))
       (apply fn args)))
 
-(advice-add #'embark-completing-read-prompter
-            :around #'embark-hide-which-key-indicator)
-
+(use-package embark
+  :defer t
+  :custom (embark-help-key "?")
+  :init
+  (general-def :keymaps 'minibuffer-mode-map "C-;" #'embark-act)
+  (general-def "C-c b"  #'embark-act)
+  (leader-ala-vim "RET" #'embark-act)
+  :config
+  (require 'embark-consult)
+  (general-def :keymaps 'embark-file-map     "o" (my/embark-ace-action find-file))
+  (general-def :keymaps 'embark-buffer-map   "o" (my/embark-ace-action consult-buffer))
+  (general-def :keymaps 'embark-bookmark-map "o" (my/embark-ace-action consult-bookmark))
+  (general-def :keymaps 'help-map "B" #'embark-bindings)
+  (general-def embark-file-map "C-r" #'su-find-file)
+  (setq embark-indicators
+        '(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
+  (advice-add #'embark-completing-read-prompter
+              :around #'embark-hide-which-key-indicator))
 
 (use-package embark-consult
   :defer t)
 
-
 (use-package avy-embark-collect
   :commands (avy-embark-collect-act avy-embark-collect-choose))
-
 
 ;; (defun corfu-enable-in-minibuffer ()
 ;;   "Enable Corfu in the minibuffer if `completion-at-point' is bound."
