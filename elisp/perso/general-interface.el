@@ -887,7 +887,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
                       "-or -path */.cache* -prune )"))
         (setq consult-narrow-key "C-+")
         (setq consult--regexp-compiler #'consult--orderless-regexp-compiler)
-        (setq completion-in-region-function #'consult-completion-in-region)
+        ;; I use corfu for completion in region, the next setting is useless.
+        ;;(setq completion-in-region-function #'consult-completion-in-region)
         (advice-add 'consult--read :around #'immediate-which-key-for-narrow))
 
 (use-package marginalia
