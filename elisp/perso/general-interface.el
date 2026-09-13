@@ -755,7 +755,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           ;;(consult-project-function #'(lambda (_) (locate-dominating-file "." ".git")))
           (consult-preview-key '(:debounce 1 any))
 
-  :init (general-def
+  :config (general-def
           "C-x b"    #'consult-buffer
           "C-x 4 b"  #'consult-buffer-other-window
           "C-x 5 b"  #'consult-buffer-other-frame
@@ -802,7 +802,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               (concat "find . -not ( "
                       "-path */.git* -prune "
                       "-or -path */.cache* -prune )"))
-  :config (setq consult-narrow-key "C-+"))
+        (setq consult-narrow-key "C-+"))
 
 ;; ;; Use `consult-completion-in-region' if Vertico is enabled.
 ;; ;; Otherwise use the default `completion--in-region' function.
