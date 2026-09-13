@@ -808,6 +808,13 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
         orderless-style-dispatchers (list #'+orderless-consult-dispatch
                                           #'orderless-kwd-dispatch
                                           #'orderless-affix-dispatch)))
+
+(defun consult--orderless-regexp-compiler (input type &rest _config)
+  (setq input (cdr (orderless-compile input)))
+  (cons
+   (mapcar (lambda (r) (consult--convert-regexp r type)) input)
+   (lambda (str) (orderless--highlight input t str))))
+
 (use-package consult
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
@@ -889,6 +896,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       (when timer
         (cancel-timer timer)))))
 (advice-add 'consult--read :around #'immediate-which-key-for-narrow)
+        (setq consult--regexp-compiler #'consult--orderless-regexp-compiler)
 
 (use-package marginalia
   :init (marginalia-mode)
