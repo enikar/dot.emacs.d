@@ -753,6 +753,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             "C-n"        #'vertico-next-group
             "DEL"        #'vertico-directory-delete-char))
 
+(use-package prescient
+  :hook (after-init . prescient-persist-mode))
+
+(use-package vertico-prescient
+  :hook (vertico-mode . vertico-prescient-mode))
+
 (use-package consult
   :custom (completion-in-region-function #'consult-completion-in-region)
           (xref-show-xrefs-function #'consult-xref)
