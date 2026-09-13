@@ -885,33 +885,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               (concat "find . -not ( "
                       "-path */.git* -prune "
                       "-or -path */.cache* -prune )"))
-        (setq consult-narrow-key "C-+"))
-
-;; ;; Use `consult-completion-in-region' if Vertico is enabled.
-;; ;; Otherwise use the default `completion--in-region' function.
-;; (setq completion-in-region-function
-;;       (lambda (&rest args)
-;;         (apply (if vertico-mode
-;;                    #'consult-completion-in-region
-;;                  #'completion--in-region)
-;;                args)))
-
-(defun immediate-which-key-for-narrow (fun &rest args)
-  (let* ((refresh t)
-         (timer (and consult-narrow-key
-                     (memq :narrow args)
-                     (run-at-time 0.05 0.05
-                                  #'(lambda ()
-                                      (if (eq last-input-event (elt consult-narrow-key 0))
-                                          (when refresh
-                                            (setq refresh nil)
-                                            (which-key--update))
-                                        (setq refresh t)))))))
-    (unwind-protect
-        (apply fun args)
-      (when timer
-        (cancel-timer timer)))))
-(advice-add 'consult--read :around #'immediate-which-key-for-narrow)
         (setq consult--regexp-compiler #'consult--orderless-regexp-compiler)
         (advice-add 'consult--read :around #'immediate-which-key-for-narrow))
 
