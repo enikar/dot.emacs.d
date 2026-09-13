@@ -384,7 +384,10 @@
   (general-def
     :keymaps 'local
     :states '(normal motion visual operator emacs)
-    "SPC" leader-ala-vim-map))
+    "SPC" leader-ala-vim-map
+    "RET" #'Info-follow-nearest-node
+    "l"   #'Info-history-back
+    "r"   #'Info-history-forward))
 (add-hook 'Info-mode-hook #'leader-ala-vim-info-mode)
 
 ;;;; global auto-revert-mode borrows from spacemacs
