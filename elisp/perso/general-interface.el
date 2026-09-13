@@ -148,7 +148,7 @@
       tramp-backup-directory-alist `(("." . ,(expand-file-name "backup" my/tvd)))
       tramp-persistency-file-name (expand-file-name "connection-history" my/tvd)
       auto-save-list-file-prefix (my/put-this-in-var "auto-save-list/.saves-")
-      project-list-file (my/put-this-in-var "project")
+      project-list-file (my/put-this-in-var "project.eld")
       eshell-directory-name (my/put-this-in-var "eshell")
       request-storage-directory (my/put-this-in-var "request")
       shared-game-score-directory (my/put-this-in-var "games")
