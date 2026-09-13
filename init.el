@@ -7,11 +7,11 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-(push (expand-file-name "themes" user-emacs-directory) custom-theme-load-path)
-(load-theme 'tsdh-modified t)
-
 (defun emacs-dir-subdirectory (name)
   (expand-file-name name user-emacs-directory))
+
+(push (emacs-dir-subdirectory "themes") custom-theme-load-path)
+(load-theme 'tsdh-modified t)
 
 ;;;; Packages stuff
 (setq package-user-dir (emacs-dir-subdirectory "elpa"))
