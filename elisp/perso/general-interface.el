@@ -1112,6 +1112,7 @@ targets."
 
 (leader-ala-vim "t d" #'ispell-change-dictionary)
 
+;; I feel flyspell-correct is better.
 (use-package consult-flyspell
   :defer t
   :init (setq consult-flyspell-correct-function (lambda () (flyspell-correct-at-point) (consult-flyspell)))
