@@ -885,7 +885,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
               (concat "find . -not ( "
                       "-path */.git* -prune "
                       "-or -path */.cache* -prune )"))
+        (setq consult-narrow-key "C-+")
         (setq consult--regexp-compiler #'consult--orderless-regexp-compiler)
+        (setq completion-in-region-function #'consult-completion-in-region)
         (advice-add 'consult--read :around #'immediate-which-key-for-narrow))
 
 (use-package marginalia
