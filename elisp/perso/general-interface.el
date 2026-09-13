@@ -746,6 +746,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
             ;; "C-m"        #'vertico-insert
             ;; "C-c SPC"    #'vertico-quick-exit
             "C-c SPC"    #'vertico-insert
+            "C-p"        #'vertico-previous-group
+            "C-n"        #'vertico-next-group
             "DEL"        #'vertico-directory-delete-char))
 
 (use-package consult
