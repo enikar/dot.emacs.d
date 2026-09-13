@@ -896,12 +896,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   :general (:keymaps 'minibuffer-local-map
                      "M-m"  #'marginalia-cycle))
 
-;; (use-package orderless
-;;   :init (setq completion-styles '(substring orderless basic)
-;;               completion-category-defaults nil
-;;               completion-category-overrides '((files (style partial-completion)))))
-
-
 (use-package consult-dir
   :defer t
   :init (general-def "C-x C-d"  #'consult-dir)
