@@ -792,7 +792,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   ;; be used when orderless fails, which happens only for these special
   ;; tables. Also note that you may want to configure special styles for special
   ;; completion categories, e.g., partial-completion for files.
-  (setq completion-styles '(orderless basic)
+  (setq completion-styles '(substring orderless basic)
         completion-category-defaults nil
         ;;; Enable partial-completion for files.
         ;;; Either give orderless precedence or partial-completion.
