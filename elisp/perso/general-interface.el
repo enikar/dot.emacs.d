@@ -845,6 +845,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-x r b"  #'consult-bookmark
           "C-x C-f"  #'find-file
           "C-c m"    #'consult-imenu
+          "C-c x"    #'consult-mode-command
           "M-y"      #'consult-yank-pop
           "M-s e"    #'consult-isearch-history
           "M-s l"    #'consult-line
@@ -872,7 +873,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "/"   #'consult-line
           "g c" #'consult-ripgrep
           "g C" #'consult-grep
-          "g f" #'consult-find)
+          "g f" #'consult-find
+          "t o" #'consult-minor-mode-menu)
         (setq xref-show-xrefs-function #'consult-xref
               xref-show-definitions-function #'consult-xref)
         (setq register-preview-delay 0.5
