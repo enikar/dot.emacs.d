@@ -856,6 +856,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "M-g M-l"  #'consult-goto-line
           "C-x p i"  #'consult-imenu-multi
           "C-x p g"  #'consult-ripgrep
+          "C-x p b"  #'consult-project-buffer
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
@@ -1500,7 +1501,6 @@ argument, query for word to search."
   :custom (consult-project-function #'consult-project-extra-project-fn)
   :init (general-def
           :keymaps 'project-prefix-map
-          "b" #'consult-project-buffer
           "f" #'consult-project-extra-find
           "w" #'consult-project-extra-find-other-window))
 
