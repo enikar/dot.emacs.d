@@ -504,8 +504,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
     (evil-ex-define-cmd "ls" #'ibuffer)
     (general-def "C-x C-b" #'ibuffer)
-    ;; settings to use evil-numbers C-a and C-x in vim normal mode
-    ;; But C-x is use by emacs, and it is convenient to keep it.
     (leader-ala-vim :no-autolad t
       "TAB" `(,#'evil-switch-to-windows-last-buffer :wk "Last buffer"))
     (general-def
@@ -519,6 +517,8 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       ;; "gT"
       "g"))    ; remove the prefix is sufficient
 
+;; Settings to use evil-numbers C-a and C-x in vim normal mode
+;; But C-x is use by emacs, and it is convenient to keep it.
 (use-package evil-numbers
   :defer t
   :init (leader-ala-vim
