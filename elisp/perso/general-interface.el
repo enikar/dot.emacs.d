@@ -504,8 +504,10 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
     (evil-ex-define-cmd "ls" #'ibuffer)
     (general-def "C-x C-b" #'ibuffer)
-    (leader-ala-vim :no-autolad t
-      "TAB" `(,#'evil-switch-to-windows-last-buffer :wk "Last buffer"))
+    ;; Now I use my own function, it is more error prone, but
+    ;; it doesn't rely on evil-mode, and it works in emacs-state.
+    ;; (leader-ala-vim :no-autolad t
+    ;;   "TAB" `(,#'evil-switch-to-windows-last-buffer :wk "Last buffer"))
     (general-def
      :states 'normal
      :keymaps 'global
