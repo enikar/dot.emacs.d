@@ -352,7 +352,6 @@ Uses a buffer not visible in windows."
                                       ("\\.xlsx?\\'\\|\\.csv\\'" "libreoffice")
                                       (".*" "xdg-open")))
 (defun my/dired-mode-settings ()
-  (progn
     (require 'dired-x)
     (require 'dired-subtree)
     (dired-omit-mode 1)
@@ -375,7 +374,7 @@ Uses a buffer not visible in windows."
         (keymap-set map "o" #'dired-subtree-only-this-file)
         (keymap-set map "O" #'dired-subtree-only-this-directory)
         (keymap-set dired-mode-map "C-c C-d" map)
-        (keymap-set dired-mode-map "i" #'dired-subtree-insert))))
+        (keymap-set dired-mode-map "i" #'dired-subtree-insert)))
 
 (add-hook 'dired-mode-hook #'my/dired-mode-settings)
 
