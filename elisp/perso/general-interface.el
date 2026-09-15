@@ -179,8 +179,17 @@
 (global-visual-wrap-prefix-mode 1)
 (winner-mode 1)
 (auto-save-visited-mode 1)
+
 ;; Add bindings for the find-library command
 (find-function-mode 1)
+
+;; disable gpm-mouse-mode, as well my emacs is compiled without
+;; gpm support.
+(gpm-mouse-mode -1)
+
+;; The next is for disable OSC 8 hyperlinks in man.
+;; Emacs 32 manage them but not emacs 31
+(setenv "GROFF_NO_SGR" "1")
 
 ;; TODO a function for read-only-mode-hook.
 ;; Since I put this mode in view-mode and I set view-mode to emacs state.
