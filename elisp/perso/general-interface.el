@@ -1553,11 +1553,67 @@ argument, query for word to search."
    #'pdf-cache-prefetch-minor-mode
    #'pdf-history-minor-mode-map))
 
+
+;; setinngs to optimize speed up vterm from:
+;; https://www.jamescherti.com/emacs-terminal-performance-vterm-eat-ansi-term-ghostel/
+(defun my/speedup-vterm ()
+  (setq-local fast-but-imprecise-scrolling t)
+  (setq-local redisplay-skip-fontification-on-input t)
+  (setq-local scroll-conservatively most-positive-fixnum)
+  (setq-local auto-hscroll-mode nil)
+;;  (setq-local truncate-lines t)
+  (setq-local nobreak-char-display nil)
+  (setq-local echo-keystrokes 0)
+;;  (setq-local process-adaptive-read-buffering nil)
+;;  (setq-local read-process-output-max (* 256 1024))
+  (buffer-disable-undo)
+  ;; (remove-hook 'pre-command-hook 'evil--jump-hook t)
+  ;; (remove-hook 'post-command-hook 'evil--jump-handle-buffer-crossing t)
+  (let ((inhibit-redisplay t)
+        (inhibit-message t)
+        (modes '(electric-pair-local-mode
+                 electric-indent-local-mode
+                 display-line-numbers-mode
+                 display-fill-column-indicator-mode
+                 hl-line-mode
+                 find-function-mode
+                 which-function-mode
+                 ;;show-paren-local-mode
+                 flymake-mode
+                 ;; Third-party packages
+                 ;; NOTE: Add more modes here
+                 flycheck-mode
+                 evil-surround-mode
+                 evil-quickscope-mode
+                 evil-surround-mode
+                 evil-visualstar-mode
+                 evil-goggles-mode
+                 evil-lion-mode
+                 evil-matchit-mode
+                 company-mode
+                 ;;corfu-mode
+                 )))
+    (dolist (mode modes)
+      (when (and (boundp mode)
+                 (symbol-value mode)
+                 (fboundp mode))
+        (ignore-errors
+          (funcall mode -1))))))
+
+
 (use-package vterm
   :defer t
-  :init (setq vterm-always-compile-module t)
-        (general-def "C-c v" #'vterm)
-        (push 'vterm-mode my/mode-in-emacs-state))
+  :hook (vterm-mode . my/speedup-vterm)
+  :custom
+  (vterm-always-compile-module  t)
+  (vterm-max-scrollback 500)
+  (vterm-module-cmake-args
+   (concat "-DCMAKE_C_FLAGS=-O2 -march=native -mtune=native "
+           "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-O2 -Wl,--as-needed "
+           "-DUSE_SYSTEM_LIBVTERM=yes"))
+   :init
+   (general-def "C-c v" #'vterm)
+   (push 'vterm-mode my/mode-in-emacs-state))
 
 (use-package eshell-vterm
   :hook (eshell-mode . eshell-vterm-mode))
