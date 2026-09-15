@@ -264,10 +264,17 @@
   "m" #'man-follow        ;; But evil-lookup bound to K is better
   "p" #'pop-tag-mark)
 
+(defun my/switch-other-buffer ()
+  "Switch to the most recently use other buffer than the current one.
+Uses a buffer not visible in windows."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer))))
+
 (leader-ala-vim
   ""      '(nil :wk "leader-ala-vim menu")
   "SPC"   #'execute-extended-command
   "M-SPC" #'cycle-spacing
+  "TAB"   #'my/switch-other-buffer
   ":"     #'eval-expression
   "*"     #'duplicate-dwim
   "g"     '(:ignore t :wk "Searching")
