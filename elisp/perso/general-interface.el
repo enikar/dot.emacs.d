@@ -336,6 +336,12 @@ Uses a buffer not visible in windows."
               #'my/ibuffer-settings-extra
               #'ibuffer-auto-mode)
 
+(defun multi-keymap-set (map &rest bindings)
+  "Make multiple bindings in map"
+  (dolist (def bindings)
+    (keymap-set map (car def) (cdr def)))
+  map)
+
 ;;;; better dired mode
 (use-package dired-subtree
   :defer t)
@@ -359,24 +365,28 @@ Uses a buffer not visible in windows."
     (dired-omit-mode 1)
     (setq dired-x-hands-off-my-keys nil)
     (let ((map (make-sparse-keymap)))
-        (keymap-set map "i" `("Insert" . ,#'dired-subtree-insert))
-        (keymap-set map "r" `("Remove" . ,#'dired-subtree-remove))
-        (keymap-set map "t" `("Toggle" . ,#'dired-subtree-toggle))
-        (keymap-set map "c" `("Cycle" . ,#'dired-subtree-cycle))
-        (keymap-set map "R" `("Revert" . ,#'dired-subtree-revert))
-        (keymap-set map "n" `("Narrow" . ,#'dired-subtree-narrow))
-        (keymap-set map "u" `("Up" . ,#'dired-subtree-up))
-        (keymap-set map "d" `("Down" . ,#'dired-subtree-down))
-        (keymap-set map "N" `("Next sibbling" . ,#'dired-subtree-next-sibling))
-        (keymap-set map "P" `("Previous sibbling" . ,#'dired-subtree-previous-sibling))
-        (keymap-set map "b" `("Beginning" . ,#'dired-subtree-beginning))
-        (keymap-set map "e" `("End" . ,#'dired-subtree-end))
-        (keymap-set map "m" `("Mark subtree" . ,#'dired-subtree-mark-subtree))
-        (keymap-set map "U" `("Unmark subtree" . ,#'dired-subtree-unmark-subtree))
-        (keymap-set map "o" `("Only this file" . ,#'dired-subtree-only-this-file))
-        (keymap-set map "O" `("Only this directory" . ,#'dired-subtree-only-this-directory))
-        (keymap-set dired-mode-map "C-c C-d" `("dired-subtree" . ,map))
-        (keymap-set dired-mode-map "i" #'dired-subtree-insert)))
+      (multi-keymap-set
+       map
+       `("i" "Insert" . ,#'dired-subtree-insert)
+       `("r" "Remove" . ,#'dired-subtree-remove)
+       `("t" "Toggle" . ,#'dired-subtree-toggle)
+       `("c" "Cycle" . ,#'dired-subtree-cycle)
+       `("R" "Revert" . ,#'dired-subtree-revert)
+       `("n" "Narrow" . ,#'dired-subtree-narrow)
+       `("u" "Up" . ,#'dired-subtree-up)
+       `("d" "Down" . ,#'dired-subtree-down)
+       `("N" "Next sibbling" . ,#'dired-subtree-next-sibling)
+       `("P" "Previous sibbling" . ,#'dired-subtree-previous-sibling)
+       `("b" "Beginning" . ,#'dired-subtree-beginning)
+       `("e" "End" . ,#'dired-subtree-end)
+       `("m" "Mark subtree" . ,#'dired-subtree-mark-subtree)
+       `("U" "Unmark subtree" . ,#'dired-subtree-unmark-subtree)
+       `("o" "Only this file" . ,#'dired-subtree-only-this-file)
+       `("O" "Only this directory" . ,#'dired-subtree-only-this-directory))
+      (multi-keymap-set
+       dired-mode-map
+       `("C-c C-d" "dired-subtree" . ,map)
+       `("i" . ,#'dired-subtree-insert))))
 
 (add-hook 'dired-mode-hook #'my/dired-mode-settings)
 
