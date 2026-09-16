@@ -79,7 +79,12 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 (use-package consult-flycheck
   :defer t
-  :init (leader-ala-vim "f c" #'consult-flycheck))
+  :init
+  (leader-ala-vim
+    "f c" #'consult-flycheck)
+  (general-def
+    :keymaps 'goto-map
+    "f" #'consult-flycheck))
 
 ;;;; language C
 (use-package xcscope
