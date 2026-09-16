@@ -26,6 +26,11 @@
   (dolist (mode mode-hooks)
     (add-hook mode hook)))
 
+(defun multi-keymap-set (map &rest bindings)
+  "Make multiple bindings in the keymap map"
+  (dolist (def bindings map)
+    (keymap-set map (car def) (cdr def))))
+
 ;;;; Global settings
 ;; Tramp Var Directory
 (defvar-local my/tvd
@@ -335,12 +340,6 @@ Uses a buffer not visible in windows."
 (my/add-hooks 'ibuffer-mode-hook
               #'my/ibuffer-settings-extra
               #'ibuffer-auto-mode)
-
-(defun multi-keymap-set (map &rest bindings)
-  "Make multiple bindings in map"
-  (dolist (def bindings)
-    (keymap-set map (car def) (cdr def)))
-  map)
 
 ;;;; better dired mode
 (use-package dired-subtree
