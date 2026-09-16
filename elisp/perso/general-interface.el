@@ -866,17 +866,6 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "C-c m"    #'consult-imenu
           "C-c x"    #'consult-mode-command
           "M-y"      #'consult-yank-pop
-          "M-s e"    #'consult-isearch-history
-          "M-s l"    #'consult-line
-          "M-s L"    #'consult-line-multi
-          "M-s M-i"  #'consult-info
-          "M-s M-f"  #'consult-find
-          "M-s M-g"  #'consult-ripgrep
-          "M-g M-l"  #'consult-goto-line
-          "M-g M-m"  #'consult-mark
-          "C-x p i"  #'consult-imenu-multi
-          "C-x p g"  #'consult-ripgrep
-          "C-x p b"  #'consult-project-buffer
           [remap repeat-complex-command] #'consult-complex-command)
         (general-def
           :states  'normal
@@ -886,6 +875,23 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           :keymaps 'minibuffer-local-map
           "M-s"    #'consult-history
           "M-r"    #'consult-history)
+        (general-def ;; "M-s" prefix
+          :keymaps 'search-map
+          "e"    #'consult-isearch-history
+          "l"    #'consult-line
+          "L"    #'consult-line-multi
+          "M-i"  #'consult-info
+          "M-f"  #'consult-find
+          "M-g"  #'consult-ripgrep)
+        (general-def ;; "M-g" prefix
+          :keymaps 'goto-map
+          "M-l"  #'consult-goto-line
+          "M-m"  #'consult-mark)
+        (general-def ;; "C-x p" prefix
+          :keymaps 'project-prefix-map
+          "i"  #'consult-imenu-multi
+          "g"  #'consult-ripgrep
+          "b"  #'consult-project-buffer)
         (general-def
           :keymaps 'isearch-mode-map
           "M-s e"  #'consult-isearch-history)
