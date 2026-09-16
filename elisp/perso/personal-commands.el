@@ -149,6 +149,8 @@
 (general-def
   :keymaps 'search-map
   "M-m" #'multi-occur-in-this-mode)
+(leader-ala-vim
+  "g m" #'multi-occur-in-this-mode)
 
 (defun my/set-personnal-font (arg)
   "Restore my favorite font setting. With prefix argument try to keep
