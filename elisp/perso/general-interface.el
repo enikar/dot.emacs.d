@@ -873,6 +873,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
           "M-s M-f"  #'consult-find
           "M-s M-g"  #'consult-ripgrep
           "M-g M-l"  #'consult-goto-line
+          "M-g M-m"  #'consult-mark
           "C-x p i"  #'consult-imenu-multi
           "C-x p g"  #'consult-ripgrep
           "C-x p b"  #'consult-project-buffer
