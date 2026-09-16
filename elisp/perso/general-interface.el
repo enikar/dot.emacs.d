@@ -280,6 +280,8 @@ Uses a buffer not visible in windows."
   "g"     '(:ignore t :wk "Searching")
   "g R"    #'rgrep
   "g F"    #'find-name-dired
+  "g o"    #'occur
+  "g M"    #'multi-occur
   "q"     '(:ignore t :wk "Quitting")
   "q q"    #'save-buffers-kill-terminal
   "q r"    #'restart-emacs
