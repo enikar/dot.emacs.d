@@ -739,7 +739,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
 
 (use-package eww
   :commands (browse-url eww-browse-url)
-  :init (general-def "C-c u" #'browse-url-at-point)
+  :init (general-def "C-c u" #'browse-url-at-point) ;; also gx in evil normal-state
   :config (require 'casual-eww)
           (general-def
             :keymaps 'eww-mode-map
