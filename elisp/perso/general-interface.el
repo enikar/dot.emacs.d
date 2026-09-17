@@ -27,7 +27,21 @@
     (add-hook hook fn)))
 
 (defun multi-keymap-set (map &rest bindings)
-  "Make multiple bindings in the keymap map"
+  "Make multiple bindings in the keymap map.
+You can pass several bindings:
+  \(multi-keymap-set map binding1 binding2 …)
+
+Each binding consist of either a cons:
+  `\(\"c\" . ,command)
+or either:
+  `\(\"c\" \"Text replacement\" . ,command)
+
+where c is a key code accept by keymap-set and
+\"Text replacement\" is the text showed in which-key or
+menu.
+
+Note the dot before the command.
+The command returns the map with the newly installed bindings."
   (dolist (def bindings map)
     (keymap-set map (car def) (cdr def))))
 
