@@ -1369,10 +1369,9 @@ to work properly."
            (my/put-this-in-var "undo-fu-session"))
   :init (undo-fu-session-global-mode))
 
-;; Folding. There are several possibilities.
+;; Folding. There are two possibilities.
 ;; Use:
 ;; - hideshow: M-x hs-minor-mode
-;; - vdiff (vim diff): inside a vdiff session
 ;; - evil-vimish-fold: M-x evil-vimish-fold-mode
 ;; Folding is also possible in ouline-mode, org-mode and
 ;; hide-ifdef-mode (these are built in emacs).
@@ -1386,7 +1385,7 @@ to work properly."
 (defun myfold/set-folding-method (fold-method)
   "Set folding method to `fold-method'."
   (let ((inhibit-message t))
-    (dolist (m '(hs-minor-mode origami-mode evil-vimish-fold-mode))
+    (dolist (m '(hs-minor-mode evil-vimish-fold-mode))
       (funcall m -1)))
   (cl-case fold-method
     (hideshow (hs-minor-mode))
