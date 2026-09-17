@@ -499,6 +499,12 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (evil-ex-search-previous)
   (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
 
+
+(defvar keep-evil-move-cursor-back t
+  "Variable to keep the setting of evil-move-cursor-back.
+It is used with evil-mc package.
+See the function `my/evil-mc-mode'.")
+
 (use-package evil
   :hook ((after-init . evil-mode)
          (view-mode . evil-emacs-state)
@@ -541,7 +547,9 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
       "C-h"    ; use by which-key
       ;; "gt"  ; bindings to emacs tab functions
       ;; "gT"
-      "g"))    ; remove the prefix is sufficient
+      "g")    ; remove the prefix is sufficient
+    (setq keep-evil-move-cursor-back evil-move-cursor-back))
+
 
 ;; Settings to use evil-numbers C-a and C-x in vim normal mode
 ;; But C-x is use by emacs, and it is convenient to keep it.
@@ -1301,10 +1309,23 @@ targets."
 ;; but, the ones that cycle them do not. To skip creating a cursor forward
 ;; use grn and backward grp. Finally use gru to “undo” the last
 ;; added cursor, and grq to remove all cursors.
+
+(defun my/evil-mc-mode ()
+  "Toogle the evil-mc-mode and try to keep the value of evil-move-cursor-back.
+The option evil-move-cursor-back has to be true for evil-mc
+to work properly."
+  (interactive)
+  (setq evil-move-cursor-back
+        (if (and (boundp 'evil-mc-mode) evil-mc-mode)
+            keep-evil-move-cursor-back
+          t))
+  (evil-mc-mode 'toggle))
+
 (use-package evil-mc
   :defer t
   :init
-  (leader-ala-vim "t m" #'evil-mc-mode)
+  (leader-ala-vim
+    "t m" #'my/evil-mc-mode)
   (general-def
     :keymaps 'evil-mc-key-map
     :states '(normal visual)
