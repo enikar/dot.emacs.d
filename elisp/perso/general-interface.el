@@ -16,15 +16,15 @@
 
 (require 'cl-lib)
 
-(defun my/add-hooks (mode-hook &rest hooks)
-  "Add hooks in the list `hooks' to `mode-hook'"
-  (dolist (hook hooks)
-    (add-hook mode-hook hook)))
+(defun my/add-hooks (hook &rest functions)
+  "Add functions in the list `functions' to `hook'"
+  (dolist (fn functions)
+    (add-hook hook fn)))
 
-(defun my/add-hook-multi (hook &rest mode-hooks)
-  "Add a `hook' for multiple `mode-hooks'"
-  (dolist (mode mode-hooks)
-    (add-hook mode hook)))
+(defun my/add-hook-multi (fn &rest hooks)
+  "Add the function `fn' for multiple `hooks'"
+  (dolist (hook hooks)
+    (add-hook hook fn)))
 
 (defun multi-keymap-set (map &rest bindings)
   "Make multiple bindings in the keymap map"
