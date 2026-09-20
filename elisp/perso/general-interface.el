@@ -1264,7 +1264,6 @@ targets."
   (require 'all-the-icons))
 
 (use-package all-the-icons
-  :diminish (all-the-icons-mode)
   :hook (after-init . my/all-the-icons-load))
 
 (use-package all-the-icons-dired
