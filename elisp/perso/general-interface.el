@@ -1198,6 +1198,7 @@ targets."
           (doom-modeline-window-width-limit 81)
           (doom-modeline-bar-width 10)
           (doom-modeline-hud t)
+          (doom-modeline-workspace-name t)
   :config
   (require 'doom-modeline-core)
   (require 'doom-modeline-segments)
