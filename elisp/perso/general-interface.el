@@ -1645,8 +1645,8 @@ argument, query for word to search."
   (vterm-always-compile-module  t)
   (vterm-max-scrollback 500)
   (vterm-module-cmake-args
-   (concat "-DCMAKE_C_FLAGS=-O2 -march=native -mtune=native "
-           "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-O2 -Wl,--as-needed "
+   (concat "-DCMAKE_C_FLAGS='-O2 -march=native -mtune=native' "
+           "-DCMAKE_SHARED_LINKER_FLAGS='-Wl,-O2 -Wl,--as-needed' "
            "-DUSE_SYSTEM_LIBVTERM=yes"))
    :init
    (general-def "C-c v" #'vterm)
