@@ -1182,10 +1182,6 @@ targets."
   :defer t
   :init (leader-ala-vim "." #'flyspell-correct-wrapper))
 
-;; (use-package consult-recoll
-;;   :defer t
-;;   :init (leader-ala-vim "g r" #'consult-recoll))
-
 ;; Install an advice when setup the doom modeline to try
 ;; to always have the same information.
 (use-package doom-modeline
