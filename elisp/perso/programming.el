@@ -56,6 +56,8 @@ If the error list is visible, hide it.  Otherwise, show it."
         (quit-window nil window)
         (flycheck-list-errors))))
 
+;; see the variable flycheck-error-list-display-buffer-action
+;; to customize how the flycheck error window is laid.
 (use-package flycheck
   :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc haskell-stack-ghc))
           (flycheck-mode-line-prefix "E|W")
@@ -74,8 +76,10 @@ If the error list is visible, hide it.  Otherwise, show it."
           "f f" #'flycheck-mode
           "f l" #'my/toggle-flycheck-error-list)
         (prefix-c-xt :no-autoload t "f" #'flycheck-mode)
-  :config (which-key-add-key-based-replacements
-           "C-c !" "Flycheck"))
+  :config
+  (which-key-add-key-based-replacements
+    "C-c !" "Flycheck")
+  (push 'flycheck-error-list-mode my/mode-in-emacs-state))
 
 (use-package consult-flycheck
   :defer t
