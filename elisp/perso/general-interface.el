@@ -344,7 +344,32 @@ Uses a buffer not visible in windows."
                    'text-mode-hook
                    'dired-mode-hook)
 (leader-ala-vim "t H" #'hl-line-mode)
-(global-so-long-mode)
+
+;; so-long-mode
+(with-eval-after-load 'so-long
+  (push 'text-mode so-long-target-modes)
+  (push 'conf-mode so-long-target-modes)
+  (push '(save-place-alist . nil) so-long-variable-overrides)
+  (setf (alist-get 'buffer-read-only so-long-variable-overrides nil t) nil)
+  (setf (alist-get 'truncate-lines so-long-variable-overrides nil t) nil)
+  (setf (alist-get 'line-move-visual so-long-variable-overrides nil t) nil)
+  (dolist (mode '(rainbow-delimiters-mode
+                  highlight-indent-guides-mode
+                  outline-minor-mode
+                  undo-fu-session-mode
+                  undo-tree-mode
+                  ;;better-jumper-local-mode ;; to see
+                  auto-revert-mode
+                  flycheck-mode
+                  flyspell-mode
+                  highlight-numbers-mode
+                  diff-hl-mode
+                  page-break-lines-mode
+                  hl-fill-column-mode))))
+
+(setq so-long-threshold 5000)
+(global-so-long-mode 1)
+
 (delete-selection-mode t)
 (column-number-mode t)
 
