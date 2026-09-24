@@ -59,7 +59,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; see the variable flycheck-error-list-display-buffer-action
 ;; to customize how the flycheck error window is laid.
 (use-package flycheck
-  :custom (flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc haskell-stack-ghc))
+  :custom (flycheck-disabled-checkers '(emacs-lisp
+                                        emacs-lisp-checkdoc
+                                        haskell-stack-ghc
+                                        haskell-ghc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
           (flycheck-python-pycompile-executable "python3")
@@ -134,6 +137,7 @@ If the error list is visible, hide it.  Otherwise, show it."
     :keymaps 'haskell-mode-map
     "C-c C-r" #'run-haskell
     "C-c C-d" #'haskell-navigate-imports
+    "C-c C-c" #'haskell-compile
     "C-c C-a" #'haskell-mode-generate-tags)
   (general-def
     :states '(normal insert)
