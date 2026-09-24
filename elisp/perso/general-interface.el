@@ -500,7 +500,7 @@ To use it: (push 'a-mode my/mode-in-emacs-state)")
   (run-with-idle-timer 1 nil #'evil-ex-nohighlight))
 
 
-(defvar-local keep-evil-move-cursor-back t
+(defvar keep-evil-move-cursor-back t
   "Variable to keep the setting of evil-move-cursor-back.
 It is used with evil-mc package.
 See the function `my/evil-mc-mode'.")
