@@ -207,7 +207,7 @@ The command returns the map with the newly installed bindings."
 (gpm-mouse-mode -1)
 
 ;; The next is for disable OSC 8 hyperlinks in man.
-;; Emacs 32 manage them but not emacs 31
+;; Emacs 32 manages them but not emacs 31
 (setenv "GROFF_NO_SGR" "1")
 
 ;; TODO a function for read-only-mode-hook.
