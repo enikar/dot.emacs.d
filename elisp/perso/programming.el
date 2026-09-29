@@ -61,8 +61,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package flycheck
   :custom (flycheck-disabled-checkers '(emacs-lisp
                                         emacs-lisp-checkdoc
-                                        haskell-stack-ghc
-                                        haskell-ghc))
+                                        haskell-stack-ghc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
           (flycheck-python-pycompile-executable "python3")
@@ -103,7 +102,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;; haskell
 (defun my/no-auto-fill ()
-  (auto-fill-mode 0))
+  (auto-fill-mode -1))
 
 ;; TODO add a hook for inferior-haskell-hook
 ;; I should write another function than run-haskell to
@@ -116,7 +115,9 @@ If the error list is visible, hide it.  Otherwise, show it."
   (flycheck-mode)
   (haskell-indentation-mode)
   (interactive-haskell-mode)
-  (imenu-add-menubar-index))
+  (imenu-add-menubar-index)
+  (setq tab-width 2
+        indent-tabs-mode nil))
 
 (use-package haskell-mode
   :mode "\\.l?hs\\'"
@@ -126,6 +127,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   :init
     (push 'haskell-error-mode my/mode-in-emacs-state)
     (push 'haskell-interactive-mode my/mode-in-emacs-state)
+    (push 'haskell-debug-mode my/mode-in-emacs-state)
     (setq haskell-process-args-ghci '("+RTS" "-M5G" "-RTS" "-ferror-spans")
           haskell-process-log t
           haskell-process-suggest-hoogle-imports t
@@ -138,7 +140,10 @@ If the error list is visible, hide it.  Otherwise, show it."
     "C-c C-r" #'run-haskell
     "C-c C-d" #'haskell-navigate-imports
     "C-c C-c" #'haskell-compile
-    "C-c C-a" #'haskell-mode-generate-tags)
+    "C-c C-a" #'haskell-mode-generate-tags
+    "C-c C-q" #'haskell-debug
+    "M-?"     #'xref-find-definitions
+    "M-."     #'xref-find-references)
   (general-def
     :states '(normal insert)
     :keymaps 'interactive-haskell-mode-map
@@ -151,54 +156,53 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
-(defun my/set-flycheck-haskell-checker ()
-  (flycheck-add-next-checker
-   'haskell-dante
-   '(warning . haskell-hlint)))
+;; (defun my/set-flycheck-haskell-checker ()
+;;   (flycheck-add-next-checker
+;;    'haskell-dante
+;;    '(warning . haskell-hlint)))
 
-(use-package dante
-  :diminish (dante-mode)
-;;  :functions (flycheck-add-next-checker)
-  :custom (dante-load-flags '("+c"
-                              "-Wall"
-                              "-fdiagnostics-color=never"
-                              "-ferror-spans"
-                              "-fdefer-typed-holes"
-                              "-fdefer-type-errors"
-                              "-Wwarn=missing-home-modules"
-                              "-fno-diagnostics-show-caret"
-                              "--make"
-                              "+RTS"
-                              "-M5G"
-                              "-RTS"
-                              "-with-rtsopts=\"-M5G\""
-                              "-ignore-dot-ghci"))
-  :hook ((haskell-mode . dante-mode)
-         (dante-mode . my/set-flycheck-haskell-checker))
-  :config
-    (general-def
-        :states '(normal insert)
-        :keymaps 'dante-mode-map
-        "M-?" #'xref-find-references
-        "M-." #'xref-find-definitions)
-    (general-def dante-mode-map
-      "C-c :" #'dante-info))
+;; (use-package dante
+;;   :diminish (dante-mode)
+;; ;;  :functions (flycheck-add-next-checker)
+;;   :custom (dante-load-flags '("+c"
+;;                               "-Wall"
+;;                               "-fdiagnostics-color=never"
+;;                               "-ferror-spans"
+;;                               "-fdefer-typed-holes"
+;;                               "-fdefer-type-errors"
+;;                               "-Wwarn=missing-home-modules"
+;;                               "-fno-diagnostics-show-caret"
+;;                               "--make"
+;;                               "+RTS"
+;;                               "-M5G"
+;;                               "-RTS"
+;;                               "-with-rtsopts=\"-M5G\""
+;;                               "-ignore-dot-ghci"))
+;;   :hook ((haskell-mode . dante-mode)
+;;          (dante-mode . my/set-flycheck-haskell-checker))
+;;   :config
+;;     (general-def
+;;         :states '(normal insert)
+;;         :keymaps 'dante-mode-map
+;;         "M-?" #'xref-find-references
+;;         "M-." #'xref-find-definitions)
+;;     (general-def dante-mode-map
+;;       "C-c :" #'dante-info))
 
-(use-package company
-  :defer t)
 
 (use-package attrap
   :commands (attrap-attrap)
-  :general (:keymaps 'dante-mode-map "M-!" #'attrap-attrap))
+  :general (:keymaps 'haskell-mode-map "M-!" #'attrap-attrap))
 
+;; hlint-refactor need refactor from the haskell package apply-refact
+;; but it doesn't compile with ghc 9.10.3.
+;; Then, I compile the 0.15.0 apply-refact version with stack, ghc 9.6.7
+;; = lts-22.44
+;; Maybe I should use ghc 9.8.4 (lts-23.28) to build refactor.
 (use-package hlint-refactor
-  :hook (dante-mode . hlint-refactor-mode)
+  :hook (haskell-mode . hlint-refactor-mode)
   :diminish (hlint-refactor-mode)
   :config (which-key-add-key-based-replacements "C-c ," "Refactor"))
-
-;; (use-package retrie
-;;   :commands (retrie)
-;;   :after (haskell-mode))
 
 ;;;; yaml (for stack)
 (use-package flycheck-yamllint
@@ -207,6 +211,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package yaml-mode
   :mode "\\.ya?ml\\'"
   :config (require 'flycheck-yamllint))
+
+(use-package company
+  :defer t)
 
 ;;;; Erlang
 (use-package erlang)
