@@ -93,6 +93,7 @@ slot to switch to."
                            (evil-eb--read-slot))))
   (eyebrowse-switch-to-window-config c))
 
+(declare-function 'multi-keymap-set "general-interface")
 ;; TODO: functions to open a new file in new window config (Z E)
 ;; and to swith to a buffer in a new window config (Z B)
 ;; Finaly, I built a keymap. It's simpler.
