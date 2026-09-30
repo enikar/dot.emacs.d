@@ -115,7 +115,7 @@ If the error list is visible, hide it.  Otherwise, show it."
   (flycheck-mode)
   (haskell-indentation-mode)
   (interactive-haskell-mode)
-  (imenu-add-menubar-index)
+  (haskell-decl-scan-mode)
   (setq tab-width 2
         indent-tabs-mode nil))
 
@@ -130,6 +130,7 @@ If the error list is visible, hide it.  Otherwise, show it."
     (push 'haskell-debug-mode my/mode-in-emacs-state)
     (setq haskell-process-args-ghci '("+RTS" "-M5G" "-RTS" "-ferror-spans")
           haskell-process-log t
+          haskell-compile-command "ghc -Wall -ferror-spans -fforce-recomp -c --make %s"
           haskell-process-suggest-hoogle-imports t
           haskell-process-suggest-remove-import-lines t
           haskell-process-suggest-restart nil)
@@ -195,10 +196,10 @@ If the error list is visible, hide it.  Otherwise, show it."
   :general (:keymaps 'haskell-mode-map "M-!" #'attrap-attrap))
 
 ;; hlint-refactor need refactor from the haskell package apply-refact
-;; but it doesn't compile with ghc 9.10.3.
-;; Then, I compile the 0.15.0 apply-refact version with stack, ghc 9.6.7
-;; = lts-22.44
-;; Maybe I should use ghc 9.8.4 (lts-23.28) to build refactor.
+;; but it doesn't compile with ghc 9.10.3 (the debian version at
+;; this moment).
+;; Then, I compile the 0.15.0 apply-refact version with stack, ghc 9.8.4
+;; = lts-23.28
 (use-package hlint-refactor
   :hook (haskell-mode . hlint-refactor-mode)
   :diminish (hlint-refactor-mode)
