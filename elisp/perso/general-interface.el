@@ -365,7 +365,8 @@ Uses a buffer not visible in windows."
                   highlight-numbers-mode
                   diff-hl-mode
                   page-break-lines-mode
-                  hl-fill-column-mode))))
+                  hl-fill-column-mode))
+    (add-to-list 'so-long-minor-modes mode)))
 
 (setq so-long-threshold 5000)
 (global-so-long-mode 1)
