@@ -61,6 +61,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 (use-package flycheck
   :custom (flycheck-disabled-checkers '(emacs-lisp
                                         emacs-lisp-checkdoc
+                                        haskell-ghc
                                         haskell-stack-ghc))
           (flycheck-mode-line-prefix "E|W")
           (flycheck-python-flake8-executable "python3")
@@ -157,38 +158,37 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;; I use dante flycheck instead of flycheck-haskell because it is
 ;; faster.
-;; (defun my/set-flycheck-haskell-checker ()
-;;   (flycheck-add-next-checker
-;;    'haskell-dante
-;;    '(warning . haskell-hlint)))
+(defun my/set-flycheck-haskell-checker ()
+  (flycheck-add-next-checker
+   'haskell-dante
+   '(warning . haskell-hlint)))
 
-;; (use-package dante
-;;   :diminish (dante-mode)
-;; ;;  :functions (flycheck-add-next-checker)
-;;   :custom (dante-load-flags '("+c"
-;;                               "-Wall"
-;;                               "-fdiagnostics-color=never"
-;;                               "-ferror-spans"
-;;                               "-fdefer-typed-holes"
-;;                               "-fdefer-type-errors"
-;;                               "-Wwarn=missing-home-modules"
-;;                               "-fno-diagnostics-show-caret"
-;;                               "--make"
-;;                               "+RTS"
-;;                               "-M5G"
-;;                               "-RTS"
-;;                               "-with-rtsopts=\"-M5G\""
-;;                               "-ignore-dot-ghci"))
-;;   :hook ((haskell-mode . dante-mode)
-;;          (dante-mode . my/set-flycheck-haskell-checker))
-;;   :config
-;;     (general-def
-;;         :states '(normal insert)
-;;         :keymaps 'dante-mode-map
-;;         "M-?" #'xref-find-references
-;;         "M-." #'xref-find-definitions)
-;;     (general-def dante-mode-map
-;;       "C-c :" #'dante-info))
+(use-package dante
+  :diminish (dante-mode)
+;;  :functions (flycheck-add-next-checker)
+  :custom (dante-load-flags '("+c"
+                              "-Wall"
+                              "-fdiagnostics-color=never"
+                              "-ferror-spans"
+                              "-fdefer-typed-holes"
+                              "-fdefer-type-errors"
+                              "-Wwarn=missing-home-modules"
+                              "-fno-diagnostics-show-caret"
+                              "--make"
+                              "+RTS"
+                              "-M5G"
+                              "-RTS"
+                              "-with-rtsopts=\"-M5G\""))
+  :hook ((haskell-mode . dante-mode)
+         (dante-mode . my/set-flycheck-haskell-checker))
+  :config
+    (general-def
+        :states '(normal insert)
+        :keymaps 'dante-mode-map
+        "M-?" #'xref-find-references
+        "M-." #'xref-find-definitions)
+    (general-def dante-mode-map
+      "C-c :" #'dante-info))
 
 
 (use-package attrap
